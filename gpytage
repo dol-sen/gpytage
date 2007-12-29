@@ -86,6 +86,8 @@ class gpytage:
 				<menu action="Edit">
 					<menuitem action="Expand All" />
 					<menuitem action="Collapse All" />
+					<menuitem action="Insert Package" />
+					<menuitem action="Delete Package" />
 				</menu>
 				<menu action="Help">
 					<menuitem action="About" />
@@ -104,6 +106,8 @@ class gpytage:
 			('Edit', None, '_Edit'),
 			('Expand All', None, '_Expand All', None, 'Expand Rows', self.expand),
 			('Collapse All', None, '_Collapse All', None, 'Collapse Rows', self.collapse),
+			('Insert Package', None, '_Insert Package', '<Control>t', 'Add a package', self.insertrow),
+			('Delete Package', None, '_Delete Package', 'Delete', "Delete a package", self.deleterow),
 			('Help',None,'_Help'),
 			('About', gtk.STOCK_ABOUT, '_About', None, 'About GPytage', self.about)])
 
@@ -151,7 +155,10 @@ class gpytage:
 			menu = gtk.Menu()
 			irow = gtk.MenuItem("Insert Package")
 			irow.connect("activate", self.insertrow)
+			drow= gtk.MenuItem("Delete Package")
+			drow.connect("activate", self.deleterow)
 			menu.append(irow)
+			menu.append(drow)
 			menu.show_all()
 			menu.popup(None, None, None, event.button, event.time)
 
@@ -206,7 +213,10 @@ class gpytage:
 	def selected(self): #helper function
 		selection = self.treeview.get_selection()
 		model, iter = selection.get_selected()
-		value = self.datastore.get_value(iter, 2)
+		try:
+			value = self.datastore.get_value(iter, 2)
+		except:
+			value = False
 		return iter, value
 
 
@@ -217,6 +227,11 @@ class gpytage:
 			path = self.datastore.get_path(niter)
 			self.treeview.set_cursor_on_cell(path, self.namecol, self.cell, True)
 
+	def deleterow(self, arg):
+		iter, value = self.selected()
+		if value == True:
+			self.datastore.remove(iter)
+			
 	#######################################################
 
 	def folder_scan(self):#returns what files are files/dirs wrt portage
