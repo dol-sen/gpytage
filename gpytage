@@ -28,7 +28,11 @@ class gpytage:
 	def __init__(self):
 		self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 		self.window.set_title("GPytage")
-		
+		self.window.set_default_size(600, 300)
+
+		self.window.connect("destroy", self.destroy)
+		self.window.connect("delete_event", self.delete_event)
+
 		self.datastore = gtk.TreeStore(str, str)
 		self.files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use']
 		self.create_treeiter() #create the main rows
@@ -56,6 +60,12 @@ class gpytage:
 		self.window.add(self.scroll)
 #		self.window.add(self.treeview)
 		self.window.show_all()
+
+	def destroy(self, widget, data=None):
+		gtk.main_quit()
+
+	def delete_event(self, widget, event, data=None):
+		return False
 
 		
 	def folder_scan(self):
@@ -121,8 +131,6 @@ class gpytage:
 			print i
 			if i.startswith('#'): #don't split if its a comment
 				new = [i, None]
-				print 'comment detected'
-				print new
 			else:
 				new = i.split(None,1)
 			data.append(new)
