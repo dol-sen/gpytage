@@ -164,9 +164,10 @@ class gpytage:
 		self.create_treeiter()
 
 	def save(self, arg): #the important one...
-		new = []
+		#simlist = []
 		for row in self.datastore: #iters through parents
 			file = 'package.'+row[0] #eg: package.keywords
+			simlist = []
 			print file
 			for child in row.iterchildren(): #child of parents
 				if child[2] == False: #if its false it has subfiles
@@ -179,9 +180,12 @@ class gpytage:
 						#print 'cell printed?'
 				else:
 					print child #list
-					print 'above is true child'
-					print child[0] #1st column
-					print 'above child0'
+					datarow = self.assemblerow(child)
+					print datarow
+					print 'datarow above'
+					simlist.append(datarow)
+			print simlist #works per loop now
+			print 'simlist&'
 	#insight: datastore can be thought of a giant list, where row[0] references the first item in a multi list list. eg: foo = [['blah'],['blah1']]
 
 	def new(self, arg):#create a new file :S
@@ -287,6 +291,22 @@ class gpytage:
 		print 'data return from scan'
 		print data
 		return data #return the master list of lists
+
+	def assemblerow(self, child):
+		try:
+			len(child[0])
+			text1 = child[0]
+		except:
+			text1 = ""
+		try:
+			len(child[1])
+			text2 = child[1]
+		except:
+			text2 = ""
+		datarow = text1 + "|" + text2 + '\n'
+		print datarow
+		print 'yay data'
+		return datarow
 
 	def main(self):
 		gtk.main()
