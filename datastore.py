@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 #
-# GPytage v0.1_Alpha released under the GPLv2 License
-# GPytage is a utility that helps manage portage's package.* files
+# GPytage datastore.py module
 #
 ############################################################################
 #    Copyright (C) 2007 by Kenneth Prugh                                   #

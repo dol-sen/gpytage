@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# GPytage save module
+# GPytage save.py module
 #
 ############################################################################
 #    Copyright (C) 2007 by Kenneth Prugh                                   #
