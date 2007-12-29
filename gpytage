@@ -31,12 +31,6 @@ class gpytage:
 		self.window.set_title("GPytage")
 		self.window.set_default_size(600, 300)
 
-		################Connections##################
-		#allow the program to quit
-		self.window.connect("destroy", self.destroy)
-		self.window.connect("delete_event", self.delete_event)
-		#############################################
-
 		self.datastore = gtk.TreeStore(str, str, bool)
 		self.files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use']
 		self.create_treeiter() #create the main rows
@@ -47,21 +41,22 @@ class gpytage:
 		#columns
 		self.namecol = gtk.TreeViewColumn('Package File')
 		self.testcol = gtk.TreeViewColumn('Flag')
-		self.boolcol = gtk.TreeViewColumn('editable')
+		self.boolcol = gtk.TreeViewColumn() #editable col
 		#add to tree
 		self.treeview.append_column(self.namecol)
 		self.treeview.append_column(self.testcol)
 		self.treeview.append_column(self.boolcol)
 		#render cell
 		self.cell = gtk.CellRendererText()
+		self.cell1 = gtk.CellRendererText()
 
-		#add col to cell
+		#add cols to cell
 		self.namecol.pack_start(self.cell, True)
 		self.namecol.set_attributes(self.cell, text=0)
 		self.namecol.add_attribute(self.cell, "editable", 2)#set row editable
-		self.testcol.pack_start(self.cell, True)
-		self.testcol.set_attributes(self.cell, text=1)
-		self.testcol.add_attribute(self.cell, "editable", 2)#set row editable
+		self.testcol.pack_start(self.cell1, True)
+		self.testcol.set_attributes(self.cell1, text=1)
+		self.testcol.add_attribute(self.cell1, "editable", 2)#set row editable
 
 		###########Scroll Window#########################
 		self.scroll = gtk.ScrolledWindow()
@@ -97,6 +92,14 @@ class gpytage:
 		self.vbox = gtk.VBox() #the master widgit
 		self.vbox.pack_start(self.menubar, False)
 		
+		################Connections##################
+		#allow the program to quit
+		self.window.connect("destroy", self.destroy)
+		self.window.connect("delete_event", self.delete_event)
+		self.cell.connect("edited", self.edited_cb, self.datastore, 0)
+		self.cell1.connect("edited", self.edited_cb, self.datastore, 1)
+		#############################################
+
 		###########Show Widgits##########################
 		self.vbox.pack_start(self.scroll, True, True, 0)
 		#self.vbox.pack_start(self.treeview, True)
@@ -113,11 +116,27 @@ class gpytage:
 
 	def delete_event(self, widget, event, data=None):
 		return False
+
+	def edited_cb(self, cell, path, new_text, user_data, col):
+		#column = self.
+		print "zomg edited signal recieved"
+		print cell
+		print 'above cell'
+		print path
+		print 'path'
+		print new_text
+		print 'new text'
+		print user_data
+		print 'user data'
+		print col
+		#self.datastore[path] = new_text
+		return
+
 	############Menu Functions. ###########################
 	def about(self, arg): #wth is arg
 		aboutw = gtk.AboutDialog()
 		aboutw.set_name('GPytage')
-		aboutw.set_copyright('Copyright 2007')
+		aboutw.set_copyright('Copyright 2007, GPL2')
 		aboutw.set_authors(['Kenneth Prugh', '\nWith special thanks to the Gentoo \ndevelopers and community'])
 		f=open('/usr/portage/licenses/GPL-2')
 		gpl2 = f.read()
@@ -125,7 +144,7 @@ class gpytage:
 		aboutw.set_license(gpl2)
 		aboutw.set_wrap_license(True)
 		aboutw.set_version('0.1')
-		aboutw.set_website('http://ken.ath.cx/')
+		aboutw.set_website('http://ken.ath.cx/wiki/index.php/GPytage')
 		aboutw.run()
 		aboutw.hide()
 
@@ -176,7 +195,7 @@ class gpytage:
 					col2 = row[1].rstrip() # not all files have 2 cols
 				except:
 					col2 = None
-				self.datastore.append(siter, [col1,col2, True])
+				self.datastore.append(siter, [col1, col2, True])
 		for i in parent_folder: #parent_folders is list of folders such as package.keywords
 			#i is a dir such as package.keywords
 			pfolder = i
