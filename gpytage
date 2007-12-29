@@ -95,15 +95,15 @@ class gpytage:
 		#Actions #NEEDS FIXING
 		self.actiongroup.add_actions([
 			('Quit', gtk.STOCK_QUIT, '_Quit', None, 'Quit GPytage', self.destroy),
-			('Revert', None, '_Revert', None, 'Revert changes', self.reload),
-			('New', None, '_New', '<Control>n', 'New file', self.new),
+			('Revert', gtk.STOCK_REVERT_TO_SAVED, '_Revert', None, 'Revert changes', self.reload),
+			('New', gtk.STOCK_NEW, '_New Subfile', '<Control>n', 'New file', self.new),
 			('File', None, '_File'),
-			('Save', None, '_Save', '<Control>s', 'Save changes', self.save),
+			('Save', gtk.STOCK_SAVE, '_Save', '<Control>s', 'Save changes', self.save),
 			('Edit', None, '_Edit'),
 			('Expand All', None, '_Expand All', None, 'Expand Rows', self.expand),
 			('Collapse All', None, '_Collapse All', None, 'Collapse Rows', self.collapse),
 			('Help',None,'_Help'),
-			('About', 'About', '_About', None, 'About GPytage', self.about)])
+			('About', gtk.STOCK_ABOUT, '_About', None, 'About GPytage', self.about)])
 
 		#Add the UI XML
 		self.uimanager.insert_action_group(self.actiongroup, 0)
@@ -169,8 +169,19 @@ class gpytage:
 			file = 'package.'+row[0] #eg: package.keywords
 			print file
 			for child in row.iterchildren(): #child of parents
-			#	print child
-				print [cell for cell in child] #lamda?
+				if child[2] == False: #if its false it has subfiles
+					pass
+					#print 'Is dir'
+					#print child
+					#print 'child is above'
+					#for cell in child.iterchildren():
+						#print cell[0]
+						#print 'cell printed?'
+				else:
+					print child #list
+					print 'above is true child'
+					print child[0] #1st column
+					print 'above child0'
 	#insight: datastore can be thought of a giant list, where row[0] references the first item in a multi list list. eg: foo = [['blah'],['blah1']]
 
 	def new(self, arg):#create a new file :S
