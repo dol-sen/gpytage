@@ -74,6 +74,17 @@ class gpytage:
 			print siter
 			siter = self.datastore.append(None, [name, None])
 			print siter
+			##need to populate children!!
+
+	def scan_contents(self,arg):
+		f=open("/etc/portage/"+arg, 'r')
+		contents = f.readlines()
+		f.close()
+		data = [] #list of list: eg [['python','x86']]
+		for i in contents:
+			data.append(i.split())
+		return data #return the master list of lists
+
 	def main(self):
 		gtk.main()
 
