@@ -26,6 +26,7 @@ import gtk
 import os.path
 import sys
 import pdb
+import save
 
 class gpytage:
 	def __init__(self):
@@ -223,26 +224,6 @@ class gpytage:
 		self.create_treeiter()
 		self.window.set_title("GPytage")
 
-	def save(self, arg): #the important one...
-		for row in self.datastore: #iters through parents
-			file = 'package.'+row[0] #eg: package.keywords
-			simlist = [] #uh, write this to file i guess
-			for child in row.iterchildren(): #child of parents
-				if child[2] == False: #if its false it has subfiles
-					subdlist = []
-					for cell in child.iterchildren(): #child.iter is subfile
-						datarow = self.assemblerow(cell)
-						subdlist.append(datarow)
-					self.savefile(file, child[0], subdlist)
-				else:
-					#print child #list
-					datarow = self.assemblerow(child)
-					simlist.append(datarow)
-			if simlist != []:
-				self.savefile(file, None, simlist)
-		self.window.set_title("GPytage")
-	#insight: datastore can be thought of a giant list, where row[0] references the first item in a multi list list. eg: foo = [['blah'],['blah1']]
-
 	def new(self, arg):#create a new subfile
 		newd = gtk.Dialog('Create new Subfile', self.window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
 		dirs,files = self.folder_scan()
@@ -405,39 +386,10 @@ class gpytage:
 			data.append(new)
 		return data #return the master list of lists
 
-	def assemblerow(self, child):
-		try:
-			len(child[0])
-			text1 = child[0]
-		except:
-			text1 = ""
-		try:
-			len(child[1])
-			text2 = child[1]
-		except:
-			text2 = ""
-		datarow = text1 + " " + text2 + '\n'
-		return datarow
-
-	def savefile(self, package, subfile, rowlist):
-		if subfile is None:
-			try:
-				f=open('/etc/portage/'+package, 'w')
-			except IOError:
-				print 'Failed to open /etc/portage/' + package + ' for write access'
-				return
-			for row in rowlist:
-				f.write(row)
-			f.close
-		else:
-			try:
-				f=open('/etc/portage/'+package+'/'+subfile, 'w')
-			except IOError:
-				print 'failed to open /etc/portage/'+package+'/'+subfile + ' for write access'
-				return
-			for row in rowlist:
-				f.write(row)
-			f.close
+	def save(self, arg):
+		state = save.save(arg, self.datastore)
+		if state:
+			window.set_title("GPytage")
 
 	def main(self):
 		gtk.main()
