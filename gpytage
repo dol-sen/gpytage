@@ -39,6 +39,7 @@ class gpytage:
 		self.treeview = gtk.TreeView(self.datastore) #create the container
 
 		self.treeview.set_search_column(0) #search broken atm #child?
+		self.treeview.set_reorderable(True) # allow inline drag and drop
 		#columns
 		self.namecol = gtk.TreeViewColumn('Package File')
 		self.testcol = gtk.TreeViewColumn('Flag')
@@ -80,6 +81,10 @@ class gpytage:
 					<menuitem action="Revert" />
 					<menuitem action="Quit" />
 				</menu>
+				<menu action="Edit">
+					<menuitem action="Expand All" />
+					<menuitem action="Collapse All" />
+				</menu>
 				<menu action="Help">
 					<menuitem action="About" />
 				</menu>
@@ -91,9 +96,14 @@ class gpytage:
 		self.actiongroup.add_actions([
 			('Quit', gtk.STOCK_QUIT, '_Quit', None, 'Quit GPytage', self.destroy),
 			('Revert', None, '_Revert', None, 'Revert changes', self.reload),
-			('New', None, '_New', '<Control>n', 'New file', self.new), ('File', None, '_File'),
+			('New', None, '_New', '<Control>n', 'New file', self.new),
+			('File', None, '_File'),
 			('Save', None, '_Save', '<Control>s', 'Save changes', self.save),
-			('Help',None,'_Help'),('About', 'About', '_About', None, 'About GPytage', self.about)])
+			('Edit', None, '_Edit'),
+			('Expand All', None, '_Expand All', None, 'Expand Rows', self.expand),
+			('Collapse All', None, '_Collapse All', None, 'Collapse Rows', self.collapse),
+			('Help',None,'_Help'),
+			('About', 'About', '_About', None, 'About GPytage', self.about)])
 
 		#Add the UI XML
 		self.uimanager.insert_action_group(self.actiongroup, 0)
@@ -162,9 +172,16 @@ class gpytage:
 			#	print child
 				print [cell for cell in child] #lamda?
 	#insight: datastore can be thought of a giant list, where row[0] references the first item in a multi list list. eg: foo = [['blah'],['blah1']]
+
 	def new(self, arg):#create a new file :S
 		pass
-	
+
+	def expand(self, arg):
+		self.treeview.expand_all()
+
+	def collapse(self, arg):
+		self.treeview.collapse_all()
+
 	#######################################################
 
 	def folder_scan(self):#returns what files are files/dirs wrt portage
@@ -240,13 +257,12 @@ class gpytage:
 			f=open("/etc/testportage/"+arg, 'r')
 			contents = f.readlines()
 			f.close()
-		except IOError:
+		except IOError: #needed or everything breaks
 			print 'Warning: Critical file /etc/%s not found, creating...' % arg
 			writemessage = '''# This file was created by GPytage as it is required for proper operation.'''
 			f=open("/etc/testportage/"+arg, 'w')
 			f.write(writemessage)
 			f.close
-			#sys.exit()
 
 		print contents
 		data = [] #list of list: eg [['python','x86']]
