@@ -43,7 +43,7 @@ class gpytage:
 		self.treeview.set_reorderable(True) # allow inline drag and drop
 		#columns
 		self.namecol = gtk.TreeViewColumn('Package File')
-		self.testcol = gtk.TreeViewColumn('Flag')
+		self.testcol = gtk.TreeViewColumn('Flags')
 		self.boolcol = gtk.TreeViewColumn() #editable col
 		#add to tree
 		self.treeview.append_column(self.namecol)
@@ -149,7 +149,7 @@ class gpytage:
 	def clicked(self, view, event):
 		if event.button == 3:
 			menu = gtk.Menu()
-			irow = gtk.MenuItem("Insert Row")
+			irow = gtk.MenuItem("Insert Package")
 			irow.connect("activate", self.insertrow)
 			menu.append(irow)
 			menu.show_all()
@@ -203,11 +203,19 @@ class gpytage:
 	def collapse(self, arg):
 		self.treeview.collapse_all()
 
-	def insertrow(self, arg):
+	def selected(self): #helper function
 		selection = self.treeview.get_selection()
 		model, iter = selection.get_selected()
-		niter = self.datastore.insert_after(None, iter, [None, None, True])
+		value = self.datastore.get_value(iter, 2)
+		return iter, value
 
+
+	def insertrow(self, arg):
+		iter, value = self.selected()
+		if value == True:
+			niter = self.datastore.insert_after(None, iter, [None, None, True])
+			path = self.datastore.get_path(niter)
+			self.treeview.set_cursor_on_cell(path, self.namecol, self.cell, True)
 
 	#######################################################
 
