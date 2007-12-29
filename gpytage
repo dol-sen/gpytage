@@ -29,7 +29,7 @@ class gpytage:
 		self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 		self.window.set_title("GPytage")
 		
-		datastore = gtk.TreeStore(str, str)
+		self.datastore = gtk.TreeStore(str, str)
 		self.files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use']
 		self.create_treeiter() #create the main rows
 		#self.button = gtk.Button("Hello World")
@@ -68,8 +68,12 @@ class gpytage:
 	def create_treeiter(self):#create the parent/main rows
 		parent_folder, simple_files = self.folder_scan()
 		parent_files = self.folder_walk(parent_folder)
-		for i in simple_files:
-
+		for i in simple_files: #needs no sub main rows just data
+			name = i.partition('.')[2]
+			siter = name+"_iter"
+			print siter
+			siter = self.datastore.append(None, [name, None])
+			print siter
 	def main(self):
 		gtk.main()
 
