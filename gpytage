@@ -61,6 +61,7 @@ class gpytage:
 		self.testcol.pack_start(self.cell1, True)
 		self.testcol.set_attributes(self.cell1, text=1)
 		self.testcol.add_attribute(self.cell1, "editable", 2)#set row editable
+		self.testcol.set_expand(True)
 		self.testcol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
 
 		###########Scroll Window#########################
@@ -121,6 +122,7 @@ class gpytage:
 		self.window.connect("delete_event", self.delete_event)
 		self.cell.connect("edited", self.edited_cb, self.datastore, 0)
 		self.cell1.connect("edited", self.edited_cb, self.datastore, 1)
+		self.treeview.connect("button_press_event", self.clicked)
 		#############################################
 
 		###########Show Widgits##########################
@@ -143,6 +145,15 @@ class gpytage:
 	def edited_cb(self, cell, path, new_text, user_data, col):
 		self.datastore[path][col] = new_text
 		return
+
+	def clicked(self, view, event):
+		if event.button == 3:
+			menu = gtk.Menu()
+			irow = gtk.MenuItem("Insert Row")
+			irow.connect("activate", self.insertrow)
+			menu.append(irow)
+			menu.show_all()
+			menu.popup(None, None, None, event.button, event.time)
 
 	############Menu Functions. ###########################
 	def about(self, arg): #wth is arg
@@ -171,9 +182,6 @@ class gpytage:
 			for child in row.iterchildren(): #child of parents
 				if child[2] == False: #if its false it has subfiles
 					subdlist = []
-					print 'Is dir'
-					print child
-					print 'child is above'
 					for cell in child.iterchildren(): #child.iter is subfile
 						datarow = self.assemblerow(cell)
 						subdlist.append(datarow)
@@ -194,6 +202,12 @@ class gpytage:
 
 	def collapse(self, arg):
 		self.treeview.collapse_all()
+
+	def insertrow(self, arg):
+		selection = self.treeview.get_selection()
+		model, iter = selection.get_selected()
+		niter = self.datastore.insert_after(None, iter, [None, None, True])
+
 
 	#######################################################
 
