@@ -27,16 +27,36 @@ from helper import folder_scan, folder_walk, scan_contents
 
 config_files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use']
 
-datastore = gtk.TreeStore(str, str, bool)
+datastore = gtk.TreeStore(str, str, bool, str) #stores the main files
 
-def create_treeiter():#create the parent/main rows
-		parent_folder, simple_files = folder_scan()
-		#parent_files = self.folder_walk(parent_folder)
-		for i in simple_files: #needs no sub main rows just data
-			name = i.partition('.')[2]
-			siter = name+"_iter"
-			siter = datastore.append(None, [name, None, False])
-			data = scan_contents(i)
+#19:33 < Zalamander> Ken69267 use a dictionary to map the names to created 
+                    #lists. "d = {}; for name in list: d[name] = [1,2,3,4,5]" values will be in the dict.
+					
+def create_lists():
+	parent_folder, simple_files = folder_scan()
+	global lists
+	lists = {}
+	for i in simple_files:
+		lists[i] = gtk.ListStore(str, str, bool, str)
+		data = scan_contents(i)
+		for row in data:
+			try:
+				col1 = row[0].rstrip() #strips \n
+			except:
+				col1 = None
+			try:
+				col2 = row[1].rstrip() # not all files have 2 cols
+			except:
+				col2 = None
+			lists[i].append([col1, col2, True, i])
+			
+	for i in parent_folder:
+		parent = i
+		sub_folders = folder_walk(i)
+		for i in sub_folders:
+			lists[i] = gtk.ListStore(str, str, bool, str)
+			sub_file_path = parent + '/' + i
+			data = scan_contents(sub_file_path)
 			for row in data:
 				try:
 					col1 = row[0].rstrip() #strips \n
@@ -46,24 +66,46 @@ def create_treeiter():#create the parent/main rows
 					col2 = row[1].rstrip() # not all files have 2 cols
 				except:
 					col2 = None
-				datastore.append(siter, [col1, col2, True])
+				lists[i].append([col1, col2, True, parent])
+	#for i in lists:
+		#print lists[i]
+	return lists
+	
+def create_treeiter():#create the parent/main files
+		parent_folder, simple_files = folder_scan()
+		#parent_files = self.folder_walk(parent_folder)
+		for i in simple_files: #needs no sub main rows just data
+			name = i.partition('.')[2]
+			siter = name+"_iter"
+			siter = datastore.append(None, [name, None, False, i])
+			#data = scan_contents(i)
+			#for row in data:
+				#try:
+					#col1 = row[0].rstrip() #strips \n
+				#except:
+					#col1 = None
+				#try:
+					#col2 = row[1].rstrip() # not all files have 2 cols
+				#except:
+					#col2 = None
+				#datastore.append(siter, [col1, col2, True])
 		for i in parent_folder: #parent_folders is list of folders such as package.keywords
 			#i is a dir such as package.keywords
 			pfolder = i
 			name = i.partition('.')[2]
 			giter = name+"_iter"
-			giter = datastore.append(None, [name, None, False])
+			giter = datastore.append(None, [name, None, False, i])
 			complex_files = folder_walk(i) #this needs to return list files in dir
 			for i in complex_files: #"simple files"
 				name = i #folder name being iterated
 				gciter = name+"_iter"
-				gciter = datastore.append(giter, [name, None, False])
+				gciter = datastore.append(giter, [name, None, False, pfolder])
 				dir_file_path = pfolder+'/'+i
-				data = scan_contents(dir_file_path)
-				for row in data:
-					col1 = row[0].rstrip()
-					try:
-						col2 = row[1].rstrip()
-					except:
-						col2 = None
-					datastore.append(gciter, [col1,col2, True])
+				#data = scan_contents(dir_file_path)
+				#for row in data:
+					#col1 = row[0].rstrip()
+					#try:
+						#col2 = row[1].rstrip()
+					#except:
+						#col2 = None
+					#datastore.append(gciter, [col1,col2, True])

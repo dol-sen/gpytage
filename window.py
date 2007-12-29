@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# GPytage helper.py module
+# GPytage window.py module
 #
 ############################################################################
 #    Copyright (C) 2007 by Kenneth Prugh                                   #
@@ -21,51 +21,10 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import os
+import pygtk; pygtk.require("2.0")
+import gtk
 
-portage_path = '/etc/testportage/'
-config_files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use']
+window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 
-def folder_scan():#returns what files are files/dirs wrt portage
-	dirs = []
-	file = []
-	for i in config_files:
-		result = os.path.isdir(portage_path+i)
-		if(result):
-			dirs.append(i)
-		else:
-			file.append(i)
-	return dirs, file
-
-def folder_walk(dir):#returns list of files within dirs
-	dir_files = []
-	for i in os.listdir(portage_path+dir+'/'):
-		dir_files.append(i)
-	return dir_files
-
-def reload(window): #reloads all rows in treeview
-	import datastore
-	datastore.datastore.clear()
-	datastore.create_treeiter()
-	window.set_title("GPytage")
-
-def scan_contents(arg):#returns data in specified file
-	try:
-		f=open(portage_path+arg, 'r')
-		contents = f.readlines()
-		f.close()
-	except IOError: #needed or everything breaks
-		print 'Warning: Critical file /etc/%s not found, creating...' % arg
-		writemessage = '''# This file was created by GPytage as it is required for proper operation.'''
-		f=open(portage_path+arg, 'w')
-		f.write(writemessage)
-		f.close
-
-	data = [] #list of list: eg [['python','x86']]
-	for i in contents:
-		if i.startswith('#'): #don't split if its a comment
-			new = [i, None]
-		else:
-			new = i.split(None,1)
-		data.append(new)
-	return data #return the master list of lists
+def title(text):
+	window.set_title(text)

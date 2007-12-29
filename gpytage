@@ -25,51 +25,24 @@ import pygtk; pygtk.require("2.0")
 import gtk
 import os.path
 import sys
-import pdb
 import save
+from window import title, window
+import leftpanel
+import rightpanel
+from panelfunctions import selected
 
 class gpytage:
 	def __init__(self):
-		self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
-		self.window.set_title("GPytage")
+		self.window = window
+		title("GPytage")
 		self.window.set_default_size(600, 300)
 		import datastore
 		self.datastore = datastore.datastore
 
-		self.files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use']
-		datastore.create_treeiter() #create the main rows
-
-		self.treeview = gtk.TreeView(self.datastore) #create the container
-
-		self.treeview.set_search_column(0) #search broken atm #child?
-		self.treeview.set_reorderable(True) # allow inline drag and drop
-		#columns
-		self.namecol = gtk.TreeViewColumn('Package File')
-		self.testcol = gtk.TreeViewColumn('Flags')
-		self.boolcol = gtk.TreeViewColumn() #editable col
-		#add to tree
-		self.treeview.append_column(self.namecol)
-		self.treeview.append_column(self.testcol)
-		self.treeview.append_column(self.boolcol)
-		#render cell
-		self.cell = gtk.CellRendererText()
-		self.cell1 = gtk.CellRendererText()
-
-		#add cols to cell
-		self.namecol.pack_start(self.cell, True)
-		self.namecol.set_attributes(self.cell, text=0)
-		self.namecol.add_attribute(self.cell, "editable", 2)#set row editable
-		self.namecol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-		self.testcol.pack_start(self.cell1, True)
-		self.testcol.set_attributes(self.cell1, text=1)
-		self.testcol.add_attribute(self.cell1, "editable", 2)#set row editable
-		self.testcol.set_expand(True)
-		self.testcol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-
-		###########Scroll Window#########################
-		self.scroll = gtk.ScrolledWindow()
-		self.scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-		self.scroll.add_with_viewport(self.treeview)
+		self.files = datastore.config_files
+		
+		datastore.create_lists()
+		datastore.create_treeiter() #populate the left panel
 
 		###########UIManager#############################
 		self.uimanager = gtk.UIManager()
@@ -98,7 +71,7 @@ class gpytage:
 		</ui>'''
 		##
 
-		#Actions #NEEDS FIXING
+		#Actions
 		self.actiongroup.add_actions([
 			('Quit', gtk.STOCK_QUIT, '_Quit', None, 'Quit GPytage', self.destroy),
 			('Revert', gtk.STOCK_REVERT_TO_SAVED, '_Revert', None, 'Revert changes', self.reload),
@@ -126,20 +99,21 @@ class gpytage:
 		#allow the program to quit
 		self.window.connect("destroy", self.destroy)
 		self.window.connect("delete_event", self.delete_event)
-		self.cell.connect("edited", self.edited_cb, self.datastore, 0)
-		self.cell1.connect("edited", self.edited_cb, self.datastore, 1)
-		self.treeview.connect("button_press_event", self.clicked)
-		#############################################
-		
-		############Drag and Drop####################
-		self.treeview.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, [('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
-		self.treeview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
 
-		self.treeview.connect("drag_data_get", self.get_dragdata)
-		self.treeview.connect("drag_data_received", self.get_dragdestdata)
+		#leftpanel connections
+		leftpanel.cell.connect("edited", self.edited_cb, self.datastore, 0)
+		leftpanel.cell1.connect("edited", self.edited_cb, self.datastore, 1)
+		leftpanel.leftview.connect("button_press_event", self.clicked)
+		leftpanel.leftview.connect("row-activated", self.dclicked)
+
+
+		#rightpanel connections
 
 		###########Show Widgits######################
-		self.vbox.pack_start(self.scroll, True, True, 0)
+		self.phbox = gtk.HBox()
+		self.phbox.pack_start(leftpanel.scroll, True, True, 0)
+		self.phbox.pack_start(rightpanel.scroll, True, True, 0)
+		self.vbox.pack_start(self.phbox)
 		self.window.add_accel_group(self.accelgroup)
 		self.window.add(self.vbox)
 		self.window.show_all()
@@ -153,56 +127,32 @@ class gpytage:
 
 	def edited_cb(self, cell, path, new_text, user_data, col):
 		self.datastore[path][col] = new_text
-		self.window.set_title("* GPytage")
+		title("* GPytage")
 		return
 
-	def clicked(self, view, event):
+	def clicked(self, view, event):#needs updating from dual panels
 		if event.button == 3:
 			menu = gtk.Menu()
 			irow = gtk.MenuItem("Insert Package")
-			irow.connect("activate", self.insertrow)
+			irow.connect("activate", self.insertrow, view)
 			drow = gtk.MenuItem("Delete Package")
-			drow.connect("activate", self.deleterow)
+			drow.connect("activate", self.deleterow, view)
 			menu.append(irow)
 			menu.append(drow)
 			menu.show_all()
 			menu.popup(None, None, None, event.button, event.time)
 
-	def get_dragdata(self, treeview, context, selection, target_id, etime):
-		iter, value = self.selected()
-		if value:
-			self.data = []
-			self.data.append(self.datastore.get_value(iter, 0))
-			self.data.append(self.datastore.get_value(iter, 1))
-			self.data.append(self.datastore.get_value(iter, 2))
-			selection.set(selection.target, 0, str(self.data[0]))
-			selection.set(selection.target, 1, str(self.data[1]))
-			selection.set(selection.target, 2, str(self.data[2]))
-	
-	def get_dragdestdata(self, treeview, context, x, y, selection, info, etime):
-		iter, value = self.selected()
-		if value:
-			ldata = self.data
-			drop_info = treeview.get_dest_row_at_pos(x,y)
-			if drop_info:
-				path, position = drop_info
-				iteri = self.datastore.get_iter(path)
-				if self.datastore.get_value(iteri, 2):
-					if (position == gtk.TREE_VIEW_DROP_BEFORE or position == gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
-						self.datastore.insert_before(None, iteri, ldata)
-						print 'before'
-					else:
-						self.datastore.insert_after(None, iteri, ldata)
-						print 'after'
-				else:
-					return
-			else:
-				self.datastore.append([data])
-				print 'else'
-			self.window.set_title("* GPytage")
-			if context.action == gtk.gdk.ACTION_MOVE:
-				context.finish(True, True, etime)
-			return
+	def dclicked(self, view, path, column,):
+		iter, value = selected(view)
+		model = view.get_model()
+		list = model.get_value(iter, 0)
+		parent = model.get_value(iter, 3)
+		print list
+		print parent
+		if parent == 'package.' + list:
+			rightpanel.setListModel(parent)
+		else:
+			rightpanel.setListModel(list)
 
 	############Menu Functions. ###########################
 	def about(self, arg): #wth is arg
@@ -230,33 +180,25 @@ class gpytage:
 	def collapse(self, arg):
 		self.treeview.collapse_all()
 
-	def selected(self): #helper function
-		selection = self.treeview.get_selection()
-		model, iter = selection.get_selected()
-		try:
-			value = self.datastore.get_value(iter, 2)
-		except:
-			value = False
-		return iter, value
-
-	def insertrow(self, arg):
-		iter, value = self.selected()
+	def insertrow(self, arg, treeview):
+		iter, value = selected(treeview)
 		if value == True:
 			niter = self.datastore.insert_after(None, iter, [None, None, True])
 			path = self.datastore.get_path(niter)
 			self.treeview.set_cursor_on_cell(path, self.namecol, self.cell, True)
-			self.window.set_title("* GPytage")
+			title("* GPytage")
 
-	def deleterow(self, arg):
-		iter, value = self.selected()
+	def deleterow(self, arg, treeview):
+		iter, value = selected(treeview)
 		if value == True:
 			self.datastore.remove(iter)
-			self.window.set_title("* GPytage")
+			title("* GPytage")
 			
+	#fix us (save/new)
 	def save(self, arg):
 		state = save.save(arg, self.datastore)
 		if state:
-			self.window.set_title("GPytage")
+			title("GPytage")
 
 	def new(self, arg):
 		import newfile
