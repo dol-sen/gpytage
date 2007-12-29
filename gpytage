@@ -54,7 +54,7 @@ class gpytage:
 		self.treeview.append_column(self.boolcol)
 		#render cell
 		self.cell = gtk.CellRendererText()
-		#self.cell.set_property('editable', True) #perrow needed
+
 		#add col to cell
 		self.namecol.pack_start(self.cell, True)
 		self.namecol.set_attributes(self.cell, text=0)
@@ -70,13 +70,15 @@ class gpytage:
 #		self.window.add(self.treeview)
 		self.window.show_all()
 
+	############Signal Functions###########################
 	def destroy(self, widget, data=None):
 		gtk.main_quit()
 
 	def delete_event(self, widget, event, data=None):
 		return False
 
-		
+	#######################################################
+
 	def folder_scan(self):#returns what files are files/dirs wrt portage
 		dirs = []
 		file = []
@@ -144,8 +146,6 @@ class gpytage:
 						col2 = None
 					self.datastore.append(gciter, [col1,col2, True])
 
-	#def chunks(self, seq, size):
-	#	print [seq[i:i+size] for i in xrange(0, len(seq), size)]
 					
 	def scan_contents(self,arg):#returns data in specified file
 		f=open("/etc/testportage/"+arg, 'r')
