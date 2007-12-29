@@ -25,6 +25,8 @@ import os.path
 import sys
 import pdb
 
+portage_path = '/etc/portage/'
+
 def save(arg, datastore): #the important one...
 	for row in datastore: #iters through parents
 		file = 'package.'+row[0] #eg: package.keywords
@@ -63,9 +65,9 @@ def assemblerow(child):
 def savefile(package, subfile, rowlist):
 	if subfile is None:
 		try:
-			f=open('/etc/testportage/'+package, 'w')
+			f=open(portage_path+package, 'w')
 		except IOError:
-			print 'Failed to open /etc/testportage/' + package + ' for write access'
+			print 'Failed to open '+ portage_path + package + ' for write access'
 			return False
 		for row in rowlist:
 			f.write(row)
@@ -73,9 +75,9 @@ def savefile(package, subfile, rowlist):
 		return True
 	else:
 		try:
-			f=open('/etc/testportage/'+package+'/'+subfile, 'w')
+			f=open(portage_path+package+'/'+subfile, 'w')
 		except IOError:
-			print 'failed to open /etc/testportage/'+package+'/'+subfile + ' for write access'
+			print 'failed to open '+ portage_path +package+'/'+subfile + ' for write access'
 			return False
 		for row in rowlist:
 			f.write(row)

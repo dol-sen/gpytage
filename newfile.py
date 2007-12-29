@@ -25,6 +25,7 @@ import pygtk; pygtk.require("2.0")
 import gtk
 import datastore
 
+portage_path = '/etc/portage/'
 config_files = datastore.config_files
 
 def new(window):#create a new subfile
@@ -75,14 +76,14 @@ def add_subfile(arg, cb, ftext, newd, window):
 
 def create_subfile(cbselection, ftextselection):
 	try:
-		path = "/etc/testportage/%s/%s" %(cbselection, ftextselection)
+		path = "%s/%s/%s" %(portage_path,cbselection, ftextselection)
 		#print path
 		msg= '''# This file was created by GPytage.'''
 		f=open(path, 'w')
 		f.write(msg)
 		f.close
 	except IOError:
-		print 'Failed to create /etc/testportage/%s/%s' %(cbselection,ftext)
+		print 'Failed to create %s%s/%s' %(portage_path,cbselection,ftext)
 
 #to be moved to a helper file
 def folder_scan():#returns what files are files/dirs wrt portage
@@ -90,7 +91,7 @@ def folder_scan():#returns what files are files/dirs wrt portage
 	file = []
 	import os.path
 	for i in config_files:
-		result = os.path.isdir("/etc/testportage/"+i)
+		result = os.path.isdir(portage_path+i)
 		if(result):
 			dirs.append(i)
 		else:

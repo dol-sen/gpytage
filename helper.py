@@ -23,13 +23,14 @@
 
 import os
 
+portage_path = '/etc/portage/'
 config_files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use']
 
 def folder_scan():#returns what files are files/dirs wrt portage
 	dirs = []
 	file = []
 	for i in config_files:
-		result = os.path.isdir("/etc/testportage/"+i)
+		result = os.path.isdir(portage_path+i)
 		if(result):
 			dirs.append(i)
 		else:
@@ -38,7 +39,7 @@ def folder_scan():#returns what files are files/dirs wrt portage
 
 def folder_walk(dir):#returns list of files within dirs
 	dir_files = []
-	for i in os.listdir('/etc/testportage/'+dir+'/'):
+	for i in os.listdir(portage_path+dir+'/'):
 		dir_files.append(i)
 	return dir_files
 
@@ -50,13 +51,13 @@ def reload(window): #reloads all rows in treeview
 
 def scan_contents(arg):#returns data in specified file
 	try:
-		f=open("/etc/testportage/"+arg, 'r')
+		f=open(portage_path+arg, 'r')
 		contents = f.readlines()
 		f.close()
 	except IOError: #needed or everything breaks
 		print 'Warning: Critical file /etc/%s not found, creating...' % arg
 		writemessage = '''# This file was created by GPytage as it is required for proper operation.'''
-		f=open("/etc/testportage/"+arg, 'w')
+		f=open(portage_path+arg, 'w')
 		f.write(writemessage)
 		f.close
 
