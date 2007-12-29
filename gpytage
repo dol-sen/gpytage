@@ -29,7 +29,7 @@ class gpytage:
 		self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 		self.window.set_title("GPytage")
 		self.window.set_default_size(600, 300)
-
+		#allow the program to quit
 		self.window.connect("destroy", self.destroy)
 		self.window.connect("delete_event", self.delete_event)
 
@@ -90,16 +90,6 @@ class gpytage:
 			print i
 			dir_files.append(i)
 		return dir_files
-		#dir_files = {} #we need to return the directory scanned and the files it contains.. maybe create a dictionary for them?
-		#for i in dirs:
-		#	listvalue = [] #package.foo = [files]
-	#		for x in os.listdir("/etc/testportage/"+i+"/"):#x are files inside dir
-	#			listvalue.append(x)
-	#		dir_files[i] = listvalue
-	#	print "Here comes the dictionary!"
-	#	for key in dir_files:
-	#		print key +":"+ str(dir_files[key])
-	#	return dir_files #dictionary of dir name:list of files within
 
 	
 	def create_treeiter(self):#create the parent/main rows
@@ -120,7 +110,7 @@ class gpytage:
 				col1 = row[0]
 				try:
 					#print row[1]
-					col2 = row[1] # not all files have 2 cols
+					col2 = row[1].rstrip() # not all files have 2 cols
 				except:
 					col2 = None
 				self.datastore.append(siter, [col1,col2])
@@ -140,7 +130,7 @@ class gpytage:
 				for row in data:
 					col1 = row[0]
 					try:
-						col2 = row[1]
+						col2 = row[1].rstrip()
 					except:
 						col2 = None
 					self.datastore.append(gciter, [col1,col2])
