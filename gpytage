@@ -128,8 +128,15 @@ class gpytage:
 		self.cell1.connect("edited", self.edited_cb, self.datastore, 1)
 		self.treeview.connect("button_press_event", self.clicked)
 		#############################################
+		
+		############Drag and Drop####################
+		self.treeview.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, [('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+		self.treeview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
 
-		###########Show Widgits##########################
+		self.treeview.connect("drag_data_get", self.get_dragdata)
+		self.treeview.connect("drag_data_received", self.get_dragdestdata)
+
+		###########Show Widgits######################
 		self.vbox.pack_start(self.scroll, True, True, 0)
 		#self.vbox.pack_start(self.treeview, True)
 		self.window.add_accel_group(self.accelgroup)
@@ -162,6 +169,42 @@ class gpytage:
 			menu.append(drow)
 			menu.show_all()
 			menu.popup(None, None, None, event.button, event.time)
+
+	def get_dragdata(self, treeview, context, selection, target_id, etime):
+		iter, value = self.selected()
+		if value:
+			self.data = []
+			self.data.append(self.datastore.get_value(iter, 0))
+			self.data.append(self.datastore.get_value(iter, 1))
+			self.data.append(self.datastore.get_value(iter, 2))
+			selection.set(selection.target, 0, str(self.data[0]))
+			selection.set(selection.target, 1, str(self.data[1]))
+			selection.set(selection.target, 2, str(self.data[2]))
+	
+	def get_dragdestdata(self, treeview, context, x, y, selection, info, etime):
+		iter, value = self.selected()
+		if value:
+			ldata = self.data
+			drop_info = treeview.get_dest_row_at_pos(x,y)
+			if drop_info:
+				path, position = drop_info
+				iteri = self.datastore.get_iter(path)
+				if self.datastore.get_value(iteri, 2):
+					if (position == gtk.TREE_VIEW_DROP_BEFORE or position == gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
+						self.datastore.insert_before(None, iteri, ldata)
+						print 'before'
+					else:
+						self.datastore.insert_after(None, iteri, ldata)
+						print 'after'
+				else:
+					return
+			else:
+				self.datastore.append([data])
+				print 'else'
+			self.window.set_title("* GPytage")
+			if context.action == gtk.gdk.ACTION_MOVE:
+				context.finish(True, True, etime)
+			return
 
 	############Menu Functions. ###########################
 	def about(self, arg): #wth is arg
