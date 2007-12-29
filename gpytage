@@ -25,6 +25,7 @@ import pygtk
 import gtk
 import os.path
 import sys
+import pdb
 
 class gpytage:
 	def __init__(self):
@@ -164,28 +165,25 @@ class gpytage:
 		self.create_treeiter()
 
 	def save(self, arg): #the important one...
-		#simlist = []
 		for row in self.datastore: #iters through parents
 			file = 'package.'+row[0] #eg: package.keywords
-			simlist = []
-			print file
+			simlist = [] #uh, write this to file i guess
 			for child in row.iterchildren(): #child of parents
 				if child[2] == False: #if its false it has subfiles
-					pass
-					#print 'Is dir'
-					#print child
-					#print 'child is above'
-					#for cell in child.iterchildren():
-						#print cell[0]
-						#print 'cell printed?'
+					subdlist = []
+					print 'Is dir'
+					print child
+					print 'child is above'
+					for cell in child.iterchildren(): #child.iter is subfile
+						datarow = self.assemblerow(cell)
+						subdlist.append(datarow)
+					self.savefile(file, child[0], subdlist)
 				else:
 					print child #list
 					datarow = self.assemblerow(child)
-					print datarow
-					print 'datarow above'
 					simlist.append(datarow)
-			print simlist #works per loop now
-			print 'simlist&'
+			if simlist != []:
+				self.savefile(file, None, simlist)
 	#insight: datastore can be thought of a giant list, where row[0] references the first item in a multi list list. eg: foo = [['blah'],['blah1']]
 
 	def new(self, arg):#create a new file :S
@@ -303,10 +301,30 @@ class gpytage:
 			text2 = child[1]
 		except:
 			text2 = ""
-		datarow = text1 + "|" + text2 + '\n'
+		datarow = text1 + " " + text2 + '\n'
 		print datarow
 		print 'yay data'
 		return datarow
+
+	def savefile(self, package, subfile, rowlist):
+		if subfile is None:
+			try:
+				f=open('/etc/testportage/'+package, 'w')
+			except IOError:
+				print 'Failed to open /etc/testportage/' + package + ' for write access'
+				#sys.exit()
+			for row in rowlist:
+				f.write(row)
+			f.close
+		else:
+			try:
+				f=open('/etc/testportage/'+package+'/'+subfile, 'w')
+			except IOError:
+				print 'failed to open /etc/testportage/'+package+'/'+subfile + ' for write access'
+			for row in rowlist:
+				f.write(row)
+			f.close
+		print "jingle berries we've got it, I have saved"
 
 	def main(self):
 		gtk.main()
