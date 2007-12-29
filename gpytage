@@ -72,6 +72,8 @@ class gpytage:
 		<ui>
 			<menubar name="MenuBar">
 				<menu action="File">
+					<menuitem action="New" />
+					<menuitem action="Revert" />
 					<menuitem action="Quit" />
 				</menu>
 				<menu action="Help">
@@ -82,7 +84,12 @@ class gpytage:
 		##
 
 		#Actions #NEEDS FIXING
-		self.actiongroup.add_actions([('Quit', gtk.STOCK_QUIT, '_Quit', None, 'Quit GPytage', self.destroy),('File', None, '_File'),('Help',None,'_Help'),('About', 'About', '_About', None, 'About GPytage', self.about)])
+		self.actiongroup.add_actions([
+			('Quit', gtk.STOCK_QUIT, '_Quit', None, 'Quit GPytage', self.destroy),
+			('Revert', None, '_Revert', None, 'Revert changes', self.reload),
+			('New', None, '_New', '<Control>n', 'New file', self.new), ('File', None, '_File'),
+			('Help',None,'_Help'),('About', 'About', '_About', None, 'About GPytage', self.about)])
+
 		#Add the UI XML
 		self.uimanager.insert_action_group(self.actiongroup, 0)
 		self.uimanager.add_ui_from_string(self.ui)
@@ -118,18 +125,7 @@ class gpytage:
 		return False
 
 	def edited_cb(self, cell, path, new_text, user_data, col):
-		#column = self.
-		print "zomg edited signal recieved"
-		print cell
-		print 'above cell'
-		print path
-		print 'path'
-		print new_text
-		print 'new text'
-		print user_data
-		print 'user data'
-		print col
-		#self.datastore[path] = new_text
+		self.datastore[path][col] = new_text
 		return
 
 	############Menu Functions. ###########################
@@ -147,7 +143,14 @@ class gpytage:
 		aboutw.set_website('http://ken.ath.cx/wiki/index.php/GPytage')
 		aboutw.run()
 		aboutw.hide()
+	
+	def reload(self, arg): #reloads all rows in treeview
+		self.datastore.clear()
+		self.create_treeiter()
 
+	def new(self, arg):
+		pass
+	
 	#######################################################
 
 	def folder_scan(self):#returns what files are files/dirs wrt portage
