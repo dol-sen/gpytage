@@ -175,13 +175,14 @@ class gpytage:
 		aboutw.set_license(gpl2)
 		aboutw.set_wrap_license(True)
 		aboutw.set_version('0.1_Alpha')
-		aboutw.set_website('http://ken.ath.cx/wiki/index.php/GPytage')
+		aboutw.set_website('https://gna.org/projects/gpytage/')
 		aboutw.run()
 		aboutw.hide()
 	
 	def reload(self, arg): #reloads all rows in treeview
 		self.datastore.clear()
 		self.create_treeiter()
+		self.window.set_title("GPytage")
 
 	def save(self, arg): #the important one...
 		for row in self.datastore: #iters through parents
@@ -203,8 +204,58 @@ class gpytage:
 		self.window.set_title("GPytage")
 	#insight: datastore can be thought of a giant list, where row[0] references the first item in a multi list list. eg: foo = [['blah'],['blah1']]
 
-	def new(self, arg):#create a new file :S
-		pass
+	def new(self, arg):#create a new subfile
+		newd = gtk.Dialog('Create new Subfile', self.window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
+		dirs,files = self.folder_scan()
+		#eventually you will be able to create a new subfile from a files
+		#selection rather than just dirs
+		print dirs,files
+		cb = gtk.combo_box_new_text()
+		for i in dirs:
+			cb.append_text(i)
+		cb.set_active(0)
+		sbox = gtk.HBox()
+		sbox.pack_start(gtk.Label("Parent directory:"))
+		sbox.pack_start(cb)
+		newd.vbox.pack_start(sbox)
+		ftextbox = gtk.HBox()
+		flabel = gtk.Label("New subfile name:")
+		ftext = gtk.Entry()
+		ftextbox.pack_start(flabel)
+		ftextbox.pack_start(ftext)
+		newd.vbox.pack_start(ftextbox)
+		addb = gtk.Button("Add", gtk.STOCK_ADD)
+		addb.connect("clicked", self.add_subfile, cb, ftext, newd)
+		newd.action_area.pack_start(addb)
+		newd.show_all()
+		newd.run()
+
+	def add_subfile(self, arg, cb, ftext, newd):
+		model = cb.get_model()
+		index = cb.get_active()
+		cbselection =  model[index][0] #current text
+		print cbselection
+		ftextselection = ftext.get_text()
+		print ftextselection
+		Success = False
+		if len(ftextselection):
+			Success = True
+			self.create_subfile(cbselection, ftextselection)
+		if Success:
+			arg = "subfile" #no idea...reload needs something passed
+			self.reload(arg)
+			newd.hide() #destroy better?
+
+	def create_subfile(self, cbselection, ftextselection):
+		try:
+			path = "/etc/testportage/%s/%s" %(cbselection, ftextselection)
+			print path
+			msg= '''# This file was created by GPytage.'''
+			f=open(path, 'w')
+			f.write(msg)
+			f.close
+		except IOError:
+			print 'Failed to open /etc/testportage/%s/%s' %(cbselection,ftext)
 
 	def expand(self, arg):
 		self.treeview.expand_all()

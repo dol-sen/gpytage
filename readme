@@ -1,0 +1,18 @@
+WARNING: THIS IS AN ALPHA RELEASE. BEFORE USING PLEASE BACKUP YOUR /etc/portage/ DIRECTORY.
+
+Note: GPytage must be run under an account that can read/write to /etc/portage, or through su, sudo, or root.
+
+GPytage is a utility that helps manage portage's package. files with a GTK interface. It supports the package.*/* structure as well as the traditional package.[keywords, unmask, mask, use] file structure. 
+
+GPytage allows you to edit, add, and remove entries from your package files with an easy to use interface.
+
+== Planned Features ==
+-Implement the creation of a subfile from a package.* file that isn't already a directory.
+
+-Implement reordering of rows, drag and drop support.
+
+-Implement full keyboard support and navigation.
+
+-Deletion of files and subfiles (clearing?)
+
+-Possible integration with a search tool/portage for further integration and ease of adding packages. (Maybe a search that one could click on a package to add to a package.* file.)
