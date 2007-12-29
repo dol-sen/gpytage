@@ -29,30 +29,39 @@ class gpytage:
 		self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 		self.window.set_title("GPytage")
 		self.window.set_default_size(600, 300)
+
+		################Connections##################
 		#allow the program to quit
 		self.window.connect("destroy", self.destroy)
 		self.window.connect("delete_event", self.delete_event)
+		#############################################
 
-		self.datastore = gtk.TreeStore(str, str)
+		self.datastore = gtk.TreeStore(str, str, bool)
 		self.files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use']
 		self.create_treeiter() #create the main rows
 
 		self.treeview = gtk.TreeView(self.datastore) #create the container
 
-		#self.setup_treeview() #configure everything needed
+		#add search? broken
+		self.treeview.set_search_column(0) #search broken atm #child?
 		#columns
 		self.namecol = gtk.TreeViewColumn('Package File')
 		self.testcol = gtk.TreeViewColumn('Flag')
+		self.boolcol = gtk.TreeViewColumn('editable')
 		#add to tree
 		self.treeview.append_column(self.namecol)
 		self.treeview.append_column(self.testcol)
+		self.treeview.append_column(self.boolcol)
 		#render cell
 		self.cell = gtk.CellRendererText()
+		#self.cell.set_property('editable', True) #perrow needed
 		#add col to cell
 		self.namecol.pack_start(self.cell, True)
 		self.namecol.set_attributes(self.cell, text=0)
+		self.namecol.add_attribute(self.cell, "editable", 2)#set row editable
 		self.testcol.pack_start(self.cell, True)
 		self.testcol.set_attributes(self.cell, text=1)
+		self.testcol.add_attribute(self.cell, "editable", 2)#set row editable
 
 		self.scroll = gtk.ScrolledWindow()
 		self.scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
@@ -99,7 +108,7 @@ class gpytage:
 			name = i.partition('.')[2]
 			siter = name+"_iter"
 			#print siter
-			siter = self.datastore.append(None, [name, None])
+			siter = self.datastore.append(None, [name, None, False])
 			#print siter
 			data = self.scan_contents(i)
 			print 'file to be scanned'
@@ -107,33 +116,33 @@ class gpytage:
 			for row in data:
 				#print 'data row'
 				#print row
-				col1 = row[0]
+				col1 = row[0].rstrip() #strips \n
 				try:
 					#print row[1]
 					col2 = row[1].rstrip() # not all files have 2 cols
 				except:
 					col2 = None
-				self.datastore.append(siter, [col1,col2])
+				self.datastore.append(siter, [col1,col2, True])
 		for i in parent_folder: #parent_folders is list of folders such as package.keywords
 			#i is a dir such as package.keywords
 			pfolder = i
 			name = i.partition('.')[2]
 			giter = name+"_iter"
-			giter = self.datastore.append(None, [name, None])
+			giter = self.datastore.append(None, [name, None, False])
 			complex_files = self.folder_walk(i) #this needs to return list files in dir
 			for i in complex_files: #"simple files"
 				name = i #folder name being iterated
 				gciter = name+"_iter"
-				gciter = self.datastore.append(giter, [name, None])
+				gciter = self.datastore.append(giter, [name, None, False])
 				dir_file_path = pfolder+'/'+i
 				data = self.scan_contents(dir_file_path)
 				for row in data:
-					col1 = row[0]
+					col1 = row[0].rstrip()
 					try:
 						col2 = row[1].rstrip()
 					except:
 						col2 = None
-					self.datastore.append(gciter, [col1,col2])
+					self.datastore.append(gciter, [col1,col2, True])
 
 	#def chunks(self, seq, size):
 	#	print [seq[i:i+size] for i in xrange(0, len(seq), size)]
