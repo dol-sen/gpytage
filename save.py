@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 #
-# GPytage v0.1_Alpha released under the GPLv2 License
-# GPytage is a utility that helps manage portage's package.* files
+# GPytage save module
 #
 ############################################################################
 #    Copyright (C) 2007 by Kenneth Prugh                                   #
@@ -43,7 +42,6 @@ def save(arg, datastore): #the important one...
 				simlist.append(datarow)
 		if simlist != []:
 			status = savefile(file, None, simlist)
-	#window.set_title("GPytage")
 	if status:
 		return True
 #insight: datastore can be thought of a giant list, where row[0] references the first item in a multi list list. eg: foo = [['blah'],['blah1']]
@@ -65,9 +63,9 @@ def assemblerow(child):
 def savefile(package, subfile, rowlist):
 	if subfile is None:
 		try:
-			f=open('/etc/portage/'+package, 'w')
+			f=open('/etc/testportage/'+package, 'w')
 		except IOError:
-			print 'Failed to open /etc/portage/' + package + ' for write access'
+			print 'Failed to open /etc/testportage/' + package + ' for write access'
 			return False
 		for row in rowlist:
 			f.write(row)
@@ -75,9 +73,9 @@ def savefile(package, subfile, rowlist):
 		return True
 	else:
 		try:
-			f=open('/etc/portage/'+package+'/'+subfile, 'w')
+			f=open('/etc/testportage/'+package+'/'+subfile, 'w')
 		except IOError:
-			print 'failed to open /etc/portage/'+package+'/'+subfile + ' for write access'
+			print 'failed to open /etc/testportage/'+package+'/'+subfile + ' for write access'
 			return False
 		for row in rowlist:
 			f.write(row)

@@ -21,7 +21,7 @@
 #    Free Software Foundation, Inc.,                                       #
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
-import pygtk
+import pygtk; pygtk.require("2.0")
 import gtk
 import os.path
 import sys
@@ -33,10 +33,11 @@ class gpytage:
 		self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 		self.window.set_title("GPytage")
 		self.window.set_default_size(600, 300)
+		import datastore
+		self.datastore = datastore.datastore
 
-		self.datastore = gtk.TreeStore(str, str, bool)
 		self.files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use']
-		self.create_treeiter() #create the main rows
+		datastore.create_treeiter() #create the main rows
 
 		self.treeview = gtk.TreeView(self.datastore) #create the container
 
@@ -220,64 +221,8 @@ class gpytage:
 		aboutw.hide()
 	
 	def reload(self, arg): #reloads all rows in treeview
-		self.datastore.clear()
-		self.create_treeiter()
-		self.window.set_title("GPytage")
-
-	def new(self, arg):#create a new subfile
-		newd = gtk.Dialog('Create new Subfile', self.window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
-		dirs,files = self.folder_scan()
-		#eventually you will be able to create a new subfile from a files
-		#selection rather than just dirs
-		cb = gtk.combo_box_new_text()
-		for i in dirs:
-			cb.append_text(i)
-		cb.set_active(0)
-		sbox = gtk.HBox()
-		sbox.pack_start(gtk.Label("Parent directory:"))
-		sbox.pack_start(cb)
-		newd.vbox.pack_start(sbox)
-		ftextbox = gtk.HBox()
-		flabel = gtk.Label("New subfile name:")
-		ftext = gtk.Entry()
-		ftextbox.pack_start(flabel)
-		ftextbox.pack_start(ftext)
-		newd.vbox.pack_start(ftextbox)
-		addb = gtk.Button("Add", gtk.STOCK_ADD)
-		closeb = gtk.Button("Close",gtk.STOCK_CLOSE)
-		addb.connect("clicked", self.add_subfile, cb, ftext, newd)
-		closeb.connect("clicked", self.close_subfile, newd)
-		newd.action_area.pack_start(closeb)
-		newd.action_area.pack_start(addb)
-		newd.show_all()
-		newd.run()
-
-	def close_subfile(self, arg, newd):
-		newd.hide()
-
-	def add_subfile(self, arg, cb, ftext, newd):
-		model = cb.get_model()
-		index = cb.get_active()
-		ftextselection = ftext.get_text()
-		Success = False
-		if len(ftextselection):
-			Success = True
-			self.create_subfile(cbselection, ftextselection)
-		if Success:
-			arg = "subfile" #no idea...reload needs something passed
-			self.reload(arg)
-			newd.hide() #destroy better?
-
-	def create_subfile(self, cbselection, ftextselection):
-		try:
-			path = "/etc/portage/%s/%s" %(cbselection, ftextselection)
-			print path
-			msg= '''# This file was created by GPytage.'''
-			f=open(path, 'w')
-			f.write(msg)
-			f.close
-		except IOError:
-			print 'Failed to open /etc/portage/%s/%s' %(cbselection,ftext)
+		from helper import reload
+		reload(self.window)
 
 	def expand(self, arg):
 		self.treeview.expand_all()
@@ -294,7 +239,6 @@ class gpytage:
 			value = False
 		return iter, value
 
-
 	def insertrow(self, arg):
 		iter, value = self.selected()
 		if value == True:
@@ -309,87 +253,15 @@ class gpytage:
 			self.datastore.remove(iter)
 			self.window.set_title("* GPytage")
 			
-	#######################################################
-
-	def folder_scan(self):#returns what files are files/dirs wrt portage
-		dirs = []
-		file = []
-		for i in self.files:
-			result = os.path.isdir("/etc/portage/"+i)
-			if(result):
-				dirs.append(i)
-			else:
-				file.append(i)
-		return dirs, file
-
-	def folder_walk(self,dir):#returns list of files within dirs
-		dir_files = []
-		for i in os.listdir('/etc/portage/'+dir+'/'):
-			dir_files.append(i)
-		return dir_files
-
-	def create_treeiter(self):#create the parent/main rows
-		parent_folder, simple_files = self.folder_scan()
-		#parent_files = self.folder_walk(parent_folder)
-		for i in simple_files: #needs no sub main rows just data
-			name = i.partition('.')[2]
-			siter = name+"_iter"
-			siter = self.datastore.append(None, [name, None, False])
-			data = self.scan_contents(i)
-			for row in data:
-				col1 = row[0].rstrip() #strips \n
-				try:
-					col2 = row[1].rstrip() # not all files have 2 cols
-				except:
-					col2 = None
-				self.datastore.append(siter, [col1, col2, True])
-		for i in parent_folder: #parent_folders is list of folders such as package.keywords
-			#i is a dir such as package.keywords
-			pfolder = i
-			name = i.partition('.')[2]
-			giter = name+"_iter"
-			giter = self.datastore.append(None, [name, None, False])
-			complex_files = self.folder_walk(i) #this needs to return list files in dir
-			for i in complex_files: #"simple files"
-				name = i #folder name being iterated
-				gciter = name+"_iter"
-				gciter = self.datastore.append(giter, [name, None, False])
-				dir_file_path = pfolder+'/'+i
-				data = self.scan_contents(dir_file_path)
-				for row in data:
-					col1 = row[0].rstrip()
-					try:
-						col2 = row[1].rstrip()
-					except:
-						col2 = None
-					self.datastore.append(gciter, [col1,col2, True])
-
-					
-	def scan_contents(self,arg):#returns data in specified file
-		try:
-			f=open("/etc/portage/"+arg, 'r')
-			contents = f.readlines()
-			f.close()
-		except IOError: #needed or everything breaks
-			print 'Warning: Critical file /etc/%s not found, creating...' % arg
-			writemessage = '''# This file was created by GPytage as it is required for proper operation.'''
-			f=open("/etc/portage/"+arg, 'w')
-			f.write(writemessage)
-			f.close
-
-		data = [] #list of list: eg [['python','x86']]
-		for i in contents:
-			if i.startswith('#'): #don't split if its a comment
-				new = [i, None]
-			else:
-				new = i.split(None,1)
-			data.append(new)
-		return data #return the master list of lists
-
 	def save(self, arg):
 		state = save.save(arg, self.datastore)
 		if state:
-			window.set_title("GPytage")
+			self.window.set_title("GPytage")
+
+	def new(self, arg):
+		import newfile
+		newfile.new(self.window)
+
 
 	def main(self):
 		gtk.main()
