@@ -68,7 +68,7 @@ class gpytage:
 		return False
 
 		
-	def folder_scan(self):
+	def folder_scan(self):#returns what files are files/dirs wrt portage
 		dirs = []
 		file = []
 		for i in self.files:
@@ -83,21 +83,28 @@ class gpytage:
 		print dirs,file
 		return dirs, file
 
-	def folder_walk(self,dirs):#returns list of files within dirs
-		dir_files = {} #we need to return the directory scanned and the files it contains.. maybe create a dictionary for them?
-		for i in dirs:
-			listvalue = [] #package.foo = [files]
-			for x in os.listdir("/etc/testportage/"+i+"/"):#x are files inside dir
-				listvalue.append(x)
-			dir_files[i] = listvalue
-		print "Here comes the dictionary!"
-		for key in dir_files:
-			print key +":"+ str(dir_files[key])
-		return dir_files #dictionary of dir name:list of files within
+	def folder_walk(self,dir):#returns list of files within dirs
+		dir_files = []
+		for i in os.listdir('/etc/testportage/'+dir+'/'):
+			print 'folder walk results'
+			print i
+			dir_files.append(i)
+		return dir_files
+		#dir_files = {} #we need to return the directory scanned and the files it contains.. maybe create a dictionary for them?
+		#for i in dirs:
+		#	listvalue = [] #package.foo = [files]
+	#		for x in os.listdir("/etc/testportage/"+i+"/"):#x are files inside dir
+	#			listvalue.append(x)
+	#		dir_files[i] = listvalue
+	#	print "Here comes the dictionary!"
+	#	for key in dir_files:
+	#		print key +":"+ str(dir_files[key])
+	#	return dir_files #dictionary of dir name:list of files within
+
 	
 	def create_treeiter(self):#create the parent/main rows
 		parent_folder, simple_files = self.folder_scan()
-		parent_files = self.folder_walk(parent_folder)
+		#parent_files = self.folder_walk(parent_folder)
 		for i in simple_files: #needs no sub main rows just data
 			name = i.partition('.')[2]
 			siter = name+"_iter"
@@ -108,20 +115,40 @@ class gpytage:
 			print 'file to be scanned'
 			print i
 			for row in data:
-				print 'data row'
-				print row
+				#print 'data row'
+				#print row
 				col1 = row[0]
 				try:
-					print row[1]
+					#print row[1]
 					col2 = row[1] # not all files have 2 cols
 				except:
 					col2 = None
 				self.datastore.append(siter, [col1,col2])
+		for i in parent_folder: #parent_folders is list of folders such as package.keywords
+			#i is a dir such as package.keywords
+			pfolder = i
+			name = i.partition('.')[2]
+			giter = name+"_iter"
+			giter = self.datastore.append(None, [name, None])
+			complex_files = self.folder_walk(i) #this needs to return list files in dir
+			for i in complex_files: #"simple files"
+				name = i #folder name being iterated
+				gciter = name+"_iter"
+				gciter = self.datastore.append(giter, [name, None])
+				dir_file_path = pfolder+'/'+i
+				data = self.scan_contents(dir_file_path)
+				for row in data:
+					col1 = row[0]
+					try:
+						col2 = row[1]
+					except:
+						col2 = None
+					self.datastore.append(gciter, [col1,col2])
 
 	#def chunks(self, seq, size):
 	#	print [seq[i:i+size] for i in xrange(0, len(seq), size)]
 					
-	def scan_contents(self,arg):
+	def scan_contents(self,arg):#returns data in specified file
 		f=open("/etc/testportage/"+arg, 'r')
 		contents = f.readlines()
 		f.close()
