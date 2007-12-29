@@ -209,7 +209,6 @@ class gpytage:
 		dirs,files = self.folder_scan()
 		#eventually you will be able to create a new subfile from a files
 		#selection rather than just dirs
-		print dirs,files
 		cb = gtk.combo_box_new_text()
 		for i in dirs:
 			cb.append_text(i)
@@ -225,18 +224,21 @@ class gpytage:
 		ftextbox.pack_start(ftext)
 		newd.vbox.pack_start(ftextbox)
 		addb = gtk.Button("Add", gtk.STOCK_ADD)
+		closeb = gtk.Button("Close",gtk.STOCK_CLOSE)
 		addb.connect("clicked", self.add_subfile, cb, ftext, newd)
+		closeb.connect("clicked", self.close_subfile, newd)
+		newd.action_area.pack_start(closeb)
 		newd.action_area.pack_start(addb)
 		newd.show_all()
 		newd.run()
 
+	def close_subfile(self, arg, newd):
+		newd.hide()
+
 	def add_subfile(self, arg, cb, ftext, newd):
 		model = cb.get_model()
 		index = cb.get_active()
-		cbselection =  model[index][0] #current text
-		print cbselection
 		ftextselection = ftext.get_text()
-		print ftextselection
 		Success = False
 		if len(ftextselection):
 			Success = True
@@ -248,14 +250,14 @@ class gpytage:
 
 	def create_subfile(self, cbselection, ftextselection):
 		try:
-			path = "/etc/testportage/%s/%s" %(cbselection, ftextselection)
+			path = "/etc/portage/%s/%s" %(cbselection, ftextselection)
 			print path
 			msg= '''# This file was created by GPytage.'''
 			f=open(path, 'w')
 			f.write(msg)
 			f.close
 		except IOError:
-			print 'Failed to open /etc/testportage/%s/%s' %(cbselection,ftext)
+			print 'Failed to open /etc/portage/%s/%s' %(cbselection,ftext)
 
 	def expand(self, arg):
 		self.treeview.expand_all()
@@ -293,7 +295,7 @@ class gpytage:
 		dirs = []
 		file = []
 		for i in self.files:
-			result = os.path.isdir("/etc/testportage/"+i)
+			result = os.path.isdir("/etc/portage/"+i)
 			if(result):
 				dirs.append(i)
 			else:
@@ -302,7 +304,7 @@ class gpytage:
 
 	def folder_walk(self,dir):#returns list of files within dirs
 		dir_files = []
-		for i in os.listdir('/etc/testportage/'+dir+'/'):
+		for i in os.listdir('/etc/portage/'+dir+'/'):
 			dir_files.append(i)
 		return dir_files
 
@@ -346,13 +348,13 @@ class gpytage:
 					
 	def scan_contents(self,arg):#returns data in specified file
 		try:
-			f=open("/etc/testportage/"+arg, 'r')
+			f=open("/etc/portage/"+arg, 'r')
 			contents = f.readlines()
 			f.close()
 		except IOError: #needed or everything breaks
 			print 'Warning: Critical file /etc/%s not found, creating...' % arg
 			writemessage = '''# This file was created by GPytage as it is required for proper operation.'''
-			f=open("/etc/testportage/"+arg, 'w')
+			f=open("/etc/portage/"+arg, 'w')
 			f.write(writemessage)
 			f.close
 
@@ -382,18 +384,18 @@ class gpytage:
 	def savefile(self, package, subfile, rowlist):
 		if subfile is None:
 			try:
-				f=open('/etc/testportage/'+package, 'w')
+				f=open('/etc/portage/'+package, 'w')
 			except IOError:
-				print 'Failed to open /etc/testportage/' + package + ' for write access'
+				print 'Failed to open /etc/portage/' + package + ' for write access'
 				#sys.exit()
 			for row in rowlist:
 				f.write(row)
 			f.close
 		else:
 			try:
-				f=open('/etc/testportage/'+package+'/'+subfile, 'w')
+				f=open('/etc/portage/'+package+'/'+subfile, 'w')
 			except IOError:
-				print 'failed to open /etc/testportage/'+package+'/'+subfile + ' for write access'
+				print 'failed to open /etc/portage/'+package+'/'+subfile + ' for write access'
 			for row in rowlist:
 				f.write(row)
 			f.close
