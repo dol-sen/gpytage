@@ -195,7 +195,7 @@ class gpytage:
 						subdlist.append(datarow)
 					self.savefile(file, child[0], subdlist)
 				else:
-					print child #list
+					#print child #list
 					datarow = self.assemblerow(child)
 					simlist.append(datarow)
 			if simlist != []:
@@ -242,22 +242,16 @@ class gpytage:
 		dirs = []
 		file = []
 		for i in self.files:
-			print i
 			result = os.path.isdir("/etc/testportage/"+i)
 			if(result):
-				print "Dir True"
 				dirs.append(i)
 			else:
-				print "False"
 				file.append(i)
-		print dirs,file
 		return dirs, file
 
 	def folder_walk(self,dir):#returns list of files within dirs
 		dir_files = []
 		for i in os.listdir('/etc/testportage/'+dir+'/'):
-			print 'folder walk results'
-			print i
 			dir_files.append(i)
 		return dir_files
 
@@ -268,18 +262,11 @@ class gpytage:
 		for i in simple_files: #needs no sub main rows just data
 			name = i.partition('.')[2]
 			siter = name+"_iter"
-			#print siter
 			siter = self.datastore.append(None, [name, None, False])
-			#print siter
 			data = self.scan_contents(i)
-			print 'file to be scanned'
-			print i
 			for row in data:
-				#print 'data row'
-				#print row
 				col1 = row[0].rstrip() #strips \n
 				try:
-					#print row[1]
 					col2 = row[1].rstrip() # not all files have 2 cols
 				except:
 					col2 = None
@@ -318,17 +305,13 @@ class gpytage:
 			f.write(writemessage)
 			f.close
 
-		print contents
 		data = [] #list of list: eg [['python','x86']]
 		for i in contents:
-			print i
 			if i.startswith('#'): #don't split if its a comment
 				new = [i, None]
 			else:
 				new = i.split(None,1)
 			data.append(new)
-		print 'data return from scan'
-		print data
 		return data #return the master list of lists
 
 	def assemblerow(self, child):
@@ -343,8 +326,6 @@ class gpytage:
 		except:
 			text2 = ""
 		datarow = text1 + " " + text2 + '\n'
-		print datarow
-		print 'yay data'
 		return datarow
 
 	def savefile(self, package, subfile, rowlist):
@@ -365,7 +346,6 @@ class gpytage:
 			for row in rowlist:
 				f.write(row)
 			f.close
-		print "jingle berries we've got it, I have saved"
 
 	def main(self):
 		gtk.main()
