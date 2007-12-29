@@ -42,7 +42,6 @@ class gpytage:
 
 		self.treeview = gtk.TreeView(self.datastore) #create the container
 
-		#add search? broken
 		self.treeview.set_search_column(0) #search broken atm #child?
 		#columns
 		self.namecol = gtk.TreeViewColumn('Package File')
@@ -63,11 +62,48 @@ class gpytage:
 		self.testcol.set_attributes(self.cell, text=1)
 		self.testcol.add_attribute(self.cell, "editable", 2)#set row editable
 
+		###########Scroll Window#########################
 		self.scroll = gtk.ScrolledWindow()
 		self.scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 		self.scroll.add_with_viewport(self.treeview)
-		self.window.add(self.scroll)
-#		self.window.add(self.treeview)
+
+		###########UIManager#############################
+		self.uimanager = gtk.UIManager()
+		self.accelgroup = self.uimanager.get_accel_group()
+		self.actiongroup = gtk.ActionGroup('GPytage')
+		##UI XML
+		self.ui = '''
+		<ui>
+			<menubar name="MenuBar">
+				<menu action="File">
+					<menuitem action="Quit" />
+				</menu>
+				<menu action="Help">
+					<menuitem action="About" />
+				</menu>
+			</menubar>
+		</ui>'''
+		##
+
+		#Actions #NEEDS FIXING
+		self.actiongroup.add_actions([('Quit', gtk.STOCK_QUIT, '_Quit', None, 'Quit GPytage', self.destroy),('File', None, '_File'),('Help',None,'_Help'),('About', 'About', '_About', None, 'About GPytage', self.about)])
+		#Add the UI XML
+		self.uimanager.insert_action_group(self.actiongroup, 0)
+		self.uimanager.add_ui_from_string(self.ui)
+
+		#Menubar
+		self.menubar = self.uimanager.get_widget('/MenuBar')
+		self.vbox = gtk.VBox() #the master widgit
+		self.vbox.pack_start(self.menubar, False)
+		
+		###########Show Widgits##########################
+		self.vbox.pack_start(self.scroll, True, True, 0)
+		#self.vbox.pack_start(self.treeview, True)
+		self.window.add_accel_group(self.accelgroup)
+		#self.window.add_accel_group(self.accelgroup)
+		#self.window.add(self.scroll)
+		self.window.add(self.vbox)
+#		#self.window.add(self.treeview)
 		self.window.show_all()
 
 	############Signal Functions###########################
@@ -76,6 +112,9 @@ class gpytage:
 
 	def delete_event(self, widget, event, data=None):
 		return False
+	############Menu Functions
+	def about(self, arg): #wth is arg
+		print 'About pressed'
 
 	#######################################################
 
