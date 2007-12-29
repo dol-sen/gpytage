@@ -24,6 +24,7 @@
 import pygtk
 import gtk
 import os.path
+import sys
 
 class gpytage:
 	def __init__(self):
@@ -73,6 +74,7 @@ class gpytage:
 			<menubar name="MenuBar">
 				<menu action="File">
 					<menuitem action="New" />
+					<menuitem action="Save" />
 					<menuitem action="Revert" />
 					<menuitem action="Quit" />
 				</menu>
@@ -88,6 +90,7 @@ class gpytage:
 			('Quit', gtk.STOCK_QUIT, '_Quit', None, 'Quit GPytage', self.destroy),
 			('Revert', None, '_Revert', None, 'Revert changes', self.reload),
 			('New', None, '_New', '<Control>n', 'New file', self.new), ('File', None, '_File'),
+			('Save', None, '_Save', '<Control>s', 'Save changes', self.save),
 			('Help',None,'_Help'),('About', 'About', '_About', None, 'About GPytage', self.about)])
 
 		#Add the UI XML
@@ -133,7 +136,7 @@ class gpytage:
 		aboutw = gtk.AboutDialog()
 		aboutw.set_name('GPytage')
 		aboutw.set_copyright('Copyright 2007, GPL2')
-		aboutw.set_authors(['Kenneth Prugh', '\nWith special thanks to the Gentoo \ndevelopers and community'])
+		aboutw.set_authors(['Kenneth Prugh', '\nWith special thanks to the Gentoo \ndevelopers and community', '\nLicensed under the GPL-2'])
 		f=open('/usr/portage/licenses/GPL-2')
 		gpl2 = f.read()
 		f.close
@@ -148,7 +151,16 @@ class gpytage:
 		self.datastore.clear()
 		self.create_treeiter()
 
-	def new(self, arg):
+	def save(self, arg): #the important one...
+		new = []
+		for row in self.datastore: #iters through parents
+			file = 'package.'+row[0] #eg: package.keywords
+			print file
+			for child in row.iterchildren(): #child of parents
+			#	print child
+				print [cell for cell in child] #lamda?
+	#insight: datastore can be thought of a giant list, where row[0] references the first item in a multi list list. eg: foo = [['blah'],['blah1']]
+	def new(self, arg):#create a new file :S
 		pass
 	
 	#######################################################
@@ -222,9 +234,18 @@ class gpytage:
 
 					
 	def scan_contents(self,arg):#returns data in specified file
-		f=open("/etc/testportage/"+arg, 'r')
-		contents = f.readlines()
-		f.close()
+		try:
+			f=open("/etc/testportage/"+arg, 'r')
+			contents = f.readlines()
+			f.close()
+		except IOError:
+			print 'Warning: Critical file /etc/%s not found, creating...' % arg
+			writemessage = '''# This file was created by GPytage as it is required for proper operation.'''
+			f=open("/etc/testportage/"+arg, 'w')
+			f.write(writemessage)
+			f.close
+			#sys.exit()
+
 		print contents
 		data = [] #list of list: eg [['python','x86']]
 		for i in contents:
