@@ -22,28 +22,28 @@
 ############################################################################
 import pygtk
 import gtk
-import os
+import os.path
 
 class gpytage:
 	def __init__(self):
 		self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 		self.window.set_title("GPytage")
 		
-
-
+		datastore = gtk.TreeStore(str, str)
+		self.files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use']
+		self.create_treeiter() #create the main rows
 		#self.button = gtk.Button("Hello World")
 		#self.window.add(self.button)
 		#self.button.show()
 		self.window.show()
 
-        files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use']
 		
 	def folder_scan(self):
 		dirs = []
 		file = []
 		for i in self.files:
 			print i
-			result = os.access("/etc/portage/"+i+"/", os.F_OK)
+			result = os.path.isdir("/etc/testportage/"+i)
 			if(result):
 				print "Dir True"
 				dirs.append(i)
@@ -53,20 +53,26 @@ class gpytage:
 		print dirs,file
 		return dirs, file
 
-	def folder_walk(self,dirs):
+	def folder_walk(self,dirs):#returns list of files within dirs
 		dir_files = {} #we need to return the directory scanned and the files it contains.. maybe create a dictionary for them?
 		for i in dirs:
-			i+"_dir" = listname
 			listvalue = [] #package.foo = [files]
-			for x in os.listdir("/etc/portage/"+i+"/"):#x are files inside dir
-				x.append(listvalue)
+			for x in os.listdir("/etc/testportage/"+i+"/"):#x are files inside dir
+				listvalue.append(x)
 			dir_files[i] = listvalue
-		return dir_files
-
+		print "Here comes the dictionary!"
+		for key in dir_files:
+			print key +":"+ str(dir_files[key])
+		return dir_files #dictionary of dir name:list of files within
+	
+	def create_treeiter(self):#create the parent/main rows
+		parent_folder, simple_files = self.folder_scan()
+		parent_files = self.folder_walk(parent_folder)
+		for i in simple_files:
 
 	def main(self):
 		gtk.main()
 
 if __name__ == "__main__":
 	gpytage = gpytage()
-	gpytage.folder_scan()
+	gpytage.main()
