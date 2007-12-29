@@ -32,10 +32,30 @@ class gpytage:
 		self.datastore = gtk.TreeStore(str, str)
 		self.files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use']
 		self.create_treeiter() #create the main rows
-		#self.button = gtk.Button("Hello World")
-		#self.window.add(self.button)
-		#self.button.show()
-		self.window.show()
+
+		self.treeview = gtk.TreeView(self.datastore) #create the container
+
+		#self.setup_treeview() #configure everything needed
+		#columns
+		self.namecol = gtk.TreeViewColumn('Package File')
+		self.testcol = gtk.TreeViewColumn('Flag')
+		#add to tree
+		self.treeview.append_column(self.namecol)
+		self.treeview.append_column(self.testcol)
+		#render cell
+		self.cell = gtk.CellRendererText()
+		#add col to cell
+		self.namecol.pack_start(self.cell, True)
+		self.namecol.set_attributes(self.cell, text=0)
+		self.testcol.pack_start(self.cell, True)
+		self.testcol.set_attributes(self.cell, text=1)
+
+		self.scroll = gtk.ScrolledWindow()
+		self.scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+		self.scroll.add_with_viewport(self.treeview)
+		self.window.add(self.scroll)
+#		self.window.add(self.treeview)
+		self.window.show_all()
 
 		
 	def folder_scan(self):
@@ -71,18 +91,38 @@ class gpytage:
 		for i in simple_files: #needs no sub main rows just data
 			name = i.partition('.')[2]
 			siter = name+"_iter"
-			print siter
+			#print siter
 			siter = self.datastore.append(None, [name, None])
-			print siter
-			##need to populate children!!
+			#print siter
+			data = self.scan_contents(i)
+			print 'file to be scanned'
+			print i
+			for row in data:
+				print 'data row'
+				print row
+				col1 = row[0]
+				try:
+					print row[1]
+					col2 = row[1] # not all files have 2 cols
+				except:
+					col2 = None
+				self.datastore.append(siter, [col1,col2])
 
+	#def chunks(self, seq, size):
+	#	print [seq[i:i+size] for i in xrange(0, len(seq), size)]
+					
 	def scan_contents(self,arg):
-		f=open("/etc/portage/"+arg, 'r')
+		f=open("/etc/testportage/"+arg, 'r')
 		contents = f.readlines()
 		f.close()
+		print contents
 		data = [] #list of list: eg [['python','x86']]
 		for i in contents:
-			data.append(i.split())
+			print i
+			new = i.split(None,1)
+			data.append(new)
+		print 'data return from scan'
+		print data
 		return data #return the master list of lists
 
 	def main(self):
