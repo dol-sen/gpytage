@@ -119,7 +119,12 @@ class gpytage:
 		data = [] #list of list: eg [['python','x86']]
 		for i in contents:
 			print i
-			new = i.split(None,1)
+			if i.startswith('#'): #don't split if its a comment
+				new = [i, None]
+				print 'comment detected'
+				print new
+			else:
+				new = i.split(None,1)
 			data.append(new)
 		print 'data return from scan'
 		print data
