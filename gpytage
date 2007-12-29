@@ -55,9 +55,11 @@ class gpytage:
 		self.namecol.pack_start(self.cell, True)
 		self.namecol.set_attributes(self.cell, text=0)
 		self.namecol.add_attribute(self.cell, "editable", 2)#set row editable
+		self.namecol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
 		self.testcol.pack_start(self.cell1, True)
 		self.testcol.set_attributes(self.cell1, text=1)
 		self.testcol.add_attribute(self.cell1, "editable", 2)#set row editable
+		self.testcol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
 
 		###########Scroll Window#########################
 		self.scroll = gtk.ScrolledWindow()
