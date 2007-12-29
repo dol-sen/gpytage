@@ -9,7 +9,7 @@
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
 #    it under the terms of the GNU General Public License as published by  #
-#    the Free Software Foundation under version 2 of the license.		   #
+#    the Free Software Foundation under version 2 of the license.          #
 #                                                                          #
 #    This program is distributed in the hope that it will be useful,       #
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of        #
@@ -138,12 +138,8 @@ class gpytage:
 
 		###########Show Widgits######################
 		self.vbox.pack_start(self.scroll, True, True, 0)
-		#self.vbox.pack_start(self.treeview, True)
 		self.window.add_accel_group(self.accelgroup)
-		#self.window.add_accel_group(self.accelgroup)
-		#self.window.add(self.scroll)
 		self.window.add(self.vbox)
-#		#self.window.add(self.treeview)
 		self.window.show_all()
 
 	############Signal Functions###########################
@@ -163,7 +159,7 @@ class gpytage:
 			menu = gtk.Menu()
 			irow = gtk.MenuItem("Insert Package")
 			irow.connect("activate", self.insertrow)
-			drow= gtk.MenuItem("Delete Package")
+			drow = gtk.MenuItem("Delete Package")
 			drow.connect("activate", self.deleterow)
 			menu.append(irow)
 			menu.append(drow)
@@ -351,7 +347,6 @@ class gpytage:
 			dir_files.append(i)
 		return dir_files
 
-	
 	def create_treeiter(self):#create the parent/main rows
 		parent_folder, simple_files = self.folder_scan()
 		#parent_files = self.folder_walk(parent_folder)
@@ -430,7 +425,7 @@ class gpytage:
 				f=open('/etc/portage/'+package, 'w')
 			except IOError:
 				print 'Failed to open /etc/portage/' + package + ' for write access'
-				#sys.exit()
+				return
 			for row in rowlist:
 				f.write(row)
 			f.close
@@ -439,6 +434,7 @@ class gpytage:
 				f=open('/etc/portage/'+package+'/'+subfile, 'w')
 			except IOError:
 				print 'failed to open /etc/portage/'+package+'/'+subfile + ' for write access'
+				return
 			for row in rowlist:
 				f.write(row)
 			f.close
