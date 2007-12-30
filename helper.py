@@ -43,6 +43,7 @@ def folder_walk(dir):#returns list of files within dirs
 		dir_files.append(i)
 	return dir_files
 
+#FIX ME FOR DUAL PANEL
 def reload(window): #reloads all rows in treeview
 	import datastore
 	datastore.datastore.clear()

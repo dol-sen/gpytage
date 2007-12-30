@@ -25,7 +25,8 @@ import pygtk; pygtk.require("2.0")
 import gtk
 import datastore
 
-portage_path = '/etc/portage/'
+from helper import portage_path
+
 config_files = datastore.config_files
 
 def new(window):#create a new subfile

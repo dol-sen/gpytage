@@ -26,42 +26,45 @@ import gtk
 import pdb
 import datastore
 
-datastore = datastore.datastore
-
 def get_dragdata(treeview, context, selection, target_id, etime):
 	iter, value = selected(treeview)
+	model = treeview.get_model()
 	print treeview
 	if value:
 		global data
 		data = []
-		data.append(datastore.get_value(iter, 0))
-		data.append(datastore.get_value(iter, 1))
-		data.append(datastore.get_value(iter, 2))
+		data.append(model.get_value(iter, 0))
+		data.append(model.get_value(iter, 1))
+		data.append(model.get_value(iter, 2))
+		data.append(model.get_value(iter, 3))
 		selection.set(selection.target, 0, str(data[0]))
 		selection.set(selection.target, 1, str(data[1]))
 		selection.set(selection.target, 2, str(data[2]))
+		selection.set(selection.target, 2, str(data[3]))
+
 
 def get_dragdestdata(treeview, context, x, y, selection, info, etime):
 	iter, value = selected(treeview)
-	print treeview
+	model = treeview.get_model()
+	#print treeview
 	if value:
 		ldata = data
 		drop_info = treeview.get_dest_row_at_pos(x,y)
 		if drop_info:
 			path, position = drop_info
-			iteri = datastore.get_iter(path)
-			if datastore.get_value(iteri, 2):
+			iteri = model.get_iter(path)
+			if model.get_value(iteri, 2):
 				if (position == gtk.TREE_VIEW_DROP_BEFORE or position == gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
-					datastore.insert_before(None, iteri, ldata)
-					print 'before'
+					model.insert_before(iteri, ldata)
+					#print 'before'
 				else:
-					datastore.insert_after(None, iteri, ldata)
-					print 'after'
+					model.insert_after(iteri, ldata)
+					#print 'after'
 			else:
 				return
 		else:
-			datastore.append([data])
-			print 'else'
+			model.append([data])
+			#print 'else'
 		from window import title
 		title("* GPytage")
 		if context.action == gtk.gdk.ACTION_MOVE:

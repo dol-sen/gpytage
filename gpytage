@@ -196,9 +196,7 @@ class gpytage:
 			
 	#fix us (save/new)
 	def save(self, arg):
-		state = save.save(arg, self.datastore)
-		if state:
-			title("GPytage")
+		save.save()
 
 	def new(self, arg):
 		import newfile

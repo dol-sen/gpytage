@@ -25,27 +25,34 @@ import os.path
 import sys
 import pdb
 
-portage_path = '/etc/portage/'
+from helper import portage_path, reload
+from window import title, window
 
-def save(arg, datastore): #the important one...
-	for row in datastore: #iters through parents
-		file = 'package.'+row[0] #eg: package.keywords
-		simlist = [] #uh, write this to file i guess
-		for child in row.iterchildren(): #child of parents
-			if child[2] == False: #if its false it has subfiles
-				subdlist = []
-				for cell in child.iterchildren(): #child.iter is subfile
-					datarow = assemblerow(cell)
-					subdlist.append(datarow)
-				status = savefile(file, child[0], subdlist)
-			else:
-				#print child #list
-				datarow = assemblerow(child)
-				simlist.append(datarow)
-		if simlist != []:
-			status = savefile(file, None, simlist)
-	if status:
-		return True
+def save(): #the important one...
+	import datastore
+	lists = datastore.lists
+	for name,store in lists.iteritems():
+		try:
+			if name == store[0][3]:#I'm a main file
+				file = name
+				data = []
+				parent = None
+				for row in store:
+					datarow = assemblerow(row)
+					data.append(datarow)
+				savefile(parent, file, data)
+			else: #we have a subfile
+				parent = store[0][3] #main dir
+				file = name #sub file
+				data = []
+				for row in store:
+					datarow = assemblerow(row)
+					data.append(datarow)
+				savefile(parent, file, data)
+		except IndexError:
+			print 'Failed to save the file %s for write access' % name
+	title("GPytage")
+	#reload()
 #insight: datastore can be thought of a giant list, where row[0] references the first item in a multi list list. eg: foo = [['blah'],['blah1']]
 
 def assemblerow(child):
@@ -62,24 +69,22 @@ def assemblerow(child):
 	datarow = text1 + " " + text2 + '\n'
 	return datarow
 
-def savefile(package, subfile, rowlist):
-	if subfile is None:
+def savefile(parent, file, data):
+	if parent is None: #main file
 		try:
-			f=open(portage_path+package, 'w')
+			f=open(portage_path + file, 'w')
 		except IOError:
-			print 'Failed to open '+ portage_path + package + ' for write access'
-			return False
-		for row in rowlist:
+			print 'Failed to open '+ portage_path + file + ' for write access'
+			return
+		for row in data:
 			f.write(row)
 		f.close
-		return True
-	else:
+	else: #subfile
 		try:
-			f=open(portage_path+package+'/'+subfile, 'w')
+			f=open(portage_path + parent + '/' + file, 'w')
 		except IOError:
-			print 'failed to open '+ portage_path +package+'/'+subfile + ' for write access'
-			return False
-		for row in rowlist:
+			print 'failed to open '+ portage_path + parent + '/' + file + ' for write access'
+			return
+		for row in data:
 			f.write(row)
 		f.close
-		return True
