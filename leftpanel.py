@@ -25,15 +25,7 @@ import pygtk; pygtk.require("2.0")
 import gtk
 import datastore
 
-def filterRow(mode, iter, userdata):
-	return True
-
-def data():
-	pass
-
-modelfilter = datastore.datastore.filter_new()
-modelfilter.set_visible_func(filterRow, data)
-leftview = gtk.TreeView(modelfilter) #create the container
+leftview = gtk.TreeView(datastore.datastore) #create the container
 
 leftview.set_search_column(0) #search broken atm #child?
 leftview.set_reorderable(True) # allow inline drag and drop
