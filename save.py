@@ -51,8 +51,7 @@ def save(): #the important one...
 				savefile(parent, file, data)
 		except IndexError:
 			print 'Failed to save the file %s for write access' % name
-	title("GPytage")
-	#reload()
+	reload()
 #insight: datastore can be thought of a giant list, where row[0] references the first item in a multi list list. eg: foo = [['blah'],['blah1']]
 
 def assemblerow(child):

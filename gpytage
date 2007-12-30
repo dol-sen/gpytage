@@ -172,7 +172,7 @@ class gpytage:
 	
 	def reload(self, arg): #reloads all rows in treeview
 		from helper import reload
-		reload(self.window)
+		reload()
 
 	def expand(self, arg):
 		self.treeview.expand_all()

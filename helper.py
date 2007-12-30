@@ -43,12 +43,15 @@ def folder_walk(dir):#returns list of files within dirs
 		dir_files.append(i)
 	return dir_files
 
-#FIX ME FOR DUAL PANEL
-def reload(window): #reloads all rows in treeview
+def reload():
 	import datastore
 	datastore.datastore.clear()
+	for name, store in datastore.lists.iteritems():
+		store.clear()
 	datastore.create_treeiter()
-	window.set_title("GPytage")
+	datastore.create_lists()
+	from window import title
+	title("GPytage")
 
 def scan_contents(arg):#returns data in specified file
 	try:
