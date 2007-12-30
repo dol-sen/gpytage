@@ -86,3 +86,29 @@ rightview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
 import panelfunctions
 rightview.connect("drag_data_get", panelfunctions.get_dragdata)
 rightview.connect("drag_data_received", panelfunctions.get_dragdestdata)
+
+#Callbacks
+def edited_cb(cell, path, new_text, col):
+	model = rightview.get_model()
+	model[path][col] = new_text
+	from window import title
+	title("* GPytage")
+	return
+	
+#def clicked(view, event):#needs updating from dual panels
+	#if event.button == 3:
+		#menu = gtk.Menu()
+		#irow = gtk.MenuItem("Insert Package")
+		#irow.connect("activate", self.insertrow, view)
+		#drow = gtk.MenuItem("Delete Package")
+		#drow.connect("activate", self.deleterow, view)
+		#menu.append(irow)
+		#menu.append(drow)
+		#menu.show_all()
+		#menu.popup(None, None, None, event.button, event.time)
+
+#Signals
+cell.connect("edited", edited_cb, 0)
+cell1.connect("edited", edited_cb, 0)
+#rightview.connect("button_press_event", self.clicked)
+#rightview.connect("row-activated", self.dclicked)

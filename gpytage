@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# GPytage v0.1_Alpha released under the GPLv2 License
+# GPytage v0.2 Beta released under the GPLv2 License
 # GPytage is a utility that helps manage portage's package.* files
 #
 ############################################################################
@@ -100,15 +100,6 @@ class gpytage:
 		self.window.connect("destroy", self.destroy)
 		self.window.connect("delete_event", self.delete_event)
 
-		#leftpanel connections
-		leftpanel.cell.connect("edited", self.edited_cb, self.datastore, 0)
-		leftpanel.cell1.connect("edited", self.edited_cb, self.datastore, 1)
-		leftpanel.leftview.connect("button_press_event", self.clicked)
-		leftpanel.leftview.connect("row-activated", self.dclicked)
-
-
-		#rightpanel connections
-
 		###########Show Widgits######################
 		self.phbox = gtk.HBox()
 		self.phbox.pack_start(leftpanel.scroll, True, True, 0)
@@ -124,35 +115,6 @@ class gpytage:
 
 	def delete_event(self, widget, event, data=None):
 		return False
-
-	def edited_cb(self, cell, path, new_text, user_data, col):
-		self.datastore[path][col] = new_text
-		title("* GPytage")
-		return
-
-	def clicked(self, view, event):#needs updating from dual panels
-		if event.button == 3:
-			menu = gtk.Menu()
-			irow = gtk.MenuItem("Insert Package")
-			irow.connect("activate", self.insertrow, view)
-			drow = gtk.MenuItem("Delete Package")
-			drow.connect("activate", self.deleterow, view)
-			menu.append(irow)
-			menu.append(drow)
-			menu.show_all()
-			menu.popup(None, None, None, event.button, event.time)
-
-	def dclicked(self, view, path, column,):
-		iter, value = selected(view)
-		model = view.get_model()
-		list = model.get_value(iter, 0)
-		parent = model.get_value(iter, 3)
-		print list
-		print parent
-		if parent == 'package.' + list:
-			rightpanel.setListModel(parent)
-		else:
-			rightpanel.setListModel(list)
 
 	############Menu Functions. ###########################
 	def about(self, arg): #wth is arg
@@ -194,7 +156,6 @@ class gpytage:
 			self.datastore.remove(iter)
 			title("* GPytage")
 			
-	#fix us (save/new)
 	def save(self, arg):
 		save.save()
 

@@ -71,3 +71,28 @@ leftview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
 import panelfunctions
 leftview.connect("drag_data_get", panelfunctions.get_dragdata)
 leftview.connect("drag_data_received", panelfunctions.get_dragdestdata)
+
+#Callbacks
+def dclicked(view, path, column,):
+	import rightpanel
+	iter, value = panelfunctions.selected(view)
+	model = view.get_model()
+	list = model.get_value(iter, 0)
+	parent = model.get_value(iter, 3)
+	#print list
+	#print parent
+	if parent == 'package.' + list:
+		rightpanel.setListModel(parent)
+	else:
+		rightpanel.setListModel(list)
+
+#can't really edit files names for now...
+#def edited_cb(self, cell, path, new_text, user_data, col):
+	#self.datastore[path][col] = new_text
+	#title("* GPytage")
+	#return
+
+#Signals
+#leftpanel.cell.connect("edited", self.edited_cb, datastore.datastore, 0)
+#leftview.connect("button_press_event", clicked)
+leftview.connect("row-activated", dclicked)
