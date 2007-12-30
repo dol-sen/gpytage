@@ -47,6 +47,7 @@ def new(window):#create a new subfile
 	ftext = gtk.Entry()
 	ftextbox.pack_start(flabel)
 	ftextbox.pack_start(ftext)
+
 	newd.vbox.pack_start(ftextbox)
 	addb = gtk.Button("Add", gtk.STOCK_ADD)
 	closeb = gtk.Button("Close",gtk.STOCK_CLOSE)

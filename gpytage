@@ -81,8 +81,8 @@ class gpytage:
 			('Edit', None, '_Edit'),
 			('Expand All', None, '_Expand All', '<Control>backslash', 'Expand Rows', self.expand),
 			('Collapse All', None, '_Collapse All', '<Control>slash', 'Collapse Rows', self.collapse),
-			('Insert Package', None, '_Insert Package', '<Control>t', 'Add a package', self.insertrow),
-			('Delete Package', None, '_Delete Package', 'Delete', "Delete a package", self.deleterow),
+			('Insert Package', None, '_Insert Package', '<Control>t', 'Add a package', rightpanel.insertrow),
+			('Delete Package', None, '_Delete Package', 'Delete', "Delete a package", rightpanel.deleterow),
 			('Help',None,'_Help'),
 			('About', gtk.STOCK_ABOUT, '_About', None, 'About GPytage', self.about)])
 
@@ -137,24 +137,10 @@ class gpytage:
 		reload()
 
 	def expand(self, arg):
-		self.treeview.expand_all()
+		leftpanel.leftview.expand_all()
 
 	def collapse(self, arg):
-		self.treeview.collapse_all()
-
-	def insertrow(self, arg, treeview):
-		iter, value = selected(treeview)
-		if value == True:
-			niter = self.datastore.insert_after(None, iter, [None, None, True])
-			path = self.datastore.get_path(niter)
-			self.treeview.set_cursor_on_cell(path, self.namecol, self.cell, True)
-			title("* GPytage")
-
-	def deleterow(self, arg, treeview):
-		iter, value = selected(treeview)
-		if value == True:
-			self.datastore.remove(iter)
-			title("* GPytage")
+		leftpanel.leftview.collapse_all()
 			
 	def save(self, arg):
 		save.save()

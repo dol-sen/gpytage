@@ -24,6 +24,8 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 import datastore
+from window import title
+from panelfunctions import selected
 
 #rightview = gtk.TreeView(datastore.lists['package.use']) #create the container
 rightview = gtk.TreeView()
@@ -91,9 +93,27 @@ rightview.connect("drag_data_received", panelfunctions.get_dragdestdata)
 def edited_cb(cell, path, new_text, col):
 	model = rightview.get_model()
 	model[path][col] = new_text
-	from window import title
 	title("* GPytage")
 	return
+
+def insertrow(arg):
+	treeview = rightview
+	iter, value = selected(treeview)
+	model = treeview.get_model()
+	if value == True:
+		parent = model.get_value(iter, 3)
+		new = model.insert_after(iter, [None, None, True, parent])
+		path = model.get_path(new)
+		treeview.set_cursor_on_cell(path, namecol, cell, True)
+		title("* GPytage")
+
+def deleterow(arg):
+	treeview = rightview
+	iter, value = selected(treeview)
+	model = treeview.get_model()
+	if value == True:
+		model.remove(iter)
+		title("* GPytage")
 	
 #def clicked(view, event):#needs updating from dual panels
 	#if event.button == 3:
@@ -111,4 +131,3 @@ def edited_cb(cell, path, new_text, col):
 cell.connect("edited", edited_cb, 0)
 cell1.connect("edited", edited_cb, 0)
 #rightview.connect("button_press_event", self.clicked)
-#rightview.connect("row-activated", self.dclicked)
