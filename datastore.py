@@ -75,37 +75,12 @@ def create_treeiter():#create the parent/main files
 		parent_folder, simple_files = folder_scan()
 		#parent_files = self.folder_walk(parent_folder)
 		for i in simple_files: #needs no sub main rows just data
-			name = i.partition('.')[2]
-			siter = name+"_iter"
-			siter = datastore.append(None, [name, None, False, i])
-			#data = scan_contents(i)
-			#for row in data:
-				#try:
-					#col1 = row[0].rstrip() #strips \n
-				#except:
-					#col1 = None
-				#try:
-					#col2 = row[1].rstrip() # not all files have 2 cols
-				#except:
-					#col2 = None
-				#datastore.append(siter, [col1, col2, True])
+			siter = datastore.append(None, [i, None, False, i])
 		for i in parent_folder: #parent_folders is list of folders such as package.keywords
 			#i is a dir such as package.keywords
 			pfolder = i
-			name = i.partition('.')[2]
-			giter = name+"_iter"
-			giter = datastore.append(None, [name, None, False, i])
+			piter = datastore.append(None, [i, None, False, i])
 			complex_files = folder_walk(i) #this needs to return list files in dir
 			for i in complex_files: #"simple files"
 				name = i #folder name being iterated
-				gciter = name+"_iter"
-				gciter = datastore.append(giter, [name, None, False, pfolder])
-				dir_file_path = pfolder+'/'+i
-				#data = scan_contents(dir_file_path)
-				#for row in data:
-					#col1 = row[0].rstrip()
-					#try:
-						#col2 = row[1].rstrip()
-					#except:
-						#col2 = None
-					#datastore.append(gciter, [col1,col2, True])
+				citer = datastore.append(piter, [i, None, False, pfolder])
