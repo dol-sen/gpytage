@@ -129,5 +129,5 @@ def clicked(view, event):#needs updating from dual panels
 
 #Signals
 cell.connect("edited", edited_cb, 0)
-cell1.connect("edited", edited_cb, 0)
+cell1.connect("edited", edited_cb, 1)
 rightview.connect("button_press_event", clicked)
