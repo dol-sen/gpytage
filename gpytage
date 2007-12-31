@@ -148,7 +148,7 @@ class gpytage:
 		leftpanel.leftview.collapse_all()
 			
 	def save(self, arg):
-		save.save()
+		save.SaveFile().save()
 
 	def new(self, arg):
 		import newfile
