@@ -70,12 +70,12 @@ testcol.set_expand(True)
 testcol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
 
 boolcol.set_visible(False)
-
-filecol.pack_start(cell1, True)
-filecol.set_attributes(cell1, text=3)
-filecol.add_attribute(cell1, "editable", 2)#set row editable
-filecol.set_expand(True)
-filecol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+filecol.set_visible(False)
+#filecol.pack_start(cell1, True)
+#filecol.set_attributes(cell1, text=3)
+#filecol.add_attribute(cell1, "editable", 2)#set row editable
+#filecol.set_expand(True)
+#filecol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
 
 ###########Scroll Window#########################
 scroll = gtk.ScrolledWindow()
