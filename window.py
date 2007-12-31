@@ -28,3 +28,9 @@ window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 
 def title(text):
 	window.set_title(text)
+
+def createMessageDialog(parent, flags, type, buttons, mtitle, message_format):
+	md = gtk.MessageDialog(None, flags, type, buttons, message_format)
+	md.set_title(mtitle)
+	md.run()
+	md.destroy()
