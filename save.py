@@ -57,7 +57,7 @@ class SaveFile():
 					self.savefile(parent, file, data)
 			except IndexError:
 				print 'Failed to save the file %s for write access' % name
-		reload()
+		title("GPytage")
 		if self.errors != []:
 			#spawn dialog
 			err = ',\n'.join(self.errors)
