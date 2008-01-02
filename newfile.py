@@ -62,17 +62,20 @@ def close_subfile(arg, newd):
 def add_subfile(arg, cb, ftext, newd, window):
 	model = cb.get_model()
 	index = cb.get_active()
-	cbselection =  model[index][0] #current text
-	ftextselection = ftext.get_text()
-	Success = False
-	if len(ftextselection):
-		Success = True
-		create_subfile(cbselection, ftextselection)
-	if Success:
-		arg = "subfile" #no idea...reload needs something passed
-		from helper import reload
-		reload(window)
-		newd.hide() #destroy better?
+	#print "NEWFILE: add_subfile(); index = " + str(index)
+	if index >= 0: # prevent index errors
+		# next line gets an index error when trying to add a subfile to a non existent sets dir. (Or if selection is blank)
+		cbselection =  model[index][0] #current text
+		ftextselection = ftext.get_text()
+		Success = False
+		if len(ftextselection):
+			Success = True
+			create_subfile(cbselection, ftextselection)
+		if Success:
+			arg = "subfile" #no idea...reload needs something passed
+			from helper import reload
+			reload(window)
+			newd.hide() #destroy better?
 
 def create_subfile(cbselection, ftextselection):
 	config_path = get_config_path()
