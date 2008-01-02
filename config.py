@@ -26,8 +26,6 @@ from sys import exit, stderr
 config_files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use', 'sets']
 test_path = '/etc/testportage/'
 
-
-#### optional #############
 try:
 	import portage
 	import portage_const
@@ -37,12 +35,14 @@ except ImportError:
 		'Are you sure this is a Gentoo system?'))
 
 portage_path = portage_const.USER_CONFIG_PATH
-
-########### /optional #######
-
 #portage_path = '/etc/portage/'
 
 config_path = portage_path + '/'
 
 def set_test_path():
+	global config_path, test_path
 	config_path = test_path
+	print "CONFIG: new config_path = " + config_path
+
+def get_config_path():
+	return config_path

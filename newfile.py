@@ -25,9 +25,7 @@ import pygtk; pygtk.require("2.0")
 import gtk
 import datastore
 
-from helper import portage_path
-
-config_files = datastore.config_files
+from config import get_config_path, config_files
 
 def new(window):#create a new subfile
 	newd = gtk.Dialog('Create new Subfile', window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
@@ -77,23 +75,25 @@ def add_subfile(arg, cb, ftext, newd, window):
 		newd.hide() #destroy better?
 
 def create_subfile(cbselection, ftextselection):
+	config_path = get_config_path()
 	try:
-		path = "%s/%s/%s" %(portage_path,cbselection, ftextselection)
+		path = "%s/%s/%s" %(config_path,cbselection, ftextselection)
 		#print path
 		msg= '''# This file was created by GPytage.'''
 		f=open(path, 'w')
 		f.write(msg)
 		f.close
 	except IOError:
-		print 'Failed to create %s%s/%s' %(portage_path,cbselection,ftext)
+		print 'Failed to create %s%s/%s' %(config_path,cbselection,ftext)
 
 #to be moved to a helper file
 def folder_scan():#returns what files are files/dirs wrt portage
+	config_path = get_config_path()
 	dirs = []
 	file = []
 	import os.path
 	for i in config_files:
-		result = os.path.isdir(portage_path+i)
+		result = os.path.isdir(config_path+i)
 		if(result):
 			dirs.append(i)
 		else:

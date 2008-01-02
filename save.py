@@ -25,7 +25,8 @@ import os.path
 import sys
 import pdb
 
-from helper import portage_path, reload
+from helper import reload
+from config import get_config_path
 from window import title, window, createMessageDialog
 import gtk
 
@@ -61,7 +62,7 @@ class SaveFile():
 			#spawn dialog
 			err = ',\n'.join(self.errors)
 			message = "The following files failed to save:\n\n%s. \n\nPossible causes may include insufficient privileges to write to these files." %err
-			createMessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, "Erroring Saving...", message)
+			createMessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, "Error Saving...", message)
 	#insight: datastore can be thought of a giant list, where row[0] references the first item in a multi list list. eg: foo = [['blah'],['blah1']]
 
 	def assemblerow(self, child):
@@ -79,21 +80,22 @@ class SaveFile():
 		return datarow
 
 	def savefile(self, parent, file, data):
+		config_path = get_config_path()
 		if parent is None: #main file
 			try:
-				f=open(portage_path + file, 'w')
+				f=open(config_path + file, 'w')
 				for row in data:
 					f.write(row)
 				f.close
 			except IOError:
-				self.errors.append("%s%s" % (portage_path, file))
+				self.errors.append("%s%s" % (config_path, file))
 				return
 		else: #subfile
 			try:
-				f=open(portage_path + parent + '/' + file, 'w')
+				f=open(config_path + parent + '/' + file, 'w')
 				for row in data:
 					f.write(row)
 				f.close
 			except IOError:
-				self.errors.append("%s%s/%s" %(portage_path, parent, file))
+				self.errors.append("%s%s/%s" %(config_path, parent, file))
 				return

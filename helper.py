@@ -22,15 +22,16 @@
 ############################################################################
 
 import os
-
-portage_path = '/etc/testportage/'
-config_files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use']
+import gtk
+from config import get_config_path, config_files
+import config
 
 def folder_scan():#returns what files are files/dirs wrt portage
+	config_path = get_config_path()
 	dirs = []
 	file = []
 	for i in config_files:
-		result = os.path.isdir(portage_path+i)
+		result = os.path.isdir(config_path+i)
 		if(result):
 			dirs.append(i)
 		else:
@@ -38,8 +39,9 @@ def folder_scan():#returns what files are files/dirs wrt portage
 	return dirs, file
 
 def folder_walk(dir):#returns list of files within dirs
+	config_path = get_config_path()
 	dir_files = []
-	for i in os.listdir(portage_path+dir+'/'):
+	for i in os.listdir(config_path+dir):
 		dir_files.append(i)
 	return dir_files
 
@@ -54,16 +56,37 @@ def reload():
 	title("GPytage")
 
 def scan_contents(arg):#returns data in specified file
+	config_path = get_config_path()
 	try:
-		f=open(portage_path+arg, 'r')
+		f=open(config_path+arg, 'r')
 		contents = f.readlines()
 		f.close()
 	except IOError: #needed or everything breaks
-		print 'Warning: Critical file /etc/%s not found, creating...' % arg
+		config_path = get_config_path()
+		from window import createMessageDialog
+		print 'Warning: Critical file %s%s not found' % (config_path, arg)
 		writemessage = '''# This file was created by GPytage as it is required for proper operation.'''
-		f=open(portage_path+arg, 'w')
-		f.write(writemessage)
-		f.close
+		try:
+			if arg == "sets":
+				print arg, config_path
+				os.mkdir('%s/sets' % config_path)
+				fail=0
+			else:
+				f=open(config_path + arg, 'w')
+				f.write(writemessage)
+				f.close
+				fail=0
+		except:
+			fail=1
+			data = []
+			
+		if fail==0:
+			fmessage="Warning: Critical file/dir %s%s not found, it has been created for you." % (config_path, arg)
+		elif fail ==1:
+			fmessage="Warning: Critical file/dir %s%s not found. An attempt to automatically create this file/dir has been made, but has failed. It is recommended that you create this file/dir yourself." % (config_path, arg)
+		createMessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_WARNING, gtk.BUTTONS_OK, "Error reading critical file", fmessage)
+		data = []
+		return data
 
 	data = [] #list of list: eg [['python','x86']]
 	for i in contents:

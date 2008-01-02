@@ -24,6 +24,8 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 import datastore
+import rightpanel
+
 
 leftview = gtk.TreeView(datastore.datastore) #create the container
 
@@ -72,19 +74,44 @@ import panelfunctions
 leftview.connect("drag_data_get", panelfunctions.get_dragdata)
 leftview.connect("drag_data_received", panelfunctions.get_dragdestdata)
 
+###########some variables####################
+last_parent = None
+
 #Callbacks
-def dclicked(view, path, column,):
-	import rightpanel
-	iter, value = panelfunctions.selected(view)
-	model = view.get_model()
-	list = model.get_value(iter, 0)
-	parent = model.get_value(iter, 3)
-	#print list
-	#print parent
-	if parent == 'package.' + list:
-		rightpanel.setListModel(parent)
-	else:
+#def dclicked(view, path, column,): #obsolete by Brian's _clicked
+	##import rightpanel
+	#iter, value = panelfunctions.selected(view)
+	#model = view.get_model()
+	#list = model.get_value(iter, 0)
+	#parent = model.get_value(iter, 3)
+	##print list
+	##print parent
+	#if parent == 'package.' + list:
+		#rightpanel.setListModel(parent)
+	#else:
+		#rightpanel.setListModel(list)
+
+def _clicked(treeview, *args):
+	""" Handle treeview clicks """
+	global last_parent
+	model, iter = treeview.get_selection().get_selected()
+	if iter: parent = model.get_value(iter, 3)
+	else: parent = last_parent
+	# has the selection really changed?
+	if parent != last_parent:
+		print("LEFTPANEL: parent change detected")
+		list = model.get_value(iter, 0)
+		#print list
+		#print parent
+		if parent == 'package.' + list:
+			rightpanel.setListModel(parent)
+		else:
+			rightpanel.setListModel(list)
+	else: #fixes bug: if two subfiles are selected after each other with same parent
+		list = model.get_value(iter, 0)
 		rightpanel.setListModel(list)
+	# save current selection as last selected
+	last_parent = parent
 
 #can't really edit files names for now...
 #def edited_cb(self, cell, path, new_text, user_data, col):
@@ -94,5 +121,6 @@ def dclicked(view, path, column,):
 
 #Signals
 #leftpanel.cell.connect("edited", self.edited_cb, datastore.datastore, 0)
-#leftview.connect("button_press_event", clicked)
-leftview.connect("row-activated", dclicked)
+#leftview.connect("button_press_event", dclicked)
+#leftview.connect("row-activated", dclicked)
+leftview.connect("cursor-changed", _clicked)

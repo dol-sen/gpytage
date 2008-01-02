@@ -24,14 +24,13 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 from helper import folder_scan, folder_walk, scan_contents
-
-config_files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use']
+from config import config_files
 
 datastore = gtk.TreeStore(str, str, bool, str) #stores the main files
 
 #19:33 < Zalamander> Ken69267 use a dictionary to map the names to created 
                     #lists. "d = {}; for name in list: d[name] = [1,2,3,4,5]" values will be in the dict.
-					
+
 def create_lists():
 	parent_folder, simple_files = folder_scan()
 	global lists
