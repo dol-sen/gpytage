@@ -42,7 +42,6 @@ def get_dragdata(treeview, context, selection, target_id, etime):
 		selection.set(selection.target, 2, str(data[2]))
 		selection.set(selection.target, 2, str(data[3]))
 
-
 def get_dragdestdata(treeview, context, x, y, selection, info, etime):
 	iter, value = selected(treeview)
 	model = treeview.get_model()
@@ -79,3 +78,11 @@ def selected(treeview): #helper function
 	except:
 		value = False
 	return iter, value
+
+def fileEdited(): #leftpanel
+	from leftpanel import leftview
+	model = leftview.get_model()
+	iter, value = selected(leftview)
+	oldName = model.get_value(iter, 0).strip('*')
+	newName = "*%s" % oldName
+	model.set_value(iter, 0, newName)

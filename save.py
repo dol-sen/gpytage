@@ -29,6 +29,8 @@ from helper import reload
 from config import get_config_path
 from window import title, window, createMessageDialog
 import gtk
+from leftpanel import leftview
+
 
 class SaveFile():
 	def __init__(self):
@@ -47,6 +49,9 @@ class SaveFile():
 						datarow = self.assemblerow(row)
 						data.append(datarow)
 					self.savefile(parent, file, data)
+					#begin hack
+					model = leftview.get_model()
+					model.foreach(findMatch, name)
 				else: #we have a subfile
 					parent = store[0][3] #main dir
 					file = name #sub file
@@ -55,6 +60,9 @@ class SaveFile():
 						datarow = self.assemblerow(row)
 						data.append(datarow)
 					self.savefile(parent, file, data)
+					#begin hack
+					model = leftview.get_model()
+					model.foreach(findMatch, name)
 			except IndexError:
 				print 'Failed to save the file %s for write access' % name
 		title("GPytage")
@@ -99,3 +107,8 @@ class SaveFile():
 			except IOError:
 				self.errors.append("%s%s/%s" %(config_path, parent, file))
 				return
+
+#ugly hack really..but it works
+def findMatch(model, path, iter, user_data):
+	if model.get_value(iter, 0).strip('*') == user_data:
+		model.set_value(iter, 0, user_data)

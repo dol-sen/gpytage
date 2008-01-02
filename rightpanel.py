@@ -25,7 +25,7 @@ import pygtk; pygtk.require("2.0")
 import gtk
 import datastore
 from window import title
-from panelfunctions import selected
+from panelfunctions import selected, fileEdited
 
 #rightview = gtk.TreeView(datastore.lists['package.use']) #create the container
 rightview = gtk.TreeView()
@@ -71,6 +71,7 @@ testcol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
 
 boolcol.set_visible(False)
 filecol.set_visible(False)
+
 #filecol.pack_start(cell1, True)
 #filecol.set_attributes(cell1, text=3)
 #filecol.add_attribute(cell1, "editable", 2)#set row editable
@@ -93,6 +94,8 @@ rightview.connect("drag_data_received", panelfunctions.get_dragdestdata)
 def edited_cb(cell, path, new_text, col):
 	model = rightview.get_model()
 	model[path][col] = new_text
+	#Indicate file status
+	fileEdited() #edit rightpanel to show status
 	title("* GPytage")
 	return
 
