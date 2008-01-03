@@ -74,7 +74,7 @@ def add_subfile(arg, cb, ftext, newd, window):
 		if Success:
 			arg = "subfile" #no idea...reload needs something passed
 			from helper import reload
-			reload(window)
+			reload()
 			newd.hide() #destroy better?
 
 def create_subfile(cbselection, ftextselection):

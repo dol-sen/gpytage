@@ -168,7 +168,7 @@ def usage():
 
 if __name__ == "__main__":
 	try:
-		opts, args = getopt(sys.argv[1:], 'lvth:', ["local", "version", "test",
+		opts, args = getopt(sys.argv[1:], 'lvth', ["local", "version", "test",
 						"help"])
 		#print opts
 		#print args
