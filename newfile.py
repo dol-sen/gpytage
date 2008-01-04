@@ -24,6 +24,7 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 import datastore
+from window import title
 
 from config import get_config_path, config_files
 
@@ -69,25 +70,43 @@ def add_subfile(arg, cb, ftext, newd, window):
 		ftextselection = ftext.get_text()
 		Success = False
 		if len(ftextselection):
-			Success = True
-			create_subfile(cbselection, ftextselection)
-		if Success:
-			arg = "subfile" #no idea...reload needs something passed
-			from helper import reload
-			reload()
-			newd.hide() #destroy better?
+			#Success = True
+			#create_subfile(cbselection, ftextselection)
+		#if Success:
+			addToMemory(cbselection, ftextselection)
+			#arg = "subfile" #no idea...reload needs something passed
+			#from helper import reload
+			#reload() #no, we want local changes to be kept in memory.
+			newd.hide() #hide/destroy the dialog
 
-def create_subfile(cbselection, ftextselection):
-	config_path = get_config_path()
-	try:
-		path = "%s/%s/%s" %(config_path,cbselection, ftextselection)
-		#print path
-		msg= '''# This file was created by GPytage.'''
-		f=open(path, 'w')
-		f.write(msg)
-		f.close
-	except IOError:
-		print 'Failed to create %s%s/%s' %(config_path,cbselection,ftext)
+matched = False
+
+def addToMemory(parent, filename):
+	datastore.datastore.foreach(findMatch, [parent, filename])
+	msg= '#This file was created by GPytage'
+	datastore.lists[filename] = gtk.ListStore(str, str, bool, str)
+	datastore.lists[filename].append([msg, None, True, parent]) #rightpanel stuff
+	title("* GPytage")
+
+#ugly hack really..but it works
+def findMatch(model, path, iter, user_data): #This can't return a value... stupid callback
+	print user_data[0], user_data[1]
+	print model.get_value(iter, 0).strip('*')
+	if model.get_value(iter, 0).strip('*') == user_data[0]:
+		edited_file = "*%s" % user_data[1]
+		model.append(iter, [edited_file, None, False, user_data[0]])
+
+#def create_subfile(cbselection, ftextselection): #lets make it so save has to handle this
+	#config_path = get_config_path()
+	#try:
+		#path = "%s/%s/%s" %(config_path,cbselection, ftextselection)
+		##print path
+		#msg= '''# This file was created by GPytage.'''
+		#f=open(path, 'w')
+		#f.write(msg)
+		#f.close
+	#except IOError:
+		#print 'Failed to create %s%s/%s' %(config_path,cbselection,ftext)
 
 #to be moved to a helper file
 def folder_scan():#returns what files are files/dirs wrt portage

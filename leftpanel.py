@@ -95,23 +95,23 @@ def _clicked(treeview, *args):
 	""" Handle treeview clicks """
 	global last_parent
 	model, iter = treeview.get_selection().get_selected()
-	if iter: parent = model.get_value(iter, 3)
-	else: parent = last_parent
+	if iter: parent = model.get_value(iter, 3).strip('*')
+	else: parent = last_parent.strip('*')
 	# has the selection really changed?
-	if parent != last_parent:
+	if parent.strip('*') != last_parent:
 		print("LEFTPANEL: parent change detected")
-		list = model.get_value(iter, 0)
-		#print list
-		#print parent
-		if parent == 'package.' + list:
-			rightpanel.setListModel(parent)
+		list = model.get_value(iter, 0).strip('*')
+		print list
+		print parent
+		if parent.strip('*') == 'package.' + list:
+			rightpanel.setListModel(parent.strip('*'))
 		else:
-			rightpanel.setListModel(list)
+			rightpanel.setListModel(list.strip('*'))
 	else: #fixes bug: if two subfiles are selected after each other with same parent
-		list = model.get_value(iter, 0)
+		list = model.get_value(iter, 0).strip('*')
 		rightpanel.setListModel(list)
 	# save current selection as last selected
-	last_parent = parent
+	last_parent = parent.strip('*')
 
 #can't really edit files names for now...
 #def edited_cb(self, cell, path, new_text, user_data, col):
