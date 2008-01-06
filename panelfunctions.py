@@ -30,7 +30,7 @@ def get_dragdata(treeview, context, selection, target_id, etime):
 	iter, value = selected(treeview)
 	model = treeview.get_model()
 	print treeview
-	if value:
+	if value == True:
 		global data
 		data = []
 		data.append(model.get_value(iter, 0))
@@ -46,7 +46,7 @@ def get_dragdestdata(treeview, context, x, y, selection, info, etime):
 	iter, value = selected(treeview)
 	model = treeview.get_model()
 	#print treeview
-	if value:
+	if value == True:
 		ldata = data
 		drop_info = treeview.get_dest_row_at_pos(x,y)
 		if drop_info:
