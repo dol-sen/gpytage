@@ -32,7 +32,7 @@ import gtk
 from leftpanel import leftview
 
 
-class SaveFile():
+class SaveFile:
 	def __init__(self):
 		self.errors = []
 		
