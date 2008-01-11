@@ -124,7 +124,7 @@ class gpytage:
 		aboutw.set_name('GPytage')
 		aboutw.set_copyright('Copyright 2007, GPL2')
 		aboutw.set_authors(['Kenneth Prugh', '\nWith patches contributed by Brian Dolbec','\nWith special thanks to the Gentoo \ndevelopers and community', '\nLicensed under the GPL-2']) #Fix wording? :)
-		f=open('/usr/portage/licenses/GPL-2')
+		f=open('COPYING')
 		gpl2 = f.read()
 		f.close
 		aboutw.set_license(gpl2)
