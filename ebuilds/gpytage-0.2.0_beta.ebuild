@@ -5,7 +5,7 @@
 inherit distutils
 
 DESCRIPTION="GTK Utility to help manage Portage's package files"
-HOMEPAGE="https://gna.org/projects/gpytage/"
+HOMEPAGE="https://gna.org/projects/gpytage"
 SRC_URI="http://download.gna.org/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
