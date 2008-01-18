@@ -38,6 +38,7 @@ portage_path = portage_const.USER_CONFIG_PATH
 #portage_path = '/etc/portage/'
 
 config_path = portage_path + '/'
+PORTDIR=portage.config(clone=portage.settings).environ()['PORTDIR']
 
 def set_test_path():
 	global config_path, test_path

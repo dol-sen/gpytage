@@ -1,7 +1,0 @@
-To install simply move the gpytage file into /usr/bin.
-
-example:
-# cd gpytage-0.1/
-# mv gpytage /usr/bin
-
-To uninstall simply delete the file.

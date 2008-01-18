@@ -28,18 +28,17 @@ import os.path
 import sys
 from getopt import getopt, GetoptError
 
-class gpytage:
+class gpytagemain:
 	def __init__(self):
 		self.window = window
 		title("GPytage")
 		self.window.set_default_size(600, 300)
-		import datastore
-		self.datastore = datastore.datastore
+		self.datastore = datastore
 
-		self.files = datastore.config_files
+		self.files = config_files
 		
-		datastore.create_lists()
-		datastore.create_treeiter() #populate the left panel
+		create_lists()
+		create_treeiter() #populate the left panel
 
 		###########UIManager#############################
 		self.uimanager = gtk.UIManager()
@@ -122,9 +121,9 @@ class gpytage:
 	def about(self, arg): #wth is arg
 		aboutw = gtk.AboutDialog()
 		aboutw.set_name('GPytage')
-		aboutw.set_copyright('Copyright 2007, GPL2')
+		aboutw.set_copyright('Copyright 2008, GPL2')
 		aboutw.set_authors(['Kenneth Prugh', '\nWith patches contributed by Brian Dolbec','\nWith special thanks to the Gentoo \ndevelopers and community', '\nLicensed under the GPL-2']) #Fix wording? :)
-		f=open('COPYING')
+		f=open(config.PORTDIR + '/licenses/GPL-2')
 		gpl2 = f.read()
 		f.close
 		aboutw.set_license(gpl2)
@@ -135,7 +134,6 @@ class gpytage:
 		aboutw.hide()
 	
 	def reload(self, arg): #reloads all rows in treeview
-		from helper import reload
 		reload()
 
 	def expand(self, arg):
@@ -148,7 +146,6 @@ class gpytage:
 		save.SaveFile().save()
 
 	def new(self, arg):
-		import newfile
 		newfile.new(self.window)
 
 
@@ -193,7 +190,12 @@ if __name__ == "__main__":
 			from panelfunctions import selected
 			import config
 			from version import version
+			from datastore import datastore,config_files,create_treeiter,create_lists
+			from helper import reload
+			import newfile
 			print "GPytage: starting gpytage()"
+			gpytagemain = gpytagemain()
+			gpytagemain.main()
 
 	if not RUN_LOCAL: # then run the installed modules
 		try:
@@ -202,10 +204,18 @@ if __name__ == "__main__":
 			DATA_PATH = "/usr/share/gpytage/"
 			#i18n_DIR = DATA_PATH + 'i18n'
 			#i18n_DIR = "/usr/share/locale/"
+			from gpytage import save
+			from gpytage import leftpanel, rightpanel
 			from gpytage import config
+			from gpytage.window import title, window
 			from gpytage.version import version
+			from gpytage.datastore import datastore,config_files,create_treeiter,create_lists
+			from gpytage.helper import reload
+			from gpytage import newfile
 			# load prefs
 			print "GPytage: starting gpytage()"
+			gpytagemain = gpytagemain()
+			gpytagemain.main()
 		except ImportError, e:
 			print "*** Error loading gpytage modules!\n*** If you are running a", \
 			"local (not installed in python's site-packages) version, please use the '--local'", \
@@ -229,7 +239,3 @@ if __name__ == "__main__":
 			print "GPytage " + version
 			sys.exit(0)
 	
-######
-
-	gpytage = gpytage()
-	gpytage.main()

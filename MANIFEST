@@ -1,0 +1,17 @@
+gpytage
+setup.py
+config.py
+datastore.py
+helper.py
+leftpanel.py
+newfile.py
+panelfunctions.py
+rightpanel.py
+save.py
+version.py
+window.py
+COPYING
+ChangeLog
+AUTHORS
+README
+__init__.py
