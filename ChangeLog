@@ -1,2 +1,10 @@
+Version 0.2.0:
+	* Brand new dual panel view
+	* Dialogs added for IOErrors
+	* Drag and Drop fixed
+	* Now has sets support
+	* Installation via setup.py
+	* Many internal fixes thanks to patches from Brian Dolbec
+
 *2007/12/16:
 	* Initial Release. Tagged v0.1_Alpha
