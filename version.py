@@ -3,7 +3,7 @@
 # GPytage version.py module
 #
 ############################################################################
-#    Copyright (C) 2007 by Kenneth Prugh, Brian Dolbec                     #
+#    Copyright (C) 2008 by Kenneth Prugh, Brian Dolbec                     #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -21,4 +21,4 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-version = "svn development"
+version = "0.2.0_beta"
