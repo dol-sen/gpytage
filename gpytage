@@ -194,8 +194,6 @@ if __name__ == "__main__":
 			from helper import reload
 			import newfile
 			print "GPytage: starting gpytage()"
-			gpytagemain = gpytagemain()
-			gpytagemain.main()
 
 	if not RUN_LOCAL: # then run the installed modules
 		try:
@@ -214,8 +212,6 @@ if __name__ == "__main__":
 			from gpytage import newfile
 			# load prefs
 			print "GPytage: starting gpytage()"
-			gpytagemain = gpytagemain()
-			gpytagemain.main()
 		except ImportError, e:
 			print "*** Error loading gpytage modules!\n*** If you are running a", \
 			"local (not installed in python's site-packages) version, please use the '--local'", \
@@ -238,4 +234,6 @@ if __name__ == "__main__":
 			# print version info
 			print "GPytage " + version
 			sys.exit(0)
-	
+			
+	gpytagemain = gpytagemain()
+	gpytagemain.main()
