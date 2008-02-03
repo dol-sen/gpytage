@@ -25,7 +25,7 @@ import os
 import gtk
 from config import get_config_path, config_files
 import config
-
+import os
 
 def folder_scan():#returns what files are files/dirs wrt portage
 	config_path = get_config_path()
@@ -35,8 +35,11 @@ def folder_scan():#returns what files are files/dirs wrt portage
 		result = os.path.isdir(config_path+i)
 		if(result):
 			dirs.append(i)
-		else:
+		elif(os.access(config_path+i, os.F_OK)):
 			file.append(i)
+		else:
+			print "%s DOES NOT EXIST" % i
+			continue
 	return dirs, file
 
 def folder_walk(dir):#returns list of files within dirs

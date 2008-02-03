@@ -25,7 +25,7 @@ import pygtk; pygtk.require("2.0")
 import gtk
 import datastore
 from window import title
-
+from helper import folder_scan
 from config import get_config_path, config_files
 
 def new(window):#create a new subfile
@@ -66,20 +66,14 @@ def add_subfile(arg, cb, ftext, newd, window):
 	#print "NEWFILE: add_subfile(); index = " + str(index)
 	if index >= 0: # prevent index errors
 		# next line gets an index error when trying to add a subfile to a non existent sets dir. (Or if selection is blank)
-		cbselection =  model[index][0] #current text
-		ftextselection = ftext.get_text()
+		cbselection =  model[index][0] #current selection
+		ftextselection = ftext.get_text() #needs sanitycheck?
 		Success = False
 		if len(ftextselection):
-			#Success = True
-			#create_subfile(cbselection, ftextselection)
-		#if Success:
 			addToMemory(cbselection, ftextselection)
-			#arg = "subfile" #no idea...reload needs something passed
-			#from helper import reload
-			#reload() #no, we want local changes to be kept in memory.
 			newd.hide() #hide/destroy the dialog
 
-matched = False
+matched = False #wtf is this for?
 
 def addToMemory(parent, filename):
 	datastore.datastore.foreach(findMatch, [parent, filename])
@@ -96,28 +90,45 @@ def findMatch(model, path, iter, user_data): #This can't return a value... stupi
 		edited_file = "*%s" % user_data[1]
 		model.append(iter, [edited_file, None, False, user_data[0]])
 
-#def create_subfile(cbselection, ftextselection): #lets make it so save has to handle this
-	#config_path = get_config_path()
-	#try:
-		#path = "%s/%s/%s" %(config_path,cbselection, ftextselection)
-		##print path
-		#msg= '''# This file was created by GPytage.'''
-		#f=open(path, 'w')
-		#f.write(msg)
-		#f.close
-	#except IOError:
-		#print 'Failed to create %s%s/%s' %(config_path,cbselection,ftext)
+def convert(window):
+	convertd = gtk.Dialog('Convert file to subfile', window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
+	convertd.vbox.pack_start(gtk.Label("This will convert a normal file to a subfile under a directory named after the original file\n Warning: This operation cannot be undone")) #note: see convertFile
 
-#to be moved to a helper file
-def folder_scan():#returns what files are files/dirs wrt portage
-	config_path = get_config_path()
-	dirs = []
-	file = []
-	import os.path
-	for i in config_files:
-		result = os.path.isdir(config_path+i)
-		if(result):
-			dirs.append(i)
-		else:
-			file.append(i)
-	return dirs, file
+	dirs,files = folder_scan()
+	cb = gtk.combo_box_new_text() #combobox with files that are NOT subfiles
+	for i in files:
+		cb.append_text(i)
+	cb.set_active(0)
+	
+	tbox = gtk.HBox()
+	tbox.pack_start(gtk.Label("File to be converted:"))
+	tbox.pack_start(cb)
+
+	newfile = gtk.Label("Please rename old file:")
+	ftext = gtk.Entry()
+
+	#main box to hold stuff
+	cbox = gtk.HBox()
+	cbox.pack_start(newfile)
+	cbox.pack_start(ftext)
+	#temp
+	convertd.vbox.pack_start(tbox)
+	convertd.vbox.pack_start(cbox)
+	#pack action area with buttons
+	convertb = gtk.Button("Convert", gtk.STOCK_CONVERT)
+	closeb = gtk.Button("Close",gtk.STOCK_CLOSE)
+	convertb.connect("clicked", convertFile, cb, ftext, convertd, window)
+	closeb.connect("clicked", close_subfile, convertd)
+	convertd.action_area.pack_start(closeb)
+	convertd.action_area.pack_start(convertb)
+
+	convertd.show_all()
+	convertd.run()
+
+def convertFile(arg, cb, ftext, convertd, window):
+	#Currently I don't see how to do such a change "in memory", so the change must be done live and probably call the evil reload() nuke
+	model = cb.get_model()
+	index = cb.get_active()
+	if index >= 0: # prevent index errors
+		cbselection =  model[index][0] #current selected item
+		ftextselection = ftext.get_text() #sanity check?

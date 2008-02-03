@@ -14,6 +14,6 @@ KEYWORDS="~amd64 ~x86"
 IUSE=""
 
 RDEPEND=">=dev-lang/python-2.4
-		sys-apps/portage
-		dev-python/pygtk"
+	sys-apps/portage
+	dev-python/pygtk"
 DEPEND=""
