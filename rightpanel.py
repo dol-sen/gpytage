@@ -38,7 +38,7 @@ def setListModel(list): #we need to switch the model on click
 		testcol.queue_resize()
 		filecol.queue_resize()
 	except:
-		print 'fail'
+		print 'RIGHTPANEL: setListModel(); failed'
 		return
 
 rightview.set_search_column(0) #search broken atm #child?

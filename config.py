@@ -40,6 +40,9 @@ portage_path = portage_const.USER_CONFIG_PATH
 config_path = portage_path + '/'
 PORTDIR=portage.config(clone=portage.settings).environ()['PORTDIR']
 
+# house cleaning no longer needed imports
+del portage, portage_const
+
 def set_test_path():
 	global config_path, test_path
 	config_path = test_path
