@@ -92,7 +92,7 @@ def findMatch(model, path, iter, user_data): #This can't return a value... stupi
 
 def convert(window):
 	convertd = gtk.Dialog('Convert file to subfile', window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
-	convertd.vbox.pack_start(gtk.Label("This will convert a normal file to a subfile under a directory named after the original file\n Warning: This operation cannot be undone")) #note: see convertFile
+	convertd.vbox.pack_start(gtk.Label("This will convert a normal file to a subfile under a directory named after the original file\n Warning: This operation cannot be undone and unsaved changes will be lost")) #note: see convertFile
 
 	dirs,files = folder_scan()
 	cb = gtk.combo_box_new_text() #combobox with files that are NOT subfiles
@@ -131,4 +131,18 @@ def convertFile(arg, cb, ftext, convertd, window):
 	index = cb.get_active()
 	if index >= 0: # prevent index errors
 		cbselection =  model[index][0] #current selected item
-		ftextselection = ftext.get_text() #sanity check?
+		ftextselection = ftext.get_text()
+		if len(ftextselection):
+			#create an old file
+			nfile = ftextselection
+			from shutil import move
+			from os import mkdir
+			from config import get_config_path
+			from helper import reload
+			pconfig = get_config_path()
+			move(pconfig+cbselection, pconfig+nfile) #rename the file
+			mkdir(pconfig+cbselection) #create the parent directory
+			move(pconfig+nfile, "%s/%s" %(pconfig+cbselection,nfile))
+			reload() #sigh
+			convertd.hide()
+
