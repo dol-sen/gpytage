@@ -130,7 +130,7 @@ class gpytagemain:
 		f.close
 		aboutw.set_license(gpl2)
 		aboutw.set_wrap_license(True)
-		aboutw.set_version('0.2_Beta')
+		aboutw.set_version(version)
 		aboutw.set_website('https://gna.org/projects/gpytage/')
 		aboutw.run()
 		aboutw.hide()
