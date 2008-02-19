@@ -60,5 +60,33 @@ class rename(): #this is mostly just a test... this may be removed entirely
 			rDialog.hide()
 
 	def renameFile(self, arg, cb, ftext, rDialog, window):
-		pass
+		model = cb.get_model()
+		index = cb.get_active()
+		if index >= 0: # prevent index errors
+			oldName =  model[index][0]
+			newName = ftext.get_text()
+			#inline function to get our values
+			def findMatch(model, path, iter, user_data):
+				if model.get_value(iter, 0).strip('*') == user_data[0]:
+					self.data = [model, path, iter]
+					return True
+			datastore.datastore.foreach(findMatch, [oldName, newName])
+			if self.data:
+				model = self.data[0]
+				path = self.data[1]
+				iter = self.data[2]
+				from shutil import move
+				from config import get_config_path
+				from helper import reload
+				pconfig = get_config_path() # /
+				if model.get_value(iter, 0) == model.get_value(iter, 3):
+					print "RENAME: FILE MATCH"
+					filePath = pconfig+model.get_value(iter, 0)
+					move(filePath, pconfig+newName)
+				else:
+					print "RENAME: FILE NOMATCH"
+					filePath = pconfig+model.get_value(iter, 3)+'/'+model.get_value(iter, 0)
+					move(filePath, pconfig+model.get_value(iter, 3)+'/'+newName)
+				reload()
+				rDialog.hide()
 
