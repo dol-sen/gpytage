@@ -22,6 +22,7 @@
 ############################################################################
 
 import os
+import pygtk; pygtk.require("2.0")
 import gtk
 from config import get_config_path, config_files
 import config
@@ -103,3 +104,4 @@ def scan_contents(arg):#returns data in specified file
 			new = i.split(None,1)
 		data.append(new)
 	return data #return the master list of lists
+
