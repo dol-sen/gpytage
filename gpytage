@@ -51,6 +51,7 @@ class gpytagemain:
 				<menu action="File">
 					<menuitem action="New" />
 					<menuitem action="Split" />
+					<menuitem action="Rename" />
 					<menuitem action="Save" />
 					<menuitem action="Revert" />
 					<menuitem action="Quit" />
@@ -74,6 +75,7 @@ class gpytagemain:
 			('Revert', gtk.STOCK_REVERT_TO_SAVED, '_Revert', None, 'Revert changes', self.reload),
 			('New', gtk.STOCK_NEW, '_New Subfile', '<Control>n', 'New file', self.new),
 			('Split', gtk.STOCK_CONVERT, '_Convert file->subfile', None, 'Convert file', self.convert),
+			('Rename', gtk.STOCK_SAVE_AS, '_Rename subfile', None, 'Rename file', self.rename),
 			('File', None, '_File'),
 			('Save', gtk.STOCK_SAVE, '_Save', '<Control>s', 'Save changes', self.save),
 			('Edit', None, '_Edit'),
@@ -153,6 +155,9 @@ class gpytagemain:
 	def convert(self, arg):
 		newfile.convert(self.window)
 
+	def rename(self, arg):
+		rename.rename().renameDialog(self.window)
+
 	def main(self):
 		gtk.main()
 
@@ -197,6 +202,7 @@ if __name__ == "__main__":
 			from datastore import datastore,config_files,create_treeiter,create_lists
 			from helper import reload
 			import newfile
+			import rename
 			print "GPytage: starting gpytage()"
 
 	if not RUN_LOCAL: # then run the installed modules
@@ -214,6 +220,7 @@ if __name__ == "__main__":
 			from gpytage.datastore import datastore,config_files,create_treeiter,create_lists
 			from gpytage.helper import reload
 			from gpytage import newfile
+			from gpytage import rename
 			# load prefs
 			print "GPytage: starting gpytage()"
 		except ImportError, e:

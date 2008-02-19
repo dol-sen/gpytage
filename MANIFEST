@@ -10,6 +10,7 @@ rightpanel.py
 save.py
 version.py
 window.py
+rename.py
 COPYING
 ChangeLog
 AUTHORS
