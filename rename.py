@@ -24,7 +24,7 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 import datastore
-from helper import folder_scan
+from helper import folder_scan, folder_walk
 from config import get_config_path, config_files
 
 class rename(): #this is mostly just a test... this may be removed entirely
@@ -32,8 +32,13 @@ class rename(): #this is mostly just a test... this may be removed entirely
 	def renameDialog(self, window):
 		rDialog = gtk.Dialog('Rename File', window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
 		dirs,files = folder_scan()
+		subfiles = []
+		for i in dirs:
+			data = folder_walk(i)
+			for i in data:
+				subfiles.append(i)
 		cb = gtk.combo_box_new_text()
-		for i in files:
+		for i in subfiles:
 			cb.append_text(i)
 		cb.set_active(0)
 		sbox = gtk.HBox()
@@ -47,7 +52,7 @@ class rename(): #this is mostly just a test... this may be removed entirely
 		ftextbox.pack_start(ftext)
 
 		rDialog.vbox.pack_start(ftextbox)
-		addb = gtk.Button("Rename", gtk.STOCK_ADD)
+		addb = gtk.Button("Rename", "_Rename")
 		closeb = gtk.Button("Cancel",gtk.STOCK_CLOSE)
 		addb.connect("clicked", self.renameFile, cb, ftext, rDialog, window)
 		closeb.connect("clicked", self.close_renameD, rDialog)
@@ -65,28 +70,30 @@ class rename(): #this is mostly just a test... this may be removed entirely
 		if index >= 0: # prevent index errors
 			oldName =  model[index][0]
 			newName = ftext.get_text()
-			#inline function to get our values
-			def findMatch(model, path, iter, user_data):
-				if model.get_value(iter, 0).strip('*') == user_data[0]:
-					self.data = [model, path, iter]
-					return True
-			datastore.datastore.foreach(findMatch, [oldName, newName])
-			if self.data:
-				model = self.data[0]
-				path = self.data[1]
-				iter = self.data[2]
-				from shutil import move
-				from config import get_config_path
-				from helper import reload
-				pconfig = get_config_path() # /
-				if model.get_value(iter, 0) == model.get_value(iter, 3):
-					print "RENAME: FILE MATCH"
-					filePath = pconfig+model.get_value(iter, 0)
-					move(filePath, pconfig+newName)
-				else:
-					print "RENAME: FILE NOMATCH"
-					filePath = pconfig+model.get_value(iter, 3)+'/'+model.get_value(iter, 0)
-					move(filePath, pconfig+model.get_value(iter, 3)+'/'+newName)
-				reload()
-				rDialog.hide()
+			if len(newName):
+				#inline function to get our values
+				def findMatch(model, path, iter, user_data):
+					if model.get_value(iter, 0).strip('*') == user_data[0]:
+						self.data = [model, path, iter]
+						return True
+				datastore.datastore.foreach(findMatch, [oldName, newName])
+				if self.data:
+					model = self.data[0]
+					path = self.data[1]
+					iter = self.data[2]
+					from shutil import move
+					from config import get_config_path
+					from helper import reload
+					pconfig = get_config_path() # /
+					if model.get_value(iter, 0) == model.get_value(iter, 3):
+						#technically this wont ever execute the way I have it now
+						print "RENAME: FILE MATCH"
+						filePath = pconfig+model.get_value(iter, 0)
+						move(filePath, pconfig+newName)
+					else:
+						print "RENAME: FILE NOMATCH"
+						filePath = pconfig+model.get_value(iter, 3)+'/'+model.get_value(iter, 0)
+						move(filePath, pconfig+model.get_value(iter, 3)+'/'+newName)
+					reload() #will nuke unsaved changes, implement a unsaved changes dialog?
+					rDialog.hide()
 
