@@ -116,6 +116,7 @@ def deleterow(arg):
 	model = treeview.get_model()
 	if value == True:
 		model.remove(iter)
+		fileEdited()
 		title("* GPytage")
 	
 def clicked(view, event):#needs updating from dual panels
