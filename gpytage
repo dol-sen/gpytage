@@ -40,6 +40,8 @@ class gpytagemain:
 		create_lists()
 		create_treeiter() #populate the left panel
 
+		self.unsaved = False
+
 		###########UIManager#############################
 		self.uimanager = gtk.UIManager()
 		self.accelgroup = self.uimanager.get_accel_group()
@@ -116,6 +118,9 @@ class gpytagemain:
 
 	############Signal Functions###########################
 	def destroy(self, widget, data=None):
+		if self.unsaved:
+			gtk.main_quit()
+			return
 		title = self.window.get_title()
 		if title != "GPytage":
 			status, uD = unsavedDialog()
@@ -127,7 +132,8 @@ class gpytagemain:
 			gtk.main_quit()
 
 	def delete_event(self, widget, event, data=None):
-		return False
+		self.destroy(widget)
+		return True
 
 	############Menu Functions. ###########################
 	def about(self, arg): #wth is arg
