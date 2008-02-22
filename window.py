@@ -38,6 +38,7 @@ def createMessageDialog(parent, flags, type, buttons, mtitle, message_format):
 
 def unsavedDialog():
 	"""Spawn Generic Yes/No Dialog when unsaved changes are present."""
-	uD = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_YES_NO, message_format="You have unsaved changes. If you proceed these changes will be lost.")
+	uD = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_YES_NO, message_format="You have unsaved changes. If you proceed these changes will be lost.\n\n Do you wish to continue?")
+	uD.set_title("You have unsaved changes")
 	return uD.run() == gtk.RESPONSE_YES, uD
 

@@ -118,9 +118,6 @@ class gpytagemain:
 
 	############Signal Functions###########################
 	def destroy(self, widget, data=None):
-		if self.unsaved:
-			gtk.main_quit()
-			return
 		title = self.window.get_title()
 		if title != "GPytage":
 			status, uD = unsavedDialog()
