@@ -116,7 +116,15 @@ class gpytagemain:
 
 	############Signal Functions###########################
 	def destroy(self, widget, data=None):
-		gtk.main_quit()
+		title = self.window.get_title()
+		if title != "GPytage":
+			status, uD = unsavedDialog()
+			if status:
+				gtk.main_quit()
+			else:
+				uD.hide()
+		else:
+			gtk.main_quit()
 
 	def delete_event(self, widget, event, data=None):
 		return False
@@ -193,7 +201,7 @@ if __name__ == "__main__":
 			#i18n_DIR = DATA_PATH + 'i18n'
 			RUN_LOCAL = True
 			import save
-			from window import title, window
+			from window import title, window, unsavedDialog
 			import leftpanel
 			import rightpanel
 			from panelfunctions import selected
@@ -215,7 +223,7 @@ if __name__ == "__main__":
 			from gpytage import save
 			from gpytage import leftpanel, rightpanel
 			from gpytage import config
-			from gpytage.window import title, window
+			from gpytage.window import title, window, unsavedDialog
 			from gpytage.version import version
 			from gpytage.datastore import datastore,config_files,create_treeiter,create_lists
 			from gpytage.helper import reload

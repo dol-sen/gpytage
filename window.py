@@ -27,6 +27,7 @@ import gtk
 window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 
 def title(text):
+	"""Set the title of the window. Used to indicate changes *"""
 	window.set_title(text)
 
 def createMessageDialog(parent, flags, type, buttons, mtitle, message_format):
@@ -38,5 +39,5 @@ def createMessageDialog(parent, flags, type, buttons, mtitle, message_format):
 def unsavedDialog():
 	"""Spawn Generic Yes/No Dialog when unsaved changes are present."""
 	uD = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_YES_NO, message_format="You have unsaved changes. If you proceed these changes will be lost.")
-	return uD.run() == gtk.RESPONSE_YES
+	return uD.run() == gtk.RESPONSE_YES, uD
 
