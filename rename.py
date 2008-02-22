@@ -27,7 +27,7 @@ import datastore
 from helper import folder_scan, folder_walk
 from config import get_config_path, config_files
 
-class rename(): #this is mostly just a test... this may be removed entirely
+class rename: #this is mostly just a test... this may be removed entirely
 	#Ideally we should be able to rename a file with rightclick/current selected
 	def renameDialog(self, window):
 		rDialog = gtk.Dialog('Rename File', window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
