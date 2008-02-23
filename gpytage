@@ -121,9 +121,12 @@ class gpytagemain:
 		title = self.window.get_title()
 		if title != "GPytage":
 			status, uD = unsavedDialog()
-			if status:
+			if status == -8:   #YES
 				gtk.main_quit()
-			else:
+			elif status == 1:  #SAVE
+				self.save()
+				gtk.main_quit()
+			else:              #NO and other unhandled signals
 				uD.hide()
 		else:
 			gtk.main_quit()
@@ -157,7 +160,7 @@ class gpytagemain:
 	def collapse(self, arg):
 		leftpanel.leftview.collapse_all()
 			
-	def save(self, arg):
+	def save(self, *args):
 		save.SaveFile().save()
 
 	def new(self, arg):
