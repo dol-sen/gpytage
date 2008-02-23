@@ -71,6 +71,7 @@ def get_dragdestdata(treeview, context, x, y, selection, info, etime):
 		return
 
 def selected(treeview): #helper function
+	""" Return iter of currently selected row """
 	selection = treeview.get_selection()
 	model, iter = selection.get_selected()
 	try:
@@ -80,6 +81,7 @@ def selected(treeview): #helper function
 	return iter, value
 
 def fileEdited(): #leftpanel
+	""" Mark a file as edited """
 	from leftpanel import leftview
 	model = leftview.get_model()
 	iter, value = selected(leftview)

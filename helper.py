@@ -28,7 +28,8 @@ from config import get_config_path, config_files
 import config
 import os
 
-def folder_scan():#returns what files are files/dirs wrt portage
+def folder_scan():
+	""" Return files and directories in the portage config path """
 	config_path = get_config_path()
 	dirs = []
 	file = []
@@ -43,7 +44,8 @@ def folder_scan():#returns what files are files/dirs wrt portage
 			continue
 	return dirs, file
 
-def folder_walk(dir):#returns list of files within dirs
+def folder_walk(dir):
+	""" Return list of files in specified directory """
 	config_path = get_config_path()
 	dir_files = []
 	for i in os.listdir(config_path+dir):
@@ -51,6 +53,7 @@ def folder_walk(dir):#returns list of files within dirs
 	return dir_files
 
 def reload():
+	""" Perform a revert, load saved data """
 	import datastore
 	datastore.datastore.clear()
 	for name, store in datastore.lists.iteritems():
@@ -60,7 +63,8 @@ def reload():
 	from window import title
 	title("GPytage")
 
-def scan_contents(arg):#returns data in specified file
+def scan_contents(arg):
+	""" Return data in specified file """
 	config_path = get_config_path()
 	fmessage = ""
 	writemessage = ""
