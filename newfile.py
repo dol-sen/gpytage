@@ -24,7 +24,8 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 import datastore
-from window import title
+from window import title, unsavedDialog, window
+from save import SaveFile
 from helper import folder_scan
 from config import get_config_path, config_files
 
@@ -92,7 +93,7 @@ def findMatch(model, path, iter, user_data): #This can't return a value... stupi
 
 def convert(window):
 	convertd = gtk.Dialog('Convert file to subfile', window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
-	convertd.vbox.pack_start(gtk.Label("This will convert a normal file to a subfile under a directory named after the original file\n Warning: This operation cannot be undone and unsaved changes will be lost")) #note: see convertFile
+	convertd.vbox.pack_start(gtk.Label("This will convert a normal file to a subfile under a directory named after the original file. \nWarning: This operation cannot be undone\n")) #note: see convertFile
 
 	dirs,files = folder_scan()
 	cb = gtk.combo_box_new_text() #combobox with files that are NOT subfiles
@@ -132,6 +133,16 @@ def convertFile(arg, cb, ftext, convertd, window):
 	if index >= 0: # prevent index errors
 		cbselection =  model[index][0] #current selected item
 		ftextselection = ftext.get_text()
+		if window.get_title() != "GPytage":
+			status, uD = unsavedDialog()
+			if status == -8:
+				uD.hide()
+			elif status == 1:
+				SaveFile().save()
+				uD.hide()
+			else:
+				uD.hide()
+				return
 		if len(ftextselection):
 			#create an old file
 			nfile = ftextselection
