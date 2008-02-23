@@ -29,7 +29,8 @@ from save import SaveFile
 from helper import folder_scan
 from config import get_config_path, config_files
 
-def new(window):#create a new subfile
+def new(window):
+	""" Spawn the new subfile dialog """
 	newd = gtk.Dialog('Create new Subfile', window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
 	dirs,files = folder_scan()
 	#eventually you will be able to create a new subfile from a files
@@ -59,6 +60,7 @@ def new(window):#create a new subfile
 	newd.run()
 
 def close_subfile(arg, newd):
+	""" Close subfile dialog """
 	newd.hide()
 
 def add_subfile(arg, cb, ftext, newd, window):
@@ -77,6 +79,7 @@ def add_subfile(arg, cb, ftext, newd, window):
 matched = False #wtf is this for?
 
 def addToMemory(parent, filename):
+	""" Adds new subfile to memory """
 	datastore.datastore.foreach(findMatch, [parent, filename])
 	msg= '#This file was created by GPytage'
 	datastore.lists[filename] = gtk.ListStore(str, str, bool, str)
@@ -92,6 +95,7 @@ def findMatch(model, path, iter, user_data): #This can't return a value... stupi
 		model.append(iter, [edited_file, None, False, user_data[0]])
 
 def convert(window):
+	""" Spawn the convert file dialog """
 	convertd = gtk.Dialog('Convert file to subfile', window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
 	convertd.vbox.pack_start(gtk.Label("This will convert a normal file to a subfile under a directory named after the original file. \nWarning: This operation cannot be undone\n")) #note: see convertFile
 
