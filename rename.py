@@ -26,6 +26,8 @@ import gtk
 import datastore
 from helper import folder_scan, folder_walk
 from config import get_config_path, config_files
+from save import SaveFile
+from window import title, unsavedDialog, window
 
 class rename: #this is mostly just a test... this may be removed entirely
 	#Ideally we should be able to rename a file with rightclick/current selected
@@ -70,6 +72,16 @@ class rename: #this is mostly just a test... this may be removed entirely
 		if index >= 0: # prevent index errors
 			oldName =  model[index][0]
 			newName = ftext.get_text()
+			if window.get_title() =! "GPytage":
+				status, uD = unsavedDialog()
+				if status == -8:
+					uD.hide()
+				elif status == 1:
+					SaveFile().save()
+					uD.hide()
+				else:
+					uD.hide()
+					return
 			if len(newName):
 				#inline function to get our values
 				def findMatch(model, path, iter, user_data):
