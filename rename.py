@@ -72,7 +72,7 @@ class rename: #this is mostly just a test... this may be removed entirely
 		if index >= 0: # prevent index errors
 			oldName =  model[index][0]
 			newName = ftext.get_text()
-			if window.get_title() =! "GPytage":
+			if window.get_title() != "GPytage":
 				status, uD = unsavedDialog()
 				if status == -8:
 					uD.hide()
