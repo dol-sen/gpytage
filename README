@@ -11,3 +11,7 @@ Installation is accomplished through the setup.py script.
 
 `python setup.py install`
 
+== RUNNING FROM THIS FOLDER ==
+To run gpytage from this folder without installing:
+
+`./gpytage -l`
