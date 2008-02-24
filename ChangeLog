@@ -1,4 +1,11 @@
-Version 0.2.0:
+Current svn:
+	* Fixed -v (bug #10822)
+	* Added ability to convert package files to directory structure
+	* Ability to rename files
+	* Generic unsaved changes dialog now present
+	* misc other fixes
+
+Version 0.2.0_beta:
 	* Brand new dual panel view
 	* Dialogs added for IOErrors
 	* Drag and Drop fixed
