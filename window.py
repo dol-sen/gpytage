@@ -55,5 +55,6 @@ def statusbar():
 	""" Generic statusbar for dialogs. """
 	sbar = gtk.Statusbar()
 	smsg = sbar.get_context_id("standard message")
+	sbar.set_has_resize_grip(False)
 	return sbar, smsg
 	
