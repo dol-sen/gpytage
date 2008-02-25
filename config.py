@@ -23,7 +23,8 @@
 
 from sys import exit, stderr
 
-config_files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use', 'sets']
+config_files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use', 'sets', 'bashrc', \
+		'color.map', 'modules', 'mirrors', 'categories']
 test_path = '/etc/testportage/'
 
 try:
