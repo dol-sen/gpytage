@@ -66,6 +66,7 @@ def get_dragdestdata(treeview, context, x, y, selection, info, etime):
 			#print 'else'
 		from window import title
 		title("* GPytage")
+		fileEdited()
 		if context.action == gtk.gdk.ACTION_MOVE:
 			context.finish(True, True, etime)
 		return
