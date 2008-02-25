@@ -43,6 +43,7 @@ class rename: #this is mostly just a test... this may be removed entirely
 		for i in subfiles:
 			cb.append_text(i)
 		cb.set_active(0)
+
 		sbox = gtk.HBox()
 		sbox.pack_start(gtk.Label("File to rename"))
 		sbox.pack_start(cb)
@@ -58,6 +59,15 @@ class rename: #this is mostly just a test... this may be removed entirely
 		closeb = gtk.Button("Cancel",gtk.STOCK_CLOSE)
 		addb.connect("clicked", self.renameFile, cb, ftext, rDialog, window)
 		closeb.connect("clicked", self.close_renameD, rDialog)
+
+		if subfiles == []:
+			from window import statusbar
+			sbar, smsg = statusbar()
+			sbar.pop(smsg)
+			sbar.push(smsg, "Warning: No subfiles detected")
+			sbar.show()
+			rDialog.vbox.pack_start(sbar)
+
 		rDialog.action_area.pack_start(closeb)
 		rDialog.action_area.pack_start(addb)
 		rDialog.show_all()

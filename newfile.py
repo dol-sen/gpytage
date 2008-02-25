@@ -124,6 +124,15 @@ def convert(window):
 	closeb = gtk.Button("Close",gtk.STOCK_CLOSE)
 	convertb.connect("clicked", convertFile, cb, ftext, convertd, window)
 	closeb.connect("clicked", close_subfile, convertd)
+
+	if files == []:
+		from window import statusbar
+		sbar, smsg = statusbar()
+		sbar.pop(smsg)
+		sbar.push(smsg, "Warning: No files detected")
+		sbar.show()
+		convertd.vbox.pack_start(sbar)
+
 	convertd.action_area.pack_start(closeb)
 	convertd.action_area.pack_start(convertb)
 
