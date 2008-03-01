@@ -105,14 +105,14 @@ def edited_cb(cell, path, new_text, col):
 
 def insertrow(arg):
 	treeview = rightview
-	iter, value = selected(treeview)
-	model = treeview.get_model()
-	if value == True:
-		parent = model.get_value(iter, 3)
-		new = model.insert_after(iter, [None, None, True, parent])
-		path = model.get_path(new)
-		treeview.set_cursor_on_cell(path, namecol, cell, True)
-		title("* GPytage")
+	model, iterdict = mselected(treeview)
+	for iref,value in iterdict.iteritems(): #Should only have 1 via right click.. funky results with accelerator.
+		if value == True:
+			parent = model.get_value(iref, 3)
+			new = model.insert_after(iref, [None, None, True, parent])
+			path = model.get_path(new)
+			treeview.set_cursor_on_cell(path, namecol, cell, True)
+			title("* GPytage")
 
 def deleterow(arg):
 	treeview = rightview
