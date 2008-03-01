@@ -3,7 +3,7 @@
 # GPytage rightpanel.py module
 #
 ############################################################################
-#    Copyright (C) 2007 by Kenneth Prugh                                   #
+#    Copyright (C) 2008 by Kenneth Prugh                                   #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -104,6 +104,7 @@ def edited_cb(cell, path, new_text, col):
 	return
 
 def insertrow(arg):
+	""" Insert row below selected row(s) """
 	treeview = rightview
 	model, iterdict = mselected(treeview)
 	for iref,value in iterdict.iteritems(): #Should only have 1 via right click.. funky results with accelerator.
@@ -115,10 +116,10 @@ def insertrow(arg):
 			title("* GPytage")
 
 def deleterow(arg):
+	""" Delete selected row(s) """
 	treeview = rightview
 	model, iterdict = mselected(treeview)
 	for iref,value in iterdict.iteritems():
-		print iref,value
 		if value == True:
 			model.remove(iref)
 			fileEdited()
