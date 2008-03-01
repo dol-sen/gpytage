@@ -4,6 +4,7 @@ Current svn:
 	* Ability to rename files
 	* Generic unsaved changes dialog now present
 	* Added desktop-entry file
+	* Added support for selecting more than item at once
 	* misc other fixes
 
 Version 0.2.0_beta:

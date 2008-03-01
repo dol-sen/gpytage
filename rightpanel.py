@@ -25,7 +25,7 @@ import pygtk; pygtk.require("2.0")
 import gtk
 import datastore
 from window import title
-from panelfunctions import selected, mselected, fileEdited
+from panelfunctions import mselected, fileEdited
 
 #rightview = gtk.TreeView(datastore.lists['package.use']) #create the container
 rightview = gtk.TreeView()
