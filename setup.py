@@ -14,4 +14,5 @@ setup(name="gpytage",
 	package_dir={'gpytage':''},
 	packages=['gpytage'],
 	scripts=["gpytage"],
+	data_files=[("/usr/share/applications", ["gpytage.desktop"])],
 )

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Name=GPytage
+Comment=GTK Utility to help manage Portage's user config files
+Exec=gpytage
+Type=Application
+Categories=Utility;

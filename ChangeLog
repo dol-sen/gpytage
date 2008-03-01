@@ -3,6 +3,7 @@ Current svn:
 	* Added ability to convert package files to directory structure
 	* Ability to rename files
 	* Generic unsaved changes dialog now present
+	* Added desktop-entry file
 	* misc other fixes
 
 Version 0.2.0_beta:
