@@ -81,6 +81,20 @@ def selected(treeview): #helper function
 		value = False
 	return iter, value
 
+def mselected(treeview):
+	""" Return model and dictionary of irefs:values from currently selected rows """
+	selection = treeview.get_selection()
+	model, iters = selection.get_selected_rows() #iters == paths
+	iterdict = {}
+	for i in iters:
+		iref = gtk.TreeRowReference(model, i)
+		try:
+			iter = model.get_iter(i)
+			iterdict[iter] = model.get_value(iter, 2)
+		except:
+			iterdict[iref] = False
+	return model, iterdict
+
 def fileEdited(): #leftpanel
 	""" Mark a file as edited """
 	from leftpanel import leftview
