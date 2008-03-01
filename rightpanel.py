@@ -107,10 +107,10 @@ def insertrow(arg):
 	""" Insert row below selected row(s) """
 	treeview = rightview
 	model, iterdict = mselected(treeview)
-	for iref,value in iterdict.iteritems(): #Should only have 1 via right click.. funky results with accelerator.
+	for iter,value in iterdict.iteritems(): #Should only have 1 via right click.. funky results with accelerator.
 		if value == True:
-			parent = model.get_value(iref, 3)
-			new = model.insert_after(iref, [None, None, True, parent])
+			parent = model.get_value(iter, 3)
+			new = model.insert_after(iter, [None, None, True, parent])
 			path = model.get_path(new)
 			treeview.set_cursor_on_cell(path, namecol, cell, True)
 			title("* GPytage")
@@ -119,9 +119,9 @@ def deleterow(arg):
 	""" Delete selected row(s) """
 	treeview = rightview
 	model, iterdict = mselected(treeview)
-	for iref,value in iterdict.iteritems():
+	for iter,value in iterdict.iteritems():
 		if value == True:
-			model.remove(iref)
+			model.remove(iter)
 			fileEdited()
 			title("* GPytage")
 	
