@@ -25,10 +25,14 @@ import pygtk; pygtk.require("2.0")
 import gtk
 import datastore
 from window import title
-from panelfunctions import selected, fileEdited
+from panelfunctions import selected, mselected, fileEdited
 
 #rightview = gtk.TreeView(datastore.lists['package.use']) #create the container
 rightview = gtk.TreeView()
+rightselection = rightview.get_selection()
+
+#set MULTIPLE selection mode
+rightselection.set_mode(gtk.SELECTION_MULTIPLE)
 
 def setListModel(list): #we need to switch the model on click
 	try:
@@ -112,12 +116,13 @@ def insertrow(arg):
 
 def deleterow(arg):
 	treeview = rightview
-	iter, value = selected(treeview)
-	model = treeview.get_model()
-	if value == True:
-		model.remove(iter)
-		fileEdited()
-		title("* GPytage")
+	model, iterdict = mselected(treeview)
+	for iref,value in iterdict.iteritems():
+		print iref,value
+		if value == True:
+			model.remove(iref)
+			fileEdited()
+			title("* GPytage")
 	
 def clicked(view, event):#needs updating from dual panels
 	if event.button == 3:
