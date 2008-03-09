@@ -27,28 +27,31 @@ import pdb
 import datastore
 
 def get_dragdata(treeview, context, selection, target_id, etime):
-	iter, value = selected(treeview)
-	model = treeview.get_model()
-	print treeview
-	if value == True:
-		global data
-		data = []
-		data.append(model.get_value(iter, 0))
-		data.append(model.get_value(iter, 1))
-		data.append(model.get_value(iter, 2))
-		data.append(model.get_value(iter, 3))
-		selection.set(selection.target, 0, str(data[0]))
-		selection.set(selection.target, 1, str(data[1]))
-		selection.set(selection.target, 2, str(data[2]))
-		selection.set(selection.target, 2, str(data[3]))
+	model, iterdict = mselected(treeview)
+	print "fmodel",model
+	for iter,value in iterdict.iteritems():
+		if value == True:
+			global data
+			data = []
+			data.append(model.get_value(iter, 0))
+			data.append(model.get_value(iter, 1))
+			data.append(model.get_value(iter, 2))
+			data.append(model.get_value(iter, 3))
+			selection.set(selection.target, 0, str(data[0]))
+			selection.set(selection.target, 1, str(data[1]))
+			selection.set(selection.target, 2, str(data[2]))
+			selection.set(selection.target, 2, str(data[3]))
 
 def get_dragdestdata(treeview, context, x, y, selection, info, etime):
-	iter, value = selected(treeview)
+	iter, value = cselected(treeview,x,y)
 	model = treeview.get_model()
-	#print treeview
+	print "model",model
 	if value == True:
 		ldata = data
+		print data
+		print selection.data
 		drop_info = treeview.get_dest_row_at_pos(x,y)
+		print "eep"
 		if drop_info:
 			path, position = drop_info
 			iteri = model.get_iter(path)
@@ -63,13 +66,28 @@ def get_dragdestdata(treeview, context, x, y, selection, info, etime):
 				return
 		else:
 			model.append([data])
-			#print 'else'
+			print 'else'
 		from window import title
 		title("* GPytage")
 		fileEdited()
 		if context.action == gtk.gdk.ACTION_MOVE:
 			context.finish(True, True, etime)
 		return
+	else:
+		print "not true :("
+
+def cselected(treeview, x, y):
+	""" Return iter:value from current coordinates """
+	selection = treeview.get_dest_row_at_pos(x,y) #tuple path,dropposition
+	model = treeview.get_model()
+	iter = model.get_iter(selection[0])
+	try:
+		value = model.get_value(iter,2)
+	except:
+		value = False
+	print model.get_value(iter,0)
+	return iter,value
+
 
 def selected(treeview): #helper function
 	""" Return iter of currently selected row """
