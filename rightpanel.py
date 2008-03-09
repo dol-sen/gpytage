@@ -88,17 +88,18 @@ scroll.add_with_viewport(rightview)
 
 ############Drag and Drop####################
 rightview.set_reorderable(True) # allow inline drag and drop
-#rightview.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, [('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
-#rightview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
-#import panelfunctions
-#rightview.connect("drag_data_get", panelfunctions.get_dragdata)
-#rightview.connect("drag_data_received", panelfunctions.get_dragdestdata)
-def dragged(*args):
-	""" Callback for drag-drop signal from rightview """
-	fileEdited()
-	title("* GPytage")
+rightview.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, [('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+rightview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
+import panelfunctions
+rightview.connect("drag_data_get", panelfunctions.get_dragdata)
+rightview.connect("drag_data_received", panelfunctions.get_dragdestdata)
+#def dragged(*args):
+#	""" Callback for drag-drop signal from rightview """
+#	fileEdited()
+#	title("* GPytage")
 
-rightview.connect("drag-drop", dragged)
+#rightview.connect("drag-drop", dragged)
+#rightview.connect("drag-motion", switchListView) #switch the right panel to what we are dragging over on the leftpanel. 
 
 #Callbacks
 def edited_cb(cell, path, new_text, col):
