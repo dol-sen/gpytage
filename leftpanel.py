@@ -30,7 +30,6 @@ import rightpanel
 leftview = gtk.TreeView(datastore.datastore) #create the container
 
 leftview.set_search_column(0) #search broken atm #child?
-leftview.set_reorderable(True) # allow inline drag and drop
 #columns
 namecol = gtk.TreeViewColumn('Package File')
 testcol = gtk.TreeViewColumn('Flags')
@@ -68,11 +67,13 @@ scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 scroll.add_with_viewport(leftview)
 
 ############Drag and Drop####################
-leftview.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, [('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
-leftview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
-import panelfunctions
-leftview.connect("drag_data_get", panelfunctions.get_dragdata)
-leftview.connect("drag_data_received", panelfunctions.get_dragdestdata)
+#note: is DND even needed for left panel?
+#leftview.set_reorderable(True) # allow inline drag and drop
+#leftview.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, [('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+#leftview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
+#import panelfunctions
+#leftview.connect("drag_data_get", panelfunctions.get_dragdata)
+#leftview.connect("drag_data_received", panelfunctions.get_dragdestdata)
 
 ###########some variables####################
 last_parent = None
