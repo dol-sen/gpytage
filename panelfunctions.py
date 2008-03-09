@@ -103,3 +103,19 @@ def fileEdited(): #leftpanel
 	oldName = model.get_value(iter, 0).strip('*')
 	newName = "*%s" % oldName
 	model.set_value(iter, 0, newName)
+
+def switchListView(widget, drag_context, x, y, timestamp, *args):
+	""" Switches rightview to selected leftview drop target during drag operation """
+	from leftpanel import leftview
+	import rightpanel
+	model = leftview.get_model()
+	path = leftview.get_dest_row_at_pos(x, y)
+	print path
+	iter = model.get_iter(path[0])
+	parent = model.get_value(iter, 3).strip('*')
+	list = model.get_value(iter, 0).strip('*')
+	if parent.strip('*') == 'package.' + list:
+		rightpanel.setListModel(parent.strip('*'))
+	else:
+		rightpanel.setListModel(list.strip('*'))
+
