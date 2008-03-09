@@ -94,9 +94,12 @@ rightview.set_reorderable(True) # allow inline drag and drop
 #rightview.connect("drag_data_get", panelfunctions.get_dragdata)
 #rightview.connect("drag_data_received", panelfunctions.get_dragdestdata)
 def dragged(*args):
+	""" Callback for drag-drop signal from rightview """
 	fileEdited()
 	title("* GPytage")
+
 rightview.connect("drag-drop", dragged)
+
 #Callbacks
 def edited_cb(cell, path, new_text, col):
 	model = rightview.get_model()
