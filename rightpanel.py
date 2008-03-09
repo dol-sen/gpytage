@@ -46,7 +46,6 @@ def setListModel(list): #we need to switch the model on click
 		return
 
 rightview.set_search_column(0) #search broken atm #child?
-rightview.set_reorderable(True) # allow inline drag and drop
 #columns
 namecol = gtk.TreeViewColumn('Value')
 testcol = gtk.TreeViewColumn('Flags')
@@ -88,12 +87,16 @@ scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 scroll.add_with_viewport(rightview)
 
 ############Drag and Drop####################
-rightview.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, [('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
-rightview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
-import panelfunctions
-rightview.connect("drag_data_get", panelfunctions.get_dragdata)
-rightview.connect("drag_data_received", panelfunctions.get_dragdestdata)
-
+rightview.set_reorderable(True) # allow inline drag and drop
+#rightview.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, [('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+#rightview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
+#import panelfunctions
+#rightview.connect("drag_data_get", panelfunctions.get_dragdata)
+#rightview.connect("drag_data_received", panelfunctions.get_dragdestdata)
+def dragged(*args):
+	fileEdited()
+	title("* GPytage")
+rightview.connect("drag-drop", dragged)
 #Callbacks
 def edited_cb(cell, path, new_text, col):
 	model = rightview.get_model()
