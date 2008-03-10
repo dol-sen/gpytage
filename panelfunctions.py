@@ -26,10 +26,12 @@ import gtk
 import pdb
 import datastore
 
-def get_dragdata(treeview, context, selection, target_id, etime):
+def get_dragdata(treeview, context, selection, target_id, etime): #not used anymore
 	model, iterdict = mselected(treeview)
 	print "fmodel",model
+	print "GET_DRAGDATA"
 	for iter,value in iterdict.iteritems():
+		print iter,value,"ITERLOOP"
 		if value == True:
 			global data
 			data = []
@@ -41,6 +43,7 @@ def get_dragdata(treeview, context, selection, target_id, etime):
 			selection.set(selection.target, 1, str(data[1]))
 			selection.set(selection.target, 2, str(data[2]))
 			selection.set(selection.target, 2, str(data[3]))
+			print data,"DATA FROM DRAGDATA"
 
 def get_dragdestdata(treeview, context, x, y, selection, info, etime):
 	iter, value = cselected(treeview,x,y)
@@ -48,8 +51,8 @@ def get_dragdestdata(treeview, context, x, y, selection, info, etime):
 	print "model",model
 	if value == True:
 		ldata = data
-		print data
-		print selection.data
+		print data,"global data"
+		print selection.data,"selection data"
 		drop_info = treeview.get_dest_row_at_pos(x,y)
 		print "eep"
 		if drop_info:
@@ -75,6 +78,28 @@ def get_dragdestdata(treeview, context, x, y, selection, info, etime):
 		return
 	else:
 		print "not true :("
+
+def drag_begin_signal(treeview, dragcontext, *args):
+	""" Grab model and data begin dragged """
+	model, iterdict = mselected(treeview)
+	global bmodel
+	global data
+	global biter
+	bmodel = model
+	data = []
+	for iter,value in iterdict.iteritems():
+		data.append(model.get_value(iter, 0))
+		data.append(model.get_value(iter, 1))
+		data.append(model.get_value(iter, 2))
+		data.append(model.get_value(iter, 3))
+		biter = iter
+	print model,"BEGIN MODEL",data,"BEGIN DATA"
+
+def drag_data_delete_signal(treeview, *args):
+	""" Delete begin signals data """
+	print "meep"
+	bmodel.remove(biter)
+
 
 def cselected(treeview, x, y):
 	""" Return iter:value from current coordinates """
@@ -128,6 +153,9 @@ def switchListView(widget, drag_context, x, y, timestamp, *args):
 	import rightpanel
 	model = leftview.get_model()
 	path = leftview.get_dest_row_at_pos(x, y)
+	leftview.expand_row(path[0], True)
+	treeselection = leftview.get_selection()
+	treeselection.select_path(path[0])
 	print path
 	iter = model.get_iter(path[0])
 	parent = model.get_value(iter, 3).strip('*')

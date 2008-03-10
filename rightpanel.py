@@ -91,7 +91,9 @@ rightview.set_reorderable(True) # allow inline drag and drop
 rightview.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, [('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
 rightview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
 import panelfunctions
-rightview.connect("drag_data_get", panelfunctions.get_dragdata)
+rightview.connect("drag_begin", panelfunctions.drag_begin_signal)
+rightview.connect("drag_data_delete", panelfunctions.drag_data_delete_signal)
+#rightview.connect("drag_data_get", panelfunctions.get_dragdata)
 rightview.connect("drag_data_received", panelfunctions.get_dragdestdata)
 #def dragged(*args):
 #	""" Callback for drag-drop signal from rightview """
