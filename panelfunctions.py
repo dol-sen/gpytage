@@ -77,7 +77,27 @@ def get_dragdestdata(treeview, context, x, y, selection, info, etime):
 			context.finish(True, True, etime)
 		return
 	else:
-		print "not true :("
+		# rightpanel -> leftpanel logic goes here.
+		#set that we edited it
+		parent = model.get_value(iter, 3).strip('*')
+		oldName = model.get_value(iter, 0).strip('*')
+		print parent
+		if model.iter_children(iter):#has children [subfiles]
+			print "has children"
+		else: #doesn't have children
+			newName = "*%s" % oldName
+			model.set_value(iter, 0, newName)
+			# append the data
+			print data,"DATA TO APPEND"
+			datastore.lists[oldName].append(data)
+			print "appended"
+			#nuke what we moved
+			from leftpanel import leftview
+			bmodel.remove(biter)
+			lmodel = leftview.get_model()
+			lselection.select_path(lmodel.get_path(lselected[1]))
+			fileEdited()
+
 
 def drag_begin_signal(treeview, dragcontext, *args):
 	""" Grab model and data begin dragged """
@@ -85,6 +105,11 @@ def drag_begin_signal(treeview, dragcontext, *args):
 	global bmodel
 	global data
 	global biter
+	global lselection
+	global lselected
+	from leftpanel import leftview
+	lselection = leftview.get_selection()
+	lselected = lselection.get_selected()
 	bmodel = model
 	data = []
 	for iter,value in iterdict.iteritems():
@@ -95,11 +120,11 @@ def drag_begin_signal(treeview, dragcontext, *args):
 		biter = iter
 	print model,"BEGIN MODEL",data,"BEGIN DATA"
 
-def drag_data_delete_signal(treeview, *args):
+def drag_data_delete_signal(*args):
 	""" Delete begin signals data """
 	print "meep"
 	bmodel.remove(biter)
-
+	
 
 def cselected(treeview, x, y):
 	""" Return iter:value from current coordinates """
@@ -148,20 +173,19 @@ def fileEdited(): #leftpanel
 	model.set_value(iter, 0, newName)
 
 def switchListView(widget, drag_context, x, y, timestamp, *args):
-	""" Switches rightview to selected leftview drop target during drag operation """
+	""" Hilights leftview drop target during drag operation """
 	from leftpanel import leftview
 	import rightpanel
 	model = leftview.get_model()
 	path = leftview.get_dest_row_at_pos(x, y)
 	leftview.expand_row(path[0], True)
+	#iter = model.get_iter(path[0])
 	treeselection = leftview.get_selection()
 	treeselection.select_path(path[0])
-	print path
-	iter = model.get_iter(path[0])
-	parent = model.get_value(iter, 3).strip('*')
-	list = model.get_value(iter, 0).strip('*')
-	if parent.strip('*') == 'package.' + list:
-		rightpanel.setListModel(parent.strip('*'))
-	else:
-		rightpanel.setListModel(list.strip('*'))
+	#parent = model.get_value(iter, 3).strip('*')
+	#list = model.get_value(iter, 0).strip('*')
+	#if parent.strip('*') == 'package.' + list:
+	#	rightpanel.setListModel(parent.strip('*'))
+	#else:
+	#	rightpanel.setListModel(list.strip('*'))
 

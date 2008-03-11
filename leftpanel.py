@@ -71,9 +71,9 @@ scroll.add_with_viewport(leftview)
 #leftview.set_reorderable(True) # allow inline drag and drop
 #leftview.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, [('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
 leftview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
-#import panelfunctions
+import panelfunctions
 #leftview.connect("drag_data_get", panelfunctions.get_dragdata)
-#leftview.connect("drag_data_received", panelfunctions.get_dragdestdata)
+leftview.connect("drag_data_received", panelfunctions.get_dragdestdata)
 leftview.connect("drag-motion", switchListView) #switch the right panel to what we are dragging over on the leftpanel. 
 
 ###########some variables####################
