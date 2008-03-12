@@ -52,6 +52,7 @@ class gpytagemain:
 					<menuitem action="New" />
 					<menuitem action="Split" />
 					<menuitem action="Rename" />
+					<menuitem action="Delete" />
 					<menuitem action="Save" />
 					<menuitem action="Revert" />
 					<menuitem action="Quit" />
@@ -76,6 +77,7 @@ class gpytagemain:
 			('New', gtk.STOCK_NEW, '_New Subfile', '<Control>n', 'New file', self.new),
 			('Split', gtk.STOCK_CONVERT, '_Convert file->subfile', None, 'Convert file', self.convert),
 			('Rename', gtk.STOCK_SAVE_AS, '_Rename subfile', None, 'Rename file', self.rename),
+			('Delete', gtk.STOCK_DELETE, '_Delete subfile', None, 'Delete file', self.deleteFile),
 			('File', None, '_File'),
 			('Save', gtk.STOCK_SAVE, '_Save', '<Control>s', 'Save changes', self.save),
 			('Edit', None, '_Edit'),
@@ -162,13 +164,16 @@ class gpytagemain:
 		save.SaveFile().save()
 
 	def new(self, arg):
-		newfile.new(self.window)
+		subfile.new(self.window)
 
 	def convert(self, arg):
-		newfile.convert(self.window)
+		subfile.convert(self.window)
 
 	def rename(self, arg):
 		rename.rename().renameDialog(self.window)
+
+	def deleteFile(self, *args):
+		pass
 
 	def main(self):
 		gtk.main()
@@ -213,7 +218,7 @@ if __name__ == "__main__":
 			from version import version
 			from datastore import datastore,config_files,create_treeiter,create_lists
 			from helper import reload
-			import newfile
+			import subfile
 			import rename
 			print "GPytage: starting gpytage()"
 
@@ -231,7 +236,7 @@ if __name__ == "__main__":
 			from gpytage.version import version
 			from gpytage.datastore import datastore,config_files,create_treeiter,create_lists
 			from gpytage.helper import reload
-			from gpytage import newfile
+			from gpytage import subfile
 			from gpytage import rename
 			# load prefs
 			print "GPytage: starting gpytage()"

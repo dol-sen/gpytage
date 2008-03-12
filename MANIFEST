@@ -4,7 +4,7 @@ config.py
 datastore.py
 helper.py
 leftpanel.py
-newfile.py
+subfile.py
 panelfunctions.py
 rightpanel.py
 save.py

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# GPytage newfile.py subfile module
+# GPytage subfile module
 #
 ############################################################################
 #    Copyright (C) 2007 by Kenneth Prugh                                   #
