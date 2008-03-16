@@ -26,7 +26,7 @@ import gtk
 import datastore
 from window import title, unsavedDialog, window
 from save import SaveFile
-from helper import folder_scan
+from helper import folder_scan, folder_walk
 from config import get_config_path, config_files
 
 def new(window):
@@ -169,4 +169,84 @@ def convertFile(arg, cb, ftext, convertd, window):
 			move(pconfig+nfile, "%s/%s" %(pconfig+cbselection,nfile))
 			reload() #sigh
 			convertd.hide()
+
+def delete(window):
+	""" Spawn the delete subfile dialog """
+	deld = gtk.Dialog('Delete Subfile', window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
+	dirs,files = folder_scan()
+	cb = gtk.combo_box_new_text()
+
+	subfiles = []
+	for i in dirs:
+		data = folder_walk(i)
+		for i in data:
+			subfiles.append(i)
+	cb = gtk.combo_box_new_text()
+	for i in subfiles:
+		cb.append_text(i)
+	cb.set_active(0)
+
+	sbox = gtk.HBox()
+	sbox.pack_start(gtk.Label("File to delete:"))
+	sbox.pack_start(cb)
+	deld.vbox.pack_start(sbox)
+
+	if subfiles == []:
+		from window import statusbar
+		sbar, smsg = statusbar()
+		sbar.pop(smsg)
+		sbar.push(smsg, "Warning: No files detected")
+		sbar.show()
+		deld.vbox.pack_start(sbar)
+
+	remb = gtk.Button("Add", gtk.STOCK_DELETE)
+	closeb = gtk.Button("Close",gtk.STOCK_CLOSE)
+	remb.connect("clicked", deleteFile, cb, deld, window)
+	closeb.connect("clicked", close_subfile, deld)
+	deld.action_area.pack_start(closeb)
+	deld.action_area.pack_start(remb)
+	deld.show_all()
+	deld.run()
+
+def deleteFile(arg, cb, deld, window):
+	model = cb.get_model()
+	index = cb.get_active()
+	if index >= 0: # prevent index errors
+		if window.get_title() != "GPytage":
+			status, uD = unsavedDialog()
+			if status == -8:
+				uD.hide()
+			elif status == 1:
+				SaveFile().save()
+				uD.hide()
+			else:
+				uD.hide()
+				return
+	from os import remove
+	from config import get_config_path
+	from helper import reload
+	pconfig = get_config_path() # /
+	
+	#weeeeeeeee
+	global ddata
+	ddata = None
+	def findMatch(model, path, iter, user_data):
+		""" Get path, iter for the file to be deleted """
+		if model.get_value(iter, 0).strip('*') == user_data[0]:
+			global ddata
+			ddata = [model, path, iter]
+			return True
+	datastore.datastore.foreach(findMatch, [model[index][0]])
+	if ddata:
+		global ddata
+		model = ddata[0]
+		path = ddata[1]
+		iter = ddata[2]
+		filePath = pconfig+model.get_value(iter, 3)+'/'+model.get_value(iter, 0).strip('*')
+		remove(filePath)
+		print "deleteFILE: %s DELETED" % filePath
+		reload()
+		deld.hide()
+
+
 

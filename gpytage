@@ -173,7 +173,7 @@ class gpytagemain:
 		rename.rename().renameDialog(self.window)
 
 	def deleteFile(self, *args):
-		pass
+		subfile.delete(self.window)
 
 	def main(self):
 		gtk.main()
