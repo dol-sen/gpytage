@@ -24,7 +24,7 @@
 from sys import exit, stderr
 
 config_files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use', 'sets', 'bashrc', \
-		'color.map', 'modules', 'mirrors', 'categories']
+		'color.map', 'modules', 'mirrors', 'categories', 'profile/package.provided']
 test_path = '/etc/testportage/'
 
 try:
