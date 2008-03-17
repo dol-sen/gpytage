@@ -3,7 +3,7 @@
 # GPytage leftpanel.py module
 #
 ############################################################################
-#    Copyright (C) 2007 by Kenneth Prugh                                   #
+#    Copyright (C) 2008 by Kenneth Prugh                                   #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -29,7 +29,7 @@ from panelfunctions import switchListView
 
 leftview = gtk.TreeView(datastore.datastore) #create the container
 
-leftview.set_search_column(0) #search broken atm #child?
+leftview.set_search_column(0)
 #columns
 namecol = gtk.TreeViewColumn('Package File')
 testcol = gtk.TreeViewColumn('Flags')
@@ -68,30 +68,13 @@ scroll.add_with_viewport(leftview)
 
 ############Drag and Drop####################
 #note: is DND even needed for left panel?
-#leftview.set_reorderable(True) # allow inline drag and drop
-#leftview.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, [('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
 leftview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
 import panelfunctions
-#leftview.connect("drag_data_get", panelfunctions.get_dragdata)
 leftview.connect("drag_data_received", panelfunctions.get_dragdestdata)
 leftview.connect("drag-motion", switchListView) #switch the right panel to what we are dragging over on the leftpanel. 
 
 ###########some variables####################
 last_parent = None
-
-#Callbacks
-#def dclicked(view, path, column,): #obsolete by Brian's _clicked
-	##import rightpanel
-	#iter, value = panelfunctions.selected(view)
-	#model = view.get_model()
-	#list = model.get_value(iter, 0)
-	#parent = model.get_value(iter, 3)
-	##print list
-	##print parent
-	#if parent == 'package.' + list:
-		#rightpanel.setListModel(parent)
-	#else:
-		#rightpanel.setListModel(list)
 
 def _clicked(treeview, *args):
 	""" Handle treeview clicks """
@@ -115,14 +98,5 @@ def _clicked(treeview, *args):
 	# save current selection as last selected
 	last_parent = parent.strip('*')
 
-#can't really edit files names for now...
-#def edited_cb(self, cell, path, new_text, user_data, col):
-	#self.datastore[path][col] = new_text
-	#title("* GPytage")
-	#return
-
 #Signals
-#leftpanel.cell.connect("edited", self.edited_cb, datastore.datastore, 0)
-#leftview.connect("button_press_event", dclicked)
-#leftview.connect("row-activated", dclicked)
 leftview.connect("cursor-changed", _clicked)

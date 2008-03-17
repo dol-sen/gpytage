@@ -3,7 +3,7 @@
 # GPytage panelfunctions.py module
 #
 ############################################################################
-#    Copyright (C) 2007 by Kenneth Prugh                                   #
+#    Copyright (C) 2008 by Kenneth Prugh                                   #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -26,24 +26,24 @@ import gtk
 import pdb
 import datastore
 
-def get_dragdata(treeview, context, selection, target_id, etime): #not used anymore
-	model, iterdict = mselected(treeview)
-	print "fmodel",model
-	print "GET_DRAGDATA"
-	for iter,value in iterdict.iteritems():
-		print iter,value,"ITERLOOP"
-		if value == True:
-			global data
-			data = []
-			data.append(model.get_value(iter, 0))
-			data.append(model.get_value(iter, 1))
-			data.append(model.get_value(iter, 2))
-			data.append(model.get_value(iter, 3))
-			selection.set(selection.target, 0, str(data[0]))
-			selection.set(selection.target, 1, str(data[1]))
-			selection.set(selection.target, 2, str(data[2]))
-			selection.set(selection.target, 2, str(data[3]))
-			print data,"DATA FROM DRAGDATA"
+#def get_dragdata(treeview, context, selection, target_id, etime): #not used anymore
+#	model, iterdict = mselected(treeview)
+#	print "fmodel",model
+#	print "GET_DRAGDATA"
+#	for iter,value in iterdict.iteritems():
+#		print iter,value,"ITERLOOP"
+#		if value == True:
+#			global data
+#			data = []
+#			data.append(model.get_value(iter, 0))
+#			data.append(model.get_value(iter, 1))
+#			data.append(model.get_value(iter, 2))
+#			data.append(model.get_value(iter, 3))
+#			selection.set(selection.target, 0, str(data[0]))
+#			selection.set(selection.target, 1, str(data[1]))
+#			selection.set(selection.target, 2, str(data[2]))
+#			selection.set(selection.target, 2, str(data[3]))
+#			print data,"DATA FROM DRAGDATA"
 
 def get_dragdestdata(treeview, context, x, y, selection, info, etime):
 	iter, value = cselected(treeview,x,y)
@@ -61,10 +61,8 @@ def get_dragdestdata(treeview, context, x, y, selection, info, etime):
 			if model.get_value(iteri, 2):
 				if (position == gtk.TREE_VIEW_DROP_BEFORE or position == gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
 					model.insert_before(iteri, ldata)
-					#print 'before'
 				else:
 					model.insert_after(iteri, ldata)
-					#print 'after'
 			else:
 				return
 		else:
@@ -78,7 +76,6 @@ def get_dragdestdata(treeview, context, x, y, selection, info, etime):
 		return
 	else:
 		# rightpanel -> leftpanel logic goes here.
-		#set that we edited it
 		parent = model.get_value(iter, 3).strip('*')
 		oldName = model.get_value(iter, 0).strip('*')
 		print parent
@@ -122,7 +119,6 @@ def drag_begin_signal(treeview, dragcontext, *args):
 
 def drag_data_delete_signal(*args):
 	""" Delete begin signals data """
-	print "meep"
 	bmodel.remove(biter)
 	
 
@@ -182,10 +178,4 @@ def switchListView(widget, drag_context, x, y, timestamp, *args):
 	#iter = model.get_iter(path[0])
 	treeselection = leftview.get_selection()
 	treeselection.select_path(path[0])
-	#parent = model.get_value(iter, 3).strip('*')
-	#list = model.get_value(iter, 0).strip('*')
-	#if parent.strip('*') == 'package.' + list:
-	#	rightpanel.setListModel(parent.strip('*'))
-	#else:
-	#	rightpanel.setListModel(list.strip('*'))
 

@@ -27,7 +27,6 @@ import datastore
 from window import title
 from panelfunctions import mselected, fileEdited
 
-#rightview = gtk.TreeView(datastore.lists['package.use']) #create the container
 rightview = gtk.TreeView()
 rightselection = rightview.get_selection()
 
@@ -45,7 +44,7 @@ def setListModel(list): #we need to switch the model on click
 		print 'RIGHTPANEL: setListModel(); failed'
 		return
 
-rightview.set_search_column(0) #search broken atm #child?
+rightview.set_search_column(0)
 #columns
 namecol = gtk.TreeViewColumn('Value')
 testcol = gtk.TreeViewColumn('Flags')
@@ -75,12 +74,6 @@ testcol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
 boolcol.set_visible(False)
 filecol.set_visible(False)
 
-#filecol.pack_start(cell1, True)
-#filecol.set_attributes(cell1, text=3)
-#filecol.add_attribute(cell1, "editable", 2)#set row editable
-#filecol.set_expand(True)
-#filecol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-
 ###########Scroll Window#########################
 scroll = gtk.ScrolledWindow()
 scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
@@ -93,18 +86,11 @@ rightview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
 import panelfunctions
 rightview.connect("drag_begin", panelfunctions.drag_begin_signal)
 rightview.connect("drag_data_delete", panelfunctions.drag_data_delete_signal)
-#rightview.connect("drag_data_get", panelfunctions.get_dragdata)
 rightview.connect("drag_data_received", panelfunctions.get_dragdestdata)
-#def dragged(*args):
-#	""" Callback for drag-drop signal from rightview """
-#	fileEdited()
-#	title("* GPytage")
-
-#rightview.connect("drag-drop", dragged)
-#rightview.connect("drag-motion", switchListView) #switch the right panel to what we are dragging over on the leftpanel. 
 
 #Callbacks
 def edited_cb(cell, path, new_text, col):
+	""" Indicate file has been edited """
 	model = rightview.get_model()
 	model[path][col] = new_text
 	#Indicate file status
@@ -135,6 +121,7 @@ def deleterow(arg):
 			title("* GPytage")
 	
 def clicked(view, event):#needs updating from dual panels
+	""" Right click menu for rightview """
 	if event.button == 3:
 		menu = gtk.Menu()
 		irow = gtk.MenuItem("Insert Package")
