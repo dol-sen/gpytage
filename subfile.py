@@ -232,7 +232,6 @@ def deleteFile(arg, cb, deld, window):
 			return True
 	datastore.datastore.foreach(findMatch, [model[index][0]])
 	if ddata:
-		global ddata
 		model = ddata[0]
 		path = ddata[1]
 		iter = ddata[2]
