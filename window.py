@@ -3,7 +3,7 @@
 # GPytage window.py module
 #
 ############################################################################
-#    Copyright (C) 2007 by Kenneth Prugh                                   #
+#    Copyright (C) 2008 by Kenneth Prugh                                   #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #

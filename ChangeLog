@@ -1,4 +1,4 @@
-Current svn:
+Version 0.2.0_beta2:
 	* Fixed -v (bug #10822)
 	* Added ability to convert package files to directory structure
 	* Ability to rename files
