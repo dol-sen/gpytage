@@ -5,11 +5,11 @@ Version 0.2.0_beta2:
 	* Generic unsaved changes dialog now present
 	* Added desktop-entry file
 	* Added support for selecting more than item at once
-	* misc other fixes
 	* Drag and Drop behavior modified
 	* subfiles can be added, renamed and deleted
 	* Fixed error when saving blank file
-
+	* misc other fixes
+	
 Version 0.2.0_beta:
 	* Brand new dual panel view
 	* Dialogs added for IOErrors
