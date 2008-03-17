@@ -3,7 +3,7 @@
 # GPytage datastore.py module
 #
 ############################################################################
-#    Copyright (C) 2007 by Kenneth Prugh                                   #
+#    Copyright (C) 2008 by Kenneth Prugh                                   #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -66,8 +66,6 @@ def create_lists():
 				except:
 					col2 = None
 				lists[i].append([col1, col2, True, parent])
-	#for i in lists:
-		#print lists[i]
 	return lists
 	
 def create_treeiter():#create the parent/main files
