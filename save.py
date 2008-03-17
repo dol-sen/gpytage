@@ -3,7 +3,7 @@
 # GPytage save.py module
 #
 ############################################################################
-#    Copyright (C) 2007 by Kenneth Prugh                                   #
+#    Copyright (C) 2008 by Kenneth Prugh                                   #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -36,7 +36,7 @@ class SaveFile:
 	def __init__(self):
 		self.errors = []
 		
-	def save(self): #the important one...
+	def save(self):
 		import datastore
 		lists = datastore.lists
 		for name,store in lists.iteritems():
@@ -49,7 +49,6 @@ class SaveFile:
 						datarow = self.assemblerow(row)
 						data.append(datarow)
 					self.savefile(parent, file, data)
-					#begin hack
 					model = leftview.get_model()
 					model.foreach(self.findMatch, name)
 				else: #we have a subfile
@@ -60,7 +59,6 @@ class SaveFile:
 						datarow = self.assemblerow(row)
 						data.append(datarow)
 					self.savefile(parent, file, data)
-					#begin hack
 					model = leftview.get_model()
 					model.foreach(self.findMatch, name)
 			except IndexError:
@@ -70,10 +68,10 @@ class SaveFile:
 				model.foreach(self.findMatch, name)
 				piter = model.iter_parent(self.fiter)
 				if piter:
-					print "has parent"
+					#has parent
 					parent = model.get_value(piter, 0)
 				else:
-					print "no parent"
+					#no parent
 					parent = None	
 				data = "\n"
 				self.savefile(parent, name, data)
@@ -84,9 +82,9 @@ class SaveFile:
 			err = ',\n'.join(self.errors)
 			message = "The following files failed to save:\n\n%s. \n\nPossible causes may include insufficient privileges to write to these files." %err
 			createMessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, "Error Saving...", message)
-	#insight: datastore can be thought of a giant list, where row[0] references the first item in a multi list list. eg: foo = [['blah'],['blah1']]
 
 	def assemblerow(self, child):
+		""" Assemble data columns for saving """
 		try:
 			len(child[0])
 			text1 = child[0]
@@ -101,6 +99,7 @@ class SaveFile:
 		return datarow
 
 	def savefile(self, parent, file, data):
+		""" Write data to file """
 		config_path = get_config_path()
 		if parent is None: #main file
 			try:
