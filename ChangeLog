@@ -8,6 +8,7 @@ Current svn:
 	* misc other fixes
 	* Drag and Drop behavior modified
 	* subfiles can be added, renamed and deleted
+	* Fixed error when saving blank file
 
 Version 0.2.0_beta:
 	* Brand new dual panel view

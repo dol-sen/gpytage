@@ -51,7 +51,7 @@ class SaveFile:
 					self.savefile(parent, file, data)
 					#begin hack
 					model = leftview.get_model()
-					model.foreach(findMatch, name)
+					model.foreach(self.findMatch, name)
 				else: #we have a subfile
 					parent = store[0][3] #main dir
 					file = name #sub file
@@ -62,9 +62,22 @@ class SaveFile:
 					self.savefile(parent, file, data)
 					#begin hack
 					model = leftview.get_model()
-					model.foreach(findMatch, name)
+					model.foreach(self.findMatch, name)
 			except IndexError:
-				print 'Failed to save the file %s for write access' % name
+				#when a file is "blank" and a save is attempted it fails here. This should be the only case...
+				print name,store
+				model = leftview.get_model()
+				model.foreach(self.findMatch, name)
+				piter = model.iter_parent(self.fiter)
+				if piter:
+					print "has parent"
+					parent = model.get_value(piter, 0)
+				else:
+					print "no parent"
+					parent = None	
+				data = "\n"
+				self.savefile(parent, name, data)
+
 		title("GPytage")
 		if self.errors != []:
 			#spawn dialog
@@ -108,7 +121,8 @@ class SaveFile:
 				self.errors.append("%s%s/%s" %(config_path, parent, file))
 				return
 
-#ugly hack really..but it works
-def findMatch(model, path, iter, user_data):
-	if model.get_value(iter, 0).strip('*') == user_data:
-		model.set_value(iter, 0, user_data)
+	def findMatch(self, model, path, iter, user_data):
+		if model.get_value(iter, 0).strip('*') == user_data:
+			model.set_value(iter, 0, user_data)
+			self.fiter = iter
+
