@@ -6,6 +6,8 @@ Current svn:
 	* Added desktop-entry file
 	* Added support for selecting more than item at once
 	* misc other fixes
+	* Drag and Drop behavior modified
+	* subfiles can be added, renamed and deleted
 
 Version 0.2.0_beta:
 	* Brand new dual panel view
