@@ -3,7 +3,7 @@
 # GPytage subfile module
 #
 ############################################################################
-#    Copyright (C) 2007 by Kenneth Prugh                                   #
+#    Copyright (C) 2008 by Kenneth Prugh                                   #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -33,8 +33,6 @@ def new(window):
 	""" Spawn the new subfile dialog """
 	newd = gtk.Dialog('Create new Subfile', window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
 	dirs,files = folder_scan()
-	#eventually you will be able to create a new subfile from a files
-	#selection rather than just dirs
 	cb = gtk.combo_box_new_text()
 	for i in dirs:
 		cb.append_text(i)
@@ -66,17 +64,14 @@ def close_subfile(arg, newd):
 def add_subfile(arg, cb, ftext, newd, window):
 	model = cb.get_model()
 	index = cb.get_active()
-	#print "NEWFILE: add_subfile(); index = " + str(index)
 	if index >= 0: # prevent index errors
 		# next line gets an index error when trying to add a subfile to a non existent sets dir. (Or if selection is blank)
 		cbselection =  model[index][0] #current selection
-		ftextselection = ftext.get_text() #needs sanitycheck?
+		ftextselection = ftext.get_text()
 		Success = False
 		if len(ftextselection):
 			addToMemory(cbselection, ftextselection)
-			newd.hide() #hide/destroy the dialog
-
-matched = False #wtf is this for?
+			newd.hide()
 
 def addToMemory(parent, filename):
 	""" Adds new subfile to memory """
@@ -86,8 +81,7 @@ def addToMemory(parent, filename):
 	datastore.lists[filename].append([msg, None, True, parent]) #rightpanel stuff
 	title("* GPytage")
 
-#ugly hack really..but it works
-def findMatch(model, path, iter, user_data): #This can't return a value... stupid callback
+def findMatch(model, path, iter, user_data):
 	print user_data[0], user_data[1]
 	print model.get_value(iter, 0).strip('*')
 	if model.get_value(iter, 0).strip('*') == user_data[0]:
@@ -97,7 +91,7 @@ def findMatch(model, path, iter, user_data): #This can't return a value... stupi
 def convert(window):
 	""" Spawn the convert file dialog """
 	convertd = gtk.Dialog('Convert file to subfile', window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
-	convertd.vbox.pack_start(gtk.Label("This will convert a normal file to a subfile under a directory named after the original file. \nWarning: This operation cannot be undone\n")) #note: see convertFile
+	convertd.vbox.pack_start(gtk.Label("This will convert a normal file to a subfile under a directory named after the original file. \nWarning: This operation cannot be undone\n"))
 
 	dirs,files = folder_scan()
 	cb = gtk.combo_box_new_text() #combobox with files that are NOT subfiles
@@ -116,7 +110,6 @@ def convert(window):
 	cbox = gtk.HBox()
 	cbox.pack_start(newfile)
 	cbox.pack_start(ftext)
-	#temp
 	convertd.vbox.pack_start(tbox)
 	convertd.vbox.pack_start(cbox)
 	#pack action area with buttons
@@ -140,6 +133,7 @@ def convert(window):
 	convertd.run()
 
 def convertFile(arg, cb, ftext, convertd, window):
+	""" Convert Top level file to directory with subfile """
 	#Currently I don't see how to do such a change "in memory", so the change must be done live and probably call the evil reload() nuke
 	model = cb.get_model()
 	index = cb.get_active()
@@ -209,6 +203,7 @@ def delete(window):
 	deld.run()
 
 def deleteFile(arg, cb, deld, window):
+	""" Delete subfile """
 	model = cb.get_model()
 	index = cb.get_active()
 	if index >= 0: # prevent index errors
@@ -227,7 +222,6 @@ def deleteFile(arg, cb, deld, window):
 	from helper import reload
 	pconfig = get_config_path() # /
 	
-	#weeeeeeeee
 	global ddata
 	ddata = None
 	def findMatch(model, path, iter, user_data):
@@ -247,6 +241,4 @@ def deleteFile(arg, cb, deld, window):
 		print "deleteFILE: %s DELETED" % filePath
 		reload()
 		deld.hide()
-
-
 
