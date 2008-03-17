@@ -2,6 +2,8 @@
 # Distributed under the terms of the GNU General Public License v2
 # $Header: $
 
+NEED_PYTHON="2.4"
+
 inherit distutils
 
 DESCRIPTION="GTK Utility to help manage Portage's user config files"
@@ -10,10 +12,8 @@ SRC_URI="http://download.gna.org/${PN}/${P}.tar.gz"
 
 LICENSE="GPL-2"
 SLOT="0"
-KEYWORDS="~amd64 ~x86"
+KEYWORDS="~amd64 ~ppc ~x86"
 IUSE=""
 
-RDEPEND=">=dev-lang/python-2.4
-	sys-apps/portage
+RDEPEND="sys-apps/portage
 	dev-python/pygtk"
-DEPEND=""
