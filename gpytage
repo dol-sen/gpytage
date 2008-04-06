@@ -170,10 +170,10 @@ class gpytagemain:
 		subfile.delete(self.window)
 
 	def comment(self, *args):
-		pass
+		rightpanel.commentRow(self.window)
 
 	def uncomment(self, *args):
-		pass
+		rightpanel.uncommentRow(self.window)
 
 	def main(self):
 		gtk.main()
