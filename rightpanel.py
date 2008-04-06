@@ -119,7 +119,31 @@ def deleterow(arg):
 			model.remove(iter)
 			fileEdited()
 			title("* GPytage")
-	
+
+def commentRow(window):
+	""" Comment selected row(s) """
+	treeview = rightview
+	model, iterdict = mselected(treeview)
+	for iter,value in iterdict.iteritems():
+		if value == True:
+			old = model.get_value(iter, 0)
+			if old.startswith("#") is False:
+				model.set_value(iter, 0, "#"+old)
+				fileEdited()
+				title("* GPytage")
+
+def uncommentRow(window):
+	""" Uncomment selected row(s) """
+	treeview = rightview
+	model, iterdict = mselected(treeview)
+	for iter,value in iterdict.iteritems():
+		if value == True:
+			old = model.get_value(iter, 0)
+			if old.startswith("#"):
+				model.set_value(iter, 0, old[1:])
+				fileEdited()
+				title("* GPytage")
+
 def clicked(view, event):#needs updating from dual panels
 	""" Right click menu for rightview """
 	if event.button == 3:

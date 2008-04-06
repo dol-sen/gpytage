@@ -1,3 +1,6 @@
+Version svn:
+	* Added ability to comment and uncomment items
+
 Version 0.2.0_beta2:
 	* Fixed -v (bug #10822)
 	* Added ability to convert package files to directory structure
