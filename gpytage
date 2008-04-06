@@ -60,6 +60,8 @@ class gpytagemain:
 					<menuitem action="Collapse All" />
 					<menuitem action="Insert Package" />
 					<menuitem action="Delete Package" />
+					<menuitem action="Comment" />
+					<menuitem action="Uncomment" />
 				</menu>
 				<menu action="Help">
 					<menuitem action="About" />
@@ -81,6 +83,8 @@ class gpytagemain:
 			('Collapse All', None, '_Collapse All', '<Control>backslash', 'Collapse Rows', self.collapse),
 			('Insert Package', gtk.STOCK_ADD, '_Insert Package', '<Control>t', 'Add a package', rightpanel.insertrow),
 			('Delete Package', gtk.STOCK_DELETE, '_Delete Package', 'Delete', "Delete a package", rightpanel.deleterow),
+			('Comment', None, 'C_omment', '<Control>.', "Comment a package", self.comment),
+			('Uncomment', None, '_Uncomment', '<Control>,', "Uncomment a package", self.uncomment),
 			('Help',None,'_Help'),
 			('About', gtk.STOCK_ABOUT, '_About', None, 'About GPytage', self.about)])
 
@@ -164,6 +168,12 @@ class gpytagemain:
 
 	def deleteFile(self, *args):
 		subfile.delete(self.window)
+
+	def comment(self, *args):
+		pass
+
+	def uncomment(self, *args):
+		pass
 
 	def main(self):
 		gtk.main()
