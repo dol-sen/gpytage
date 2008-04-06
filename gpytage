@@ -83,8 +83,8 @@ class gpytagemain:
 			('Collapse All', None, '_Collapse All', '<Control>backslash', 'Collapse Rows', self.collapse),
 			('Insert Package', gtk.STOCK_ADD, '_Insert Package', '<Control>t', 'Add a package', rightpanel.insertrow),
 			('Delete Package', gtk.STOCK_DELETE, '_Delete Package', 'Delete', "Delete a package", rightpanel.deleterow),
-			('Comment', None, 'C_omment', '<Control>.', "Comment a package", self.comment),
-			('Uncomment', None, '_Uncomment', '<Control>,', "Uncomment a package", self.uncomment),
+			('Comment', None, 'C_omment', '<Control>period', "Comment a package", self.comment),
+			('Uncomment', None, '_Uncomment', '<Control>comma', "Uncomment a package", self.uncomment),
 			('Help',None,'_Help'),
 			('About', gtk.STOCK_ABOUT, '_About', None, 'About GPytage', self.about)])
 
