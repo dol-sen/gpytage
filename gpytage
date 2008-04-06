@@ -33,18 +33,16 @@ class gpytagemain:
 		self.window = window
 		title("GPytage")
 		self.window.set_default_size(600, 300)
+		
 		self.datastore = datastore
-
 		self.files = config_files
 		
 		create_lists()
 		create_treeiter() #populate the left panel
 
-		###########UIManager#############################
 		self.uimanager = gtk.UIManager()
 		self.accelgroup = self.uimanager.get_accel_group()
 		self.actiongroup = gtk.ActionGroup('GPytage')
-		##UI XML
 		self.ui = '''
 		<ui>
 			<menubar name="MenuBar">
@@ -68,9 +66,7 @@ class gpytagemain:
 				</menu>
 			</menubar>
 		</ui>'''
-		##
 
-		#Actions
 		self.actiongroup.add_actions([
 			('Quit', gtk.STOCK_QUIT, '_Quit', None, 'Quit GPytage', self.destroy),
 			('Revert', gtk.STOCK_REVERT_TO_SAVED, '_Revert', None, 'Revert changes', self.reload),
@@ -97,16 +93,11 @@ class gpytagemain:
 		self.vbox = gtk.VBox() #the master widgit
 		self.vbox.pack_start(self.menubar, False)
 		
-		################Connections##################
 		#allow the program to quit
 		self.window.connect("destroy", self.destroy)
 		self.window.connect("delete_event", self.delete_event)
 
-		###########Show Widgits######################
-		#self.phbox = gtk.HBox(homogeneous=False, spacing=5)
-		#self.phbox.pack_start(leftpanel.scroll, True, True, 0)
-		#self.phbox.pack_start(rightpanel.scroll, True, True, 0)
-		#self.vbox.pack_start(self.phbox)
+		#Show Widgits
 		self.pane = gtk.HPaned()
 		self.pane.pack1(leftpanel.scroll, True, True)
 		self.pane.pack2(rightpanel.scroll, True, True)
@@ -116,7 +107,6 @@ class gpytagemain:
 		self.window.add(self.vbox)
 		self.window.show_all()
 
-	############Signal Functions###########################
 	def destroy(self, widget, data=None):
 		title = self.window.get_title()
 		if title != "GPytage":
@@ -135,8 +125,8 @@ class gpytagemain:
 		self.destroy(widget)
 		return True
 
-	############Menu Functions. ###########################
-	def about(self, arg): #wth is arg
+	#Menu Functions
+	def about(self, *args):
 		aboutw = gtk.AboutDialog()
 		aboutw.set_name('GPytage')
 		aboutw.set_copyright('Copyright 2008, GPL2')
@@ -151,25 +141,25 @@ class gpytagemain:
 		aboutw.run()
 		aboutw.hide()
 	
-	def reload(self, arg): #reloads all rows in treeview
+	def reload(self, *args): #reloads all rows in treeview
 		reload()
 
-	def expand(self, arg):
+	def expand(self, *args):
 		leftpanel.leftview.expand_all()
 
-	def collapse(self, arg):
+	def collapse(self, *args):
 		leftpanel.leftview.collapse_all()
 			
 	def save(self, *args):
 		save.SaveFile().save()
 
-	def new(self, arg):
+	def new(self, *args):
 		subfile.new(self.window)
 
-	def convert(self, arg):
+	def convert(self, *args):
 		subfile.convert(self.window)
 
-	def rename(self, arg):
+	def rename(self, *args):
 		rename.rename().renameDialog(self.window)
 
 	def deleteFile(self, *args):
@@ -193,8 +183,6 @@ if __name__ == "__main__":
 	try:
 		opts, args = getopt(sys.argv[1:], 'lvth', ["local", "version", "test",
 						"help"])
-		#print opts
-		#print args
 	except GetoptError, e:
 		print >> sys.stderr, e.msg
 		usage()
@@ -265,3 +253,4 @@ if __name__ == "__main__":
 			
 	gpytagemain = gpytagemain()
 	gpytagemain.main()
+	
