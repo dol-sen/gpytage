@@ -100,8 +100,6 @@ def findMatch(model, path, iter, user_data):
 
 def convert(window):
 	""" Spawn the convert file dialog """
-	convertd = gtk.Dialog('Convert file to subfile', window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
-
 	gladefile = "glade/convertfile.glade"  
 	wTree = gtk.glade.XML(gladefile) 
 	convertd = wTree.get_widget("convertd")
@@ -128,8 +126,7 @@ def convert(window):
 	closeb.connect("clicked", close_subfile, convertd)
 
 	if files == []:
-		from window import statusbar
-		bar = wTree.get_widget("sbar")
+		sbar = wTree.get_widget("sbar")
 		smsg = sbar.get_context_id("standard message")
 		sbar.pop(smsg)
 		sbar.push(smsg, "Error: No files detected")
@@ -172,39 +169,43 @@ def convertFile(arg, cb, ftext, convertd, window):
 
 def delete(window):
 	""" Spawn the delete subfile dialog """
-	deld = gtk.Dialog('Delete Subfile', window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
+	gladefile = "glade/deletefile.glade"  
+	wTree = gtk.glade.XML(gladefile) 
+	deld = wTree.get_widget("deld")
+	
 	dirs,files = folder_scan()
-	cb = gtk.combo_box_new_text()
+
+	cb = wTree.get_widget("ncb")
+	
+	model = gtk.ListStore(str)
+	cb.set_model(model)
+	cell = gtk.CellRendererText()
+	cb.pack_start(cell)
+	cb.add_attribute(cell, 'text', 0)
 
 	subfiles = []
 	for i in dirs:
 		data = folder_walk(i)
 		for i in data:
 			subfiles.append(i)
-	cb = gtk.combo_box_new_text()
+				
 	for i in subfiles:
 		cb.append_text(i)
 	cb.set_active(0)
 
-	sbox = gtk.HBox()
-	sbox.pack_start(gtk.Label("File to delete:"))
-	sbox.pack_start(cb)
-	deld.vbox.pack_start(sbox)
-
 	if subfiles == []:
-		from window import statusbar
-		sbar, smsg = statusbar()
+		sbar = wTree.get_widget("sbar")
+		smsg = sbar.get_context_id("standard message")
 		sbar.pop(smsg)
-		sbar.push(smsg, "Warning: No files detected")
+		sbar.push(smsg, "Error: No files detected")
 		sbar.show()
-		deld.vbox.pack_start(sbar)
 
-	remb = gtk.Button("Add", gtk.STOCK_DELETE)
-	closeb = gtk.Button("Close",gtk.STOCK_CLOSE)
+	remb = wTree.get_widget("delb")
+	closeb = wTree.get_widget("closeb")
+	
 	remb.connect("clicked", deleteFile, cb, deld, window)
 	closeb.connect("clicked", close_subfile, deld)
-	deld.action_area.pack_start(closeb)
-	deld.action_area.pack_start(remb)
+	
 	deld.show_all()
 	deld.run()
 
