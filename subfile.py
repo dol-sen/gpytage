@@ -101,43 +101,39 @@ def findMatch(model, path, iter, user_data):
 def convert(window):
 	""" Spawn the convert file dialog """
 	convertd = gtk.Dialog('Convert file to subfile', window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
-	convertd.vbox.pack_start(gtk.Label("This will convert a normal file to a subfile under a directory named after the original file. \nWarning: This operation cannot be undone\n"))
+
+	gladefile = "glade/convertfile.glade"  
+	wTree = gtk.glade.XML(gladefile) 
+	convertd = wTree.get_widget("convertd")
 
 	dirs,files = folder_scan()
-	cb = gtk.combo_box_new_text() #combobox with files that are NOT subfiles
+	cb = wTree.get_widget("ncb")
+	
+	model = gtk.ListStore(str)
+	cb.set_model(model)
+	cell = gtk.CellRendererText()
+	cb.pack_start(cell)
+	cb.add_attribute(cell, 'text', 0)
+	
 	for i in files:
 		cb.append_text(i)
 	cb.set_active(0)
 	
-	tbox = gtk.HBox()
-	tbox.pack_start(gtk.Label("File to be converted:"))
-	tbox.pack_start(cb)
+	ftext = wTree.get_widget("aentry")
 
-	newfile = gtk.Label("Please rename old file:")
-	ftext = gtk.Entry()
-
-	#main box to hold stuff
-	cbox = gtk.HBox()
-	cbox.pack_start(newfile)
-	cbox.pack_start(ftext)
-	convertd.vbox.pack_start(tbox)
-	convertd.vbox.pack_start(cbox)
-	#pack action area with buttons
-	convertb = gtk.Button("Convert", gtk.STOCK_CONVERT)
-	closeb = gtk.Button("Close",gtk.STOCK_CLOSE)
+	convertb = wTree.get_widget("convertb")
+	closeb = wTree.get_widget("closeb")
+	
 	convertb.connect("clicked", convertFile, cb, ftext, convertd, window)
 	closeb.connect("clicked", close_subfile, convertd)
 
 	if files == []:
 		from window import statusbar
-		sbar, smsg = statusbar()
+		bar = wTree.get_widget("sbar")
+		smsg = sbar.get_context_id("standard message")
 		sbar.pop(smsg)
-		sbar.push(smsg, "Warning: No files detected")
+		sbar.push(smsg, "Error: No files detected")
 		sbar.show()
-		convertd.vbox.pack_start(sbar)
-
-	convertd.action_area.pack_start(closeb)
-	convertd.action_area.pack_start(convertb)
 
 	convertd.show_all()
 	convertd.run()
