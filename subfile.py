@@ -36,6 +36,7 @@ def new(window):
 	cb = gtk.combo_box_new_text()
 	for i in dirs:
 		cb.append_text(i)
+		
 	cb.set_active(0)
 	sbox = gtk.HBox()
 	sbox.pack_start(gtk.Label("Parent directory:"))
@@ -54,6 +55,15 @@ def new(window):
 	closeb.connect("clicked", close_subfile, newd)
 	newd.action_area.pack_start(closeb)
 	newd.action_area.pack_start(addb)
+	
+	if dirs == []:
+		from window import statusbar
+		sbar, smsg = statusbar()
+		sbar.pop(smsg)
+		sbar.push(smsg, "Warning: No parent directories detected")
+		sbar.show()
+		newd.vbox.pack_start(sbar)
+	
 	newd.show_all()
 	newd.run()
 
