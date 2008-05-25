@@ -23,6 +23,7 @@
 
 import pygtk; pygtk.require("2.0")
 import gtk
+import gtk.glade
 import datastore
 from window import title, unsavedDialog, window
 from save import SaveFile
@@ -31,38 +32,37 @@ from config import get_config_path, config_files
 
 def new(window):
 	""" Spawn the new subfile dialog """
-	newd = gtk.Dialog('Create new Subfile', window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
+	gladefile = "glade/newsubfile.glade"  
+	wTree = gtk.glade.XML(gladefile) 
+	newd = wTree.get_widget("newfile")
 	dirs,files = folder_scan()
-	cb = gtk.combo_box_new_text()
+	cb = wTree.get_widget("ncb")
+		
+	model = gtk.ListStore(str)
+	cb.set_model(model)
+	cell = gtk.CellRendererText()
+	cb.pack_start(cell)
+	cb.add_attribute(cell, 'text', 0)
+	
 	for i in dirs:
 		cb.append_text(i)
 		
 	cb.set_active(0)
-	sbox = gtk.HBox()
-	sbox.pack_start(gtk.Label("Parent directory:"))
-	sbox.pack_start(cb)
-	newd.vbox.pack_start(sbox)
-	ftextbox = gtk.HBox()
-	flabel = gtk.Label("New subfile name:")
-	ftext = gtk.Entry()
-	ftextbox.pack_start(flabel)
-	ftextbox.pack_start(ftext)
 
-	newd.vbox.pack_start(ftextbox)
-	addb = gtk.Button("Add", gtk.STOCK_ADD)
-	closeb = gtk.Button("Close",gtk.STOCK_CLOSE)
+	ftext = wTree.get_widget("aentry")
+
+	addb = wTree.get_widget("addb")
+	closeb = wTree.get_widget("closeb")
+	
 	addb.connect("clicked", add_subfile, cb, ftext, newd, window)
 	closeb.connect("clicked", close_subfile, newd)
-	newd.action_area.pack_start(closeb)
-	newd.action_area.pack_start(addb)
 	
 	if dirs == []:
-		from window import statusbar
-		sbar, smsg = statusbar()
+		sbar = wTree.get_widget("sbar")
+		smsg = sbar.get_context_id("standard message")
 		sbar.pop(smsg)
-		sbar.push(smsg, "Warning: No parent directories detected")
+		sbar.push(smsg, "Error: No parent directories found")
 		sbar.show()
-		newd.vbox.pack_start(sbar)
 	
 	newd.show_all()
 	newd.run()
