@@ -32,7 +32,7 @@ class gpytagemain:
 	def __init__(self):
 		self.window = window
 		title("GPytage")
-		self.window.set_default_size(600, 300)
+		self.window.set_default_size(645, 400)
 		
 		self.datastore = datastore
 		self.files = config_files
@@ -47,28 +47,39 @@ class gpytagemain:
 		<ui>
 			<menubar name="MenuBar">
 				<menu action="File">
-					<menuitem action="New" />
-					<menuitem action="Split" />
-					<menuitem action="Rename" />
-					<menuitem action="Delete" />
-					<menuitem action="Save" />
-					<menuitem action="Revert" />
-					<menuitem action="Quit" />
+					<menuitem action="New"/>
+					<separator/>
+					<menuitem action="Save"/>
+					<separator/>
+					<menuitem action="Quit"/>
 				</menu>
 				<menu action="Edit">
-					<menuitem action="Expand All" />
-					<menuitem action="Collapse All" />
-					<menuitem action="Insert Package" />
-					<menuitem action="Delete Package" />
-					<menuitem action="Comment" />
-					<menuitem action="Uncomment" />
+					<menuitem action="Revert"/>
+					<separator/>
+					<menuitem action="Delete"/>
+					<menuitem action="Split"/>
+					<menuitem action="Rename"/>
+				</menu>
+				<menu action="View">
+					<menuitem action="Expand All"/>
+					<menuitem action="Collapse All"/>
 				</menu>
 				<menu action="Help">
-					<menuitem action="About" />
+					<menuitem action="About"/>
 				</menu>
 			</menubar>
+			<toolbar name="ToolBar">
+				<toolitem action="New"/>
+				<toolitem action="Save"/>
+				<toolitem action="Revert"/>
+				<toolitem action="Add Package"/>
+				<toolitem action="Remove Package"/>
+				<toolitem action="Comment"/>
+				<toolitem action="Uncomment"/>
+			</toolbar>
 		</ui>'''
 
+		#This controls the menubar and the toolbar
 		self.actiongroup.add_actions([
 			('Quit', gtk.STOCK_QUIT, '_Quit', None, 'Quit GPytage', self.destroy),
 			('Revert', gtk.STOCK_REVERT_TO_SAVED, '_Revert', None, 'Revert changes', self.reload),
@@ -81,10 +92,11 @@ class gpytagemain:
 			('Edit', None, '_Edit'),
 			('Expand All', None, '_Expand All', '<Control>slash', 'Expand Rows', self.expand),
 			('Collapse All', None, '_Collapse All', '<Control>backslash', 'Collapse Rows', self.collapse),
-			('Insert Package', gtk.STOCK_ADD, '_Insert Package', '<Control>t', 'Add a package', rightpanel.insertrow),
-			('Delete Package', gtk.STOCK_DELETE, '_Delete Package', 'Delete', "Delete a package", rightpanel.deleterow),
-			('Comment', None, 'C_omment', '<Control>period', "Comment a package", self.comment),
-			('Uncomment', None, '_Uncomment', '<Control>comma', "Uncomment a package", self.uncomment),
+			('Add Package', gtk.STOCK_ADD, '_Add Package', '<Control>t', 'Add a package', rightpanel.insertrow),
+			('Remove Package', gtk.STOCK_REMOVE, '_Remove Package',	'Delete', "Remove a package", rightpanel.deleterow),
+			('Comment', gtk.STOCK_INDENT, '_Comment', '<Control>period', "Comment a package", self.comment),
+			('Uncomment', gtk.STOCK_UNINDENT, '_Uncomment', '<Control>comma', "Uncomment a package", self.uncomment),
+			('View', None, '_View'),
 			('Help',None,'_Help'),
 			('About', gtk.STOCK_ABOUT, '_About', None, 'About GPytage', self.about)])
 
@@ -94,8 +106,10 @@ class gpytagemain:
 
 		#Menubar
 		self.menubar = self.uimanager.get_widget('/MenuBar')
+		self.toolbar = self.uimanager.get_widget('/ToolBar')
 		self.vbox = gtk.VBox() #the master widgit
 		self.vbox.pack_start(self.menubar, False)
+		self.vbox.pack_start(self.toolbar, False)
 		
 		#allow the program to quit
 		self.window.connect("destroy", self.destroy)
@@ -134,7 +148,7 @@ class gpytagemain:
 		aboutw = gtk.AboutDialog()
 		aboutw.set_name('GPytage')
 		aboutw.set_copyright('Copyright 2008, GPL2')
-		aboutw.set_authors(['Kenneth Prugh', '\nWith patches contributed by Brian Dolbec','\nWith special thanks to the Gentoo \ndevelopers and community', '\nLicensed under the GPL-2']) #Fix wording? :)
+		aboutw.set_authors(["Kenneth 'ken69267' Prugh", "\nWith patches contributed by Brian Dolbec \nand Josh 'nightmorph' Saddler. \n\nWith special thanks to the Gentoo \ndevelopers and community. \n\nLicensed under the GPL-2"]) #Fix wording? :)
 		f=open(config.PORTDIR + '/licenses/GPL-2')
 		gpl2 = f.read()
 		f.close
