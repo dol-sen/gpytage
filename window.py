@@ -50,11 +50,3 @@ def unsavedDialog():
 	uD.add_button("_Save and Continue", 1)
 	status = uD.run()
 	return status, uD
-
-def statusbar():
-	""" Generic statusbar for dialogs. """
-	sbar = gtk.Statusbar()
-	smsg = sbar.get_context_id("standard message")
-	sbar.set_has_resize_grip(False)
-	return sbar, smsg
-	
