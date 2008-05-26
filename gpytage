@@ -56,6 +56,9 @@ class gpytagemain:
 				<menu action="Edit">
 					<menuitem action="Revert"/>
 					<separator/>
+					<menuitem action="Add Package"/>
+					<menuitem action="Remove Package"/>
+					<separator/>
 					<menuitem action="Delete"/>
 					<menuitem action="Split"/>
 					<menuitem action="Rename"/>
