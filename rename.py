@@ -32,44 +32,46 @@ from window import title, unsavedDialog, window
 class rename: #this is mostly just a test... this may be removed entirely
 	#Ideally we should be able to rename a file with rightclick/current selected
 	def renameDialog(self, window):
-		rDialog = gtk.Dialog('Rename File', window, gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, None)
+		gladefile = "glade/renamefile.glade"  
+		wTree = gtk.glade.XML(gladefile) 
+		rDialog = wTree.get_widget("renamed")
+		
+		cb = wTree.get_widget("ncb")
+		
+		model = gtk.ListStore(str)
+		cb.set_model(model)
+		cell = gtk.CellRendererText()
+		cb.pack_start(cell)
+		cb.add_attribute(cell, 'text', 0)
+		
 		dirs,files = folder_scan()
+
 		subfiles = []
+		
 		for i in dirs:
 			data = folder_walk(i)
 			for i in data:
 				subfiles.append(i)
-		cb = gtk.combo_box_new_text()
+		
 		for i in subfiles:
 			cb.append_text(i)
 		cb.set_active(0)
 
-		sbox = gtk.HBox()
-		sbox.pack_start(gtk.Label("File to rename"))
-		sbox.pack_start(cb)
-		rDialog.vbox.pack_start(sbox)
-		ftextbox = gtk.HBox()
-		flabel = gtk.Label("New name:")
-		ftext = gtk.Entry()
-		ftextbox.pack_start(flabel)
-		ftextbox.pack_start(ftext)
+		ftext = wTree.get_widget("aentry")
 
-		rDialog.vbox.pack_start(ftextbox)
-		addb = gtk.Button("Rename", "_Rename")
-		closeb = gtk.Button("Cancel",gtk.STOCK_CLOSE)
+		addb = wTree.get_widget("renameb")
+		closeb = wTree.get_widget("closeb")
+		
 		addb.connect("clicked", self.renameFile, cb, ftext, rDialog, window)
 		closeb.connect("clicked", self.close_renameD, rDialog)
 
 		if subfiles == []:
-			from window import statusbar
-			sbar, smsg = statusbar()
+			sbar = wTree.get_widget("sbar")
+			smsg = sbar.get_context_id("standard message")
 			sbar.pop(smsg)
-			sbar.push(smsg, "Warning: No subfiles detected")
+			sbar.push(smsg, "Error: No subfiles detected")
 			sbar.show()
-			rDialog.vbox.pack_start(sbar)
 
-		rDialog.action_area.pack_start(closeb)
-		rDialog.action_area.pack_start(addb)
 		rDialog.show_all()
 		rDialog.run()
 
