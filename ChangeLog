@@ -1,5 +1,7 @@
 Version svn:
 	* Added ability to comment and uncomment items
+	* Migrated dialog windows to glade
+	* Added a toolbar and rearranged the menubar
 
 Version 0.2.0_beta2:
 	* Fixed -v (bug #10822)
