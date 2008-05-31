@@ -3,7 +3,7 @@
 # GPytage config.py module
 #
 ############################################################################
-#    Copyright (C) 2007 by Kenneth Prugh, Brian Dolbec                     #
+#    Copyright (C) 2008 by Kenneth Prugh, Brian Dolbec                     #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -24,16 +24,20 @@
 from sys import exit, stderr
 
 config_files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use', 'sets', 'bashrc', \
-		'color.map', 'modules', 'mirrors', 'categories', 'profile/package.provided']
+        'color.map', 'modules', 'mirrors', 'categories', 'profile/package.provided']
 test_path = '/etc/testportage/'
 
-try:
-	import portage
-	import portage_const
-	print >>stderr, ("Config: portage version = " + portage.VERSION)
-except ImportError:
-	exit(_('Could not find portage module.\n'
-		'Are you sure this is a Gentoo system?'))
+try: # >=portage 2.2 modules
+    import portage
+    import portage.const as portage_const
+except: # portage 2.1.x modules
+    try:
+        import portage
+        import portage_const
+    except ImportError:
+        exit(_('Could not find portage module.\n'
+             'Are you sure this is a Gentoo system?'))
+print >>stderr, ("Config: portage version = " + portage.VERSION)
 
 portage_path = portage_const.USER_CONFIG_PATH
 #portage_path = '/etc/portage/'
@@ -45,9 +49,9 @@ PORTDIR=portage.config(clone=portage.settings).environ()['PORTDIR']
 del portage, portage_const
 
 def set_test_path():
-	global config_path, test_path
-	config_path = test_path
-	print "CONFIG: new config_path = " + config_path
+    global config_path, test_path
+    config_path = test_path
+    print "CONFIG: new config_path = " + config_path
 
 def get_config_path():
-	return config_path
+    return config_path
