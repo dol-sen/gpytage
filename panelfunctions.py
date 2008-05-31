@@ -59,26 +59,30 @@ def get_dragdestdata(treeview, context, x, y, selection, info, etime):
         title("* GPytage")
         fileEdited()
         return
-#    else: #dragging between files.. I don't even want to bother with this yet
-#        # rightpanel -> leftpanel logic goes here.
-#        parent = model.get_value(iter, 3).strip('*')
-#        oldName = model.get_value(iter, 0).strip('*')
-#        print parent
-#        if model.iter_children(iter):#has children [subfiles]
-#            print "has children"
-#        else: #doesn't have children
-#            newName = "*%s" % oldName
-#            model.set_value(iter, 0, newName)
-#            # append the data
-#            print data,"DATA TO APPEND"
-#            datastore.lists[oldName].append(data)
-#            print "appended"
-#            #nuke what we moved
-#            from leftpanel import leftview
-#            bmodel.remove(biter)
-#            lmodel = leftview.get_model()
-#            lselection.select_path(lmodel.get_path(lselected[1]))
-#            fileEdited()
+    else: # File to File dragging
+        # rightpanel -> leftpanel logic goes here.
+        ldata = data
+        parent = model.get_value(iter, 3).strip('*')
+        oldName = model.get_value(iter, 0).strip('*')
+        print parent
+        if model.iter_children(iter):#has children [subfiles]
+            print "has children"
+        else: #doesn't have children
+            newName = "*%s" % oldName
+            model.set_value(iter, 0, newName)
+            # append the data
+            print ldata,"DATA TO APPEND"
+            for row in ldata:
+                datastore.lists[oldName].append(row[0:4])
+            #nuke what we moved
+            for row in ldata:
+                from rightpanel import rightview
+                rmodel = rightview.get_model()
+                rmodel.remove(rmodel.get_iter(row[4].get_path()))
+            from leftpanel import leftview
+            lmodel = leftview.get_model()
+            lselection.select_path(lmodel.get_path(lselected[1]))
+            fileEdited()
 
 
 def drag_begin_signal(treeview, dragcontext, *args):

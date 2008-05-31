@@ -68,10 +68,10 @@ scroll.add_with_viewport(leftview)
 
 ############Drag and Drop####################
 #note: is DND even needed for left panel?
-#leftview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
-#import panelfunctions
-#leftview.connect("drag_data_received", panelfunctions.get_dragdestdata)
-#leftview.connect("drag-motion", switchListView) #switch the right panel to what we are dragging over on the leftpanel. 
+leftview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
+import panelfunctions
+leftview.connect("drag_data_received", panelfunctions.get_dragdestdata)
+leftview.connect("drag-motion", switchListView)
 
 ###########some variables####################
 last_parent = None
