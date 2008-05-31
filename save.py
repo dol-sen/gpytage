@@ -23,7 +23,6 @@
 
 import os.path
 import sys
-import pdb
 
 from helper import reload
 from config import get_config_path

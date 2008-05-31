@@ -23,7 +23,6 @@
 
 import pygtk; pygtk.require("2.0")
 import gtk
-import pdb
 import datastore
 
 def get_dragdestdata(treeview, context, x, y, selection, info, etime):
