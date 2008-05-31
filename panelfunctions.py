@@ -28,7 +28,6 @@ import datastore
 
 def get_dragdestdata(treeview, context, x, y, selection, info, etime):
     iter, value = cselected(treeview,x,y)
-    referenceIters = [] #hold refiters to be deleted
     model = treeview.get_model()
     if value == True:
         ldata = data
@@ -42,7 +41,7 @@ def get_dragdestdata(treeview, context, x, y, selection, info, etime):
                 if (position == gtk.TREE_VIEW_DROP_BEFORE or position == gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
                     for row in ldata:
                         model.insert_before(iteri, row[0:4])
-                else: #after (works?)
+                else:
                     for row in reversed(ldata):
                         model.insert_after(iteri, row[0:4])
             else:
@@ -59,8 +58,6 @@ def get_dragdestdata(treeview, context, x, y, selection, info, etime):
         from window import title
         title("* GPytage")
         fileEdited()
-#        if context.action == gtk.gdk.ACTION_MOVE:
-#            context.finish(True, True, etime)
         return
 #    else: #dragging between files.. I don't even want to bother with this yet
 #        # rightpanel -> leftpanel logic goes here.
@@ -88,7 +85,6 @@ def drag_begin_signal(treeview, dragcontext, *args):
     """ Grab model and data begin dragged """
     #global bmodel
     global data
-    global biter
     global lselection
     global lselected
     from leftpanel import leftview
@@ -114,7 +110,6 @@ def drag_begin_signal(treeview, dragcontext, *args):
 def drag_data_delete_signal(*args):
     """ Delete begin signals data """
     print "drag data delete signal"
-    #bmodel.remove(biter)
     
 
 def cselected(treeview, x, y):
