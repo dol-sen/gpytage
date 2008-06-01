@@ -17,3 +17,7 @@ AUTHORS
 README
 gpytage.desktop
 __init__.py
+glade/convertfile.glade
+glade/deletefile.glade
+glade/newsubfile.glade
+glade/renamefile.glade
