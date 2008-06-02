@@ -31,6 +31,19 @@ from getopt import getopt, GetoptError
 class gpytagemain:
 	def __init__(self):
 		self.window = window
+		
+		try: #load icons as pixbufs and set as default icon
+			print PIXMAPS
+			self.i16 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-16x16.png")
+			self.i24 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-24x24.png")
+			self.i32 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-32x32.png")
+			self.i48 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-48x48.png")
+			self.i64 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-64x64.png")
+			self.i128 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-128x128.png")
+			gtk.window_set_default_icon_list(self.i16, self.i24, self.i32, self.i48, self.i64, self.i128)
+		except:
+			print "GPytage could not find its icons!"
+		
 		title("GPytage")
 		self.window.set_default_size(645, 400)
 		
@@ -159,6 +172,10 @@ class gpytagemain:
 		aboutw.set_wrap_license(True)
 		aboutw.set_version(version)
 		aboutw.set_website('https://gna.org/projects/gpytage/')
+		try:
+			aboutw.set_logo(self.i128)
+		except:
+			print "ABOUT(): Logo could not be set"
 		aboutw.run()
 		aboutw.hide()
 	
@@ -222,6 +239,7 @@ if __name__ == "__main__":
 			# running a local version (i.e. not installed in /usr/*)
 			from os import getcwd
 			DATA_PATH = getcwd() + "/"
+			PIXMAPS = getcwd() + "/pixmaps/"
 			#i18n_DIR = DATA_PATH + 'i18n'
 			RUN_LOCAL = True
 			import save
@@ -242,6 +260,7 @@ if __name__ == "__main__":
 			from gpytage.version import version
 			# set data path for our glade and pixmap files
 			DATA_PATH = "/usr/share/gpytage/"
+			PIXMAPS = "/usr/share/pixmaps/"
 			#i18n_DIR = DATA_PATH + 'i18n'
 			#i18n_DIR = "/usr/share/locale/"
 			from gpytage import save
