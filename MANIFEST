@@ -21,3 +21,10 @@ glade/convertfile.glade
 glade/deletefile.glade
 glade/newsubfile.glade
 glade/renamefile.glade
+pixmaps/gpytage-128x128.png
+pixmaps/gpytage-16x16.png
+pixmaps/gpytage-24x24.png
+pixmaps/gpytage-32x32.png
+pixmaps/gpytage-48x48.png
+pixmaps/gpytage-64x64.png
+
