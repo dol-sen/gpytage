@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from distutils.core import setup
-from version import version as p_version
+from gpytage.version import version as p_version
 
 setup(name="gpytage",
 	version=p_version,
@@ -12,12 +12,11 @@ setup(name="gpytage",
 	url="https://gna.org/projects/gpytage/",
 	download_url="http://download.gna.org/gpytage/gpytage-" + p_version + ".tar.gz",
 	packages=['gpytage'],
-	package_dir={'gpytage':''},
-	package_data={'gpytage': ['glade/*.glade']},
-	scripts=["gpytage"],
-	data_files=[("/usr/share/pixmaps", ["pixmaps/gpytage-16x16.png",
-"pixmaps/gpytage-24x24.png","pixmaps/gpytage-32x32.png",
-"pixmaps/gpytage-48x48.png","pixmaps/gpytage-64x64.png",
-"pixmaps/gpytage-128x128.png"]),
-("/usr/share/applications", ["gpytage.desktop"])],
+	package_dir={'gpytage':'gpytage'},
+	scripts=["scripts/gpytage"],
+	data_files=[("/usr/share/pixmaps", ["gpytage/pixmaps/gpytage-64x64.png"]),
+			    ("/usr/share/applications", ["gpytage.desktop"]),
+			    ("/usr/share/gpytage/glade", ["gpytage/glade/convertfile.glade","gpytage/glade/deletefile.glade","gpytage/glade/newsubfile.glade","gpytage/glade/renamefile.glade"]),
+			    ("/usr/share/gpytage/pixmaps", ["gpytage/pixmaps/gpytage-16x16.png","gpytage/pixmaps/gpytage-24x24.png","gpytage/pixmaps/gpytage-32x32.png","gpytage/pixmaps/gpytage-48x48.png","gpytage/pixmaps/gpytage-64x64.png","gpytage/pixmaps/gpytage-128x128.png"])
+			    ,],
 )

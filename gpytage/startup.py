@@ -36,7 +36,7 @@ from gpytage.rename import rename
 
 #set global defaults
 DATA_PATH = "/usr/share/gpytage/"
-PIXMAPS = "/usr/share/pixmaps/"
+PIXMAPS = "/usr/share/gpytage/pixmaps/"
 GLADE_PATH = "/usr/share/gpytage/glade/"
 
 def local():
