@@ -17,6 +17,7 @@ gpytage/save.py
 gpytage/version.py
 gpytage/window.py
 gpytage/rename.py
+gpytage/startup.py
 gpytage/__init__.py
 gpytage/glade/convertfile.glade
 gpytage/glade/deletefile.glade
