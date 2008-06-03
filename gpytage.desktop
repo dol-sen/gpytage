@@ -3,5 +3,5 @@ Name=GPytage
 Comment=GTK Utility to help manage Portage's user config files
 Exec=gpytage
 Type=Application
-Categories=System,PackageManager;
+Categories=System;PackageManager;
 Icon=gpytage-64x64
