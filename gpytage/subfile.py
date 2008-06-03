@@ -30,9 +30,9 @@ from save import SaveFile
 from helper import folder_scan, folder_walk
 from config import get_config_path, config_files
 
-def new(window):
+def new(window, GLADE_PATH):
 	""" Spawn the new subfile dialog """
-	gladefile = "glade/newsubfile.glade"  
+	gladefile = GLADE_PATH + "newsubfile.glade"  
 	wTree = gtk.glade.XML(gladefile) 
 	newd = wTree.get_widget("newfile")
 	dirs,files = folder_scan()
@@ -98,9 +98,9 @@ def findMatch(model, path, iter, user_data):
 		edited_file = "*%s" % user_data[1]
 		model.append(iter, [edited_file, None, False, user_data[0]])
 
-def convert(window):
+def convert(window, GLADE_PATH):
 	""" Spawn the convert file dialog """
-	gladefile = "glade/convertfile.glade"  
+	gladefile = GLADE_PATH + "convertfile.glade"  
 	wTree = gtk.glade.XML(gladefile) 
 	convertd = wTree.get_widget("convertd")
 
@@ -167,9 +167,9 @@ def convertFile(arg, cb, ftext, convertd, window):
 			reload() #sigh
 			convertd.hide()
 
-def delete(window):
+def delete(window, GLADE_PATH):
 	""" Spawn the delete subfile dialog """
-	gladefile = "glade/deletefile.glade"  
+	gladefile = GLADE_PATH + "deletefile.glade"  
 	wTree = gtk.glade.XML(gladefile) 
 	deld = wTree.get_widget("deld")
 	

@@ -31,8 +31,8 @@ from window import title, unsavedDialog, window
 
 class rename: #this is mostly just a test... this may be removed entirely
 	#Ideally we should be able to rename a file with rightclick/current selected
-	def renameDialog(self, window):
-		gladefile = "glade/renamefile.glade"  
+	def renameDialog(self, window, GLADE_PATH):
+		gladefile = GLADE_PATH + "renamefile.glade"  
 		wTree = gtk.glade.XML(gladefile) 
 		rDialog = wTree.get_widget("renamed")
 		
