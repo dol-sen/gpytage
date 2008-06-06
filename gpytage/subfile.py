@@ -25,7 +25,7 @@ import pygtk; pygtk.require("2.0")
 import gtk
 import gtk.glade
 import datastore
-from datastore import E_NAME, E_DATA, E_EDITABLE, E_PARENT, E_MODIFIED
+from datastore import E_NAME, E_DATA, E_EDITABLE, E_PARENT, E_MODIFIED, new_entry
 from window import title, unsavedDialog, window
 from save import SaveFile
 from helper import folder_scan, folder_walk
@@ -88,8 +88,8 @@ def addToMemory(parent, filename):
 	""" Adds new subfile to memory """
 	datastore.datastore.foreach(findMatch, [parent, filename])
 	msg= '#This file was created by GPytage'
-	datastore.lists[filename] = gtk.ListStore(str, str, bool, str)
-	datastore.lists[filename].append([msg, None, True, parent]) #rightpanel stuff
+	datastore.lists[filename] = datastore.filedata()  #gtk.ListStore(str, str, bool, str)
+	datastore.lists[filename].append(new_entry(name=msg, parent=parent)) #rightpanel stuff
 	title("* GPytage")
 
 def findMatch(model, path, iter, user_data):
@@ -97,7 +97,7 @@ def findMatch(model, path, iter, user_data):
 	print model.get_value(iter, E_NAME).strip('*')
 	if model.get_value(iter, E_NAME).strip('*') == user_data[E_NAME]:
 		edited_file = "*%s" % user_data[E_DATA]
-		model.append(iter, [edited_file, None, False, user_data[E_NAME], True])
+		model.append(iter, new_entry(edited_file, None, False, user_data[E_NAME], True))
 
 def convert(window, GLADE_PATH):
 	""" Spawn the convert file dialog """

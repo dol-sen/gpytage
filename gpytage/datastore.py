@@ -51,11 +51,17 @@ def filedata():
 	store = gtk.ListStore(
 							str,		# 0 entry name
 							str,		# 1 entry value(s)
-							bool,		# 2 ???
+							bool,		# 2 editable
 							str,		# 3 parent
 							bool,		# 4 modified
 							)			#stores the main file data
 	return store
+
+def new_entry(name=None, value=None, editable=True,  parent=None, modified = True):
+	"""function to generate a new list or datastore entry with passed values or defaults
+		This simplifies and centralizes data model changes in the future
+	"""
+	return [name, value, editable, parent, modified]
 
 def create_lists():
 	parent_folder, simple_files = folder_scan()
@@ -73,7 +79,7 @@ def create_lists():
 				col2 = row[E_DATA].rstrip() # not all files have 2 cols
 			except:
 				col2 = None
-			lists[i].append([col1, col2, True, i, False])
+			lists[i].append(new_entry(name=col1, value=col2, editable=True, parent=i, modified=False))
 			
 	for i in parent_folder:
 		parent = i
@@ -91,19 +97,19 @@ def create_lists():
 					col2 = row[E_DATA].rstrip() # not all files have 2 cols
 				except:
 					col2 = None
-				lists[i].append([col1, col2, True, parent, False])
+				lists[i].append(new_entry(name=col1, value=col2, parent=parent, modified=False))
 	return lists
 	
 def create_tree():#create the parent/main files
 		parent_folder, simple_files = folder_scan()
 		#parent_files = self.folder_walk(parent_folder)
 		for i in simple_files: #needs no sub main rows just data
-			siter = datastore.append(None, [i, None, False, i, False])
+			siter = datastore.append(None, new_entry(name=i, editable=False, parent=i, modified=False))
 		for i in parent_folder: #parent_folders is list of folders such as package.keywords
 			#i is a dir such as package.keywords
 			pfolder = i
-			piter = datastore.append(None, [i, None, False, i, False])
+			piter = datastore.append(None, new_entry(name=i, editable=False, parent=i, modified=False))
 			complex_files = folder_walk(i) #this needs to return list files in dir
 			for i in complex_files: #"simple files"
 				name = i #folder name being iterated
-				citer = datastore.append(piter, [i, None, False, pfolder, False])
+				citer = datastore.append(piter, new_entry(name=i, editable=False, parent=pfolder, modified=False))

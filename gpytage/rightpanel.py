@@ -24,7 +24,7 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 import datastore
-from datastore import E_NAME, E_DATA, E_EDITABLE, E_PARENT, E_MODIFIED
+from datastore import E_NAME, E_DATA, E_EDITABLE, E_PARENT, E_MODIFIED, new_entry
 from window import title
 from panelfunctions import mselected, fileEdited
 
@@ -107,7 +107,7 @@ def insertrow(arg):
 	for iter,value in iterdict.iteritems(): #Should only have 1 via right click.. funky results with accelerator.
 		if value == True:
 			parent = model.get_value(iter, E_PARENT)
-			new = model.insert_after(iter, [None, None, True, parent, True])
+			new = model.insert_after(iter, new_entry(parent=parent))
 			path = model.get_path(new)
 			treeview.set_cursor_on_cell(path, namecol, cell, True)
 			title("* GPytage")
