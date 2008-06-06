@@ -23,75 +23,71 @@
 
 import os.path
 import sys
+from sys import stderr
 
 from helper import reload
 from config import get_config_path
 from window import title, window, createMessageDialog
 import gtk
 from leftpanel import leftview
-
+import datastore
+from datastore import E_NAME, E_DATA, E_EDITABLE, E_PARENT, E_MODIFIED
 
 class SaveFile:
 	def __init__(self):
 		self.errors = []
 		
-	def save(self):
-		import datastore
+	def save(self, name):
 		lists = datastore.lists
-		for name,store in lists.iteritems():
-			try:
-				if name == store[0][3]:#I'm a main file
-					file = name
-					data = []
-					parent = None
-					for row in store:
-						datarow = self.assemblerow(row)
-						data.append(datarow)
-					self.savefile(parent, file, data)
-					model = leftview.get_model()
-					model.foreach(self.findMatch, name)
-				else: #we have a subfile
-					parent = store[0][3] #main dir
-					file = name #sub file
-					data = []
-					for row in store:
-						datarow = self.assemblerow(row)
-						data.append(datarow)
-					self.savefile(parent, file, data)
-					model = leftview.get_model()
-					model.foreach(self.findMatch, name)
-			except IndexError:
-				#when a file is "blank" and a save is attempted it fails here. This should be the only case...
-				print name,store
-				model = leftview.get_model()
-				model.foreach(self.findMatch, name)
-				piter = model.iter_parent(self.fiter)
-				if piter:
-					#has parent
-					parent = model.get_value(piter, 0)
-				else:
-					#no parent
-					parent = None	
-				data = "\n"
-				self.savefile(parent, name, data)
-
-		title("GPytage")
-		if self.errors != []:
-			#spawn dialog
-			err = ',\n'.join(self.errors)
-			message = "The following files failed to save:\n\n%s. \n\nPossible causes may include insufficient privileges to write to these files." %err
-			createMessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, "Error Saving...", message)
+		try:
+			store = lists[name]
+		except: # key error
+			print >>stderr, name, " was not found in lists... returning"
+			return False
+		try:
+			if name == store[0][E_PARENT]:#I'm a main file
+				file = name
+				data = []
+				parent = None
+				for row in store:
+					datarow = self.assemblerow(row)
+					data.append(datarow)
+					row[E_MODIFIED] = False
+				success = self.savefile(parent, file, data)
+			else: #we have a subfile
+				parent = store[0][E_PARENT] #main dir
+				file = name #sub file
+				data = []
+				for row in store:
+					datarow = self.assemblerow(row)
+					data.append(datarow)
+					row[E_MODIFIED] = False
+				success = self.savefile(parent, file, data)
+		except IndexError:
+			#when a file is "blank" and a save is attempted it fails here. This should be the only case...
+			print name,store
+			model = leftview.get_model()
+			piter = model.iter_parent(self.fiter)
+			if piter:
+				#has parent
+				parent = model.get_value(piter, E_NAME)
+			else:
+				#no parent
+				parent = None	
+			data = "\n"
+			success = self.savefile(parent, name, data)
+		return success
 
 	def assemblerow(self, child):
 		""" Assemble data columns for saving """
 		try:
-			len(child[0])
-			text1 = child[0]
+			len(child[E_NAME])
+			text1 = child[E_NAME]
 		except:
 			text1 = ""
 		try:
-			len(child[1])
-			text2 = child[1]
+			len(child[E_DATA])
+			text2 = child[E_DATA]
 		except:
 			text2 = ""
 		datarow = text1 + " " + text2 + '\n'
@@ -99,6 +95,7 @@ class SaveFile:
 
 	def savefile(self, parent, file, data):
 		""" Write data to file """
+		print "savefile(), parent=", parent, " file=", file
 		config_path = get_config_path()
 		if parent is None: #main file
 			try:
@@ -108,19 +105,50 @@ class SaveFile:
 				f.close
 			except IOError:
 				self.errors.append("%s%s" % (config_path, file))
-				return
+				return False
 		else: #subfile
 			try:
 				f=open(config_path + parent + '/' + file, 'w')
 				for row in data:
 					f.write(row)
 				f.close
-			except IOError:
-				self.errors.append("%s%s/%s" %(config_path, parent, file))
-				return
+			except IOError, e:
+				print >>stderr, "savefile(), got an error: ", e
+				#self.errors.append("%s%s/%s, error = %s" %(config_path, parent, file, e))
+				self.errors.append(str(e))
+				return False
+		return True
 
-	def findMatch(self, model, path, iter, user_data):
-		if model.get_value(iter, 0).strip('*') == user_data:
-			model.set_value(iter, 0, user_data)
+	def saveModified(self):
+		model = leftview.get_model()
+		model.foreach(self.checkModified)
+		print >>stderr, "made it thru model.foreach().  checking for errors: ", self.errors
+		if self.errors != []:
+			#spawn dialog
+			err = ',\n'.join(self.errors)
+			message = "Please correct the problem(s) and try again.  It may include running gpytage as the root user\n\n" + err
+			createMessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, 
+					gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, "Error Saving Files...", message)
+		else:
+			title("GPytage")
+
+
+
+	def checkModified(self, model, path, iter, *user_data):
+		print >>stderr, model.get_value(iter, E_NAME), ' ', model.get_value(iter, E_MODIFIED)
+		if model.get_value(iter, E_MODIFIED):
+			name = model.get_value(iter, E_NAME).strip('*')
+			print >>stderr, "found a modified file... saving: ", name
 			self.fiter = iter
+			suceeded = self.save(name)
+			if suceeded:
+				model.set_value(iter, E_NAME, name)
+				model.set_value(iter, E_MODIFIED, False)
+		return
+
+	# obsolete
+	#~ def findMatch(self, model, path, iter, user_data):
+		#~ if model.get_value(iter, E_NAME).strip('*') == user_data:
+			#~ model.set_value(iter, E_NAME, user_data)
+			#~ self.fiter = iter
 

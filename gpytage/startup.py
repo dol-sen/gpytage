@@ -29,7 +29,7 @@ from gpytage import leftpanel, rightpanel
 from gpytage import config
 from gpytage.window import title, window, unsavedDialog
 from gpytage.version import version
-from gpytage.datastore import datastore,config_files,create_treeiter,create_lists
+from gpytage.datastore import datastore, config_files, create_tree, create_lists
 from gpytage.helper import reload
 from gpytage.subfile import new,convert,delete
 from gpytage.rename import rename
@@ -72,7 +72,7 @@ class gpytagemain:
         self.files = config_files
         
         create_lists()
-        create_treeiter() #populate the left panel
+        create_tree() #populate the left panel
 
         self.uimanager = gtk.UIManager()
         self.accelgroup = self.uimanager.get_accel_group()
@@ -185,7 +185,7 @@ class gpytagemain:
         aboutw = gtk.AboutDialog()
         aboutw.set_name('GPytage')
         aboutw.set_copyright('Copyright 2008, GPL2')
-        aboutw.set_authors(["Kenneth 'ken69267' Prugh", "\nWith patches contributed by Brian Dolbec \nand Josh 'nightmorph' Saddler. \n\nWith special thanks to the Gentoo \ndevelopers and community. \n\nLicensed under the GPL-2"]) #Fix wording? :)
+        aboutw.set_authors(["Kenneth 'ken69267' Prugh", "\nWith patches contributed by Brian Dolbec <dol-sen>\nand Josh 'nightmorph' Saddler. \n\nWith special thanks to the Gentoo \ndevelopers and community. \n\nLicensed under the GPL-2"]) #Fix wording? :)
         f=open(config.PORTDIR + '/licenses/GPL-2')
         gpl2 = f.read()
         f.close
@@ -210,7 +210,7 @@ class gpytagemain:
         leftpanel.leftview.collapse_all()
             
     def save(self, *args):
-        save.SaveFile().save()
+        save.SaveFile().saveModified()
 
     def new(self, *args):
         new(self.window, GLADE_PATH)

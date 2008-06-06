@@ -25,6 +25,7 @@ import pygtk; pygtk.require("2.0")
 import gtk
 import gtk.glade
 import datastore
+from datastore import E_NAME, E_DATA, E_EDITABLE, E_PARENT, E_MODIFIED
 from window import title, unsavedDialog, window
 from save import SaveFile
 from helper import folder_scan, folder_walk
@@ -76,7 +77,7 @@ def add_subfile(arg, cb, ftext, newd, window):
 	index = cb.get_active()
 	if index >= 0: # prevent index errors
 		# next line gets an index error when trying to add a subfile to a non existent sets dir. (Or if selection is blank)
-		cbselection =  model[index][0] #current selection
+		cbselection =  model[index][E_NAME] #current selection
 		ftextselection = ftext.get_text()
 		Success = False
 		if len(ftextselection):
@@ -92,11 +93,11 @@ def addToMemory(parent, filename):
 	title("* GPytage")
 
 def findMatch(model, path, iter, user_data):
-	print user_data[0], user_data[1]
-	print model.get_value(iter, 0).strip('*')
-	if model.get_value(iter, 0).strip('*') == user_data[0]:
-		edited_file = "*%s" % user_data[1]
-		model.append(iter, [edited_file, None, False, user_data[0]])
+	print user_data[E_NAME], user_data[E_DATA]
+	print model.get_value(iter, E_NAME).strip('*')
+	if model.get_value(iter, E_NAME).strip('*') == user_data[E_NAME]:
+		edited_file = "*%s" % user_data[E_DATA]
+		model.append(iter, [edited_file, None, False, user_data[E_NAME], True])
 
 def convert(window, GLADE_PATH):
 	""" Spawn the convert file dialog """
@@ -111,7 +112,7 @@ def convert(window, GLADE_PATH):
 	cb.set_model(model)
 	cell = gtk.CellRendererText()
 	cb.pack_start(cell)
-	cb.add_attribute(cell, 'text', 0)
+	cb.add_attribute(cell, 'text', E_NAME)
 	
 	for i in files:
 		cb.append_text(i)
@@ -141,14 +142,14 @@ def convertFile(arg, cb, ftext, convertd, window):
 	model = cb.get_model()
 	index = cb.get_active()
 	if index >= 0: # prevent index errors
-		cbselection =  model[index][0] #current selected item
+		cbselection =  model[index][E_NAME] #current selected item
 		ftextselection = ftext.get_text()
 		if window.get_title() != "GPytage":
 			status, uD = unsavedDialog()
 			if status == -8:
 				uD.hide()
 			elif status == 1:
-				SaveFile().save()
+				SaveFile().saveModified()
 				uD.hide()
 			else:
 				uD.hide()
@@ -181,7 +182,7 @@ def delete(window, GLADE_PATH):
 	cb.set_model(model)
 	cell = gtk.CellRendererText()
 	cb.pack_start(cell)
-	cb.add_attribute(cell, 'text', 0)
+	cb.add_attribute(cell, 'text', E_NAME)
 
 	subfiles = []
 	for i in dirs:
@@ -219,7 +220,7 @@ def deleteFile(arg, cb, deld, window):
 			if status == -8:
 				uD.hide()
 			elif status == 1:
-				SaveFile().save()
+				SaveFile().saveModified()
 				uD.hide()
 			else:
 				uD.hide()
@@ -233,16 +234,16 @@ def deleteFile(arg, cb, deld, window):
 	ddata = None
 	def findMatch(model, path, iter, user_data):
 		""" Get path, iter for the file to be deleted """
-		if model.get_value(iter, 0).strip('*') == user_data[0]:
+		if model.get_value(iter, E_NAME).strip('*') == user_data[E_NAME]:
 			global ddata
 			ddata = [model, path, iter]
 			return True
-	datastore.datastore.foreach(findMatch, [model[index][0]])
+	datastore.datastore.foreach(findMatch, [model[index][E_NAME]])
 	if ddata:
-		model = ddata[0]
-		path = ddata[1]
-		iter = ddata[2]
-		filePath = pconfig+model.get_value(iter, 3)+'/'+model.get_value(iter, 0).strip('*')
+		model = ddata[E_NAME]
+		path = ddata[E_DATA]
+		iter = ddata[E_EDITABLE]
+		filePath = pconfig+model.get_value(iter, E_PARENT)+'/'+model.get_value(iter, E_NAME).strip('*')
 		remove(filePath)
 		print "deleteFILE: %s DELETED" % filePath
 		reload()

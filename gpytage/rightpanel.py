@@ -24,6 +24,7 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 import datastore
+from datastore import E_NAME, E_DATA, E_EDITABLE, E_PARENT, E_MODIFIED
 from window import title
 from panelfunctions import mselected, fileEdited
 
@@ -44,7 +45,7 @@ def setListModel(list): #we need to switch the model on click
 		print 'RIGHTPANEL: setListModel(); failed'
 		return
 
-rightview.set_search_column(0)
+rightview.set_search_column(E_NAME)
 #columns
 namecol = gtk.TreeViewColumn('Value')
 testcol = gtk.TreeViewColumn('Flags')
@@ -61,13 +62,13 @@ cell1 = gtk.CellRendererText()
 
 #add cols to cell
 namecol.pack_start(cell, True)
-namecol.set_attributes(cell, text=0)
-namecol.add_attribute(cell, "editable", 2)#set row editable
+namecol.set_attributes(cell, text=E_NAME)
+namecol.add_attribute(cell, "editable", E_EDITABLE)#set row editable
 namecol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
 
 testcol.pack_start(cell1, True)
-testcol.set_attributes(cell1, text=1)
-testcol.add_attribute(cell1, "editable", 2)#set row editable
+testcol.set_attributes(cell1, text=E_DATA)
+testcol.add_attribute(cell1, "editable", E_EDITABLE)#set row editable
 testcol.set_expand(True)
 testcol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
 
@@ -93,6 +94,7 @@ def edited_cb(cell, path, new_text, col):
 	""" Indicate file has been edited """
 	model = rightview.get_model()
 	model[path][col] = new_text
+	model[path][E_MODIFIED] = True
 	#Indicate file status
 	fileEdited() #edit rightpanel to show status
 	title("* GPytage")
@@ -104,8 +106,8 @@ def insertrow(arg):
 	model, iterdict = mselected(treeview)
 	for iter,value in iterdict.iteritems(): #Should only have 1 via right click.. funky results with accelerator.
 		if value == True:
-			parent = model.get_value(iter, 3)
-			new = model.insert_after(iter, [None, None, True, parent])
+			parent = model.get_value(iter, E_PARENT)
+			new = model.insert_after(iter, [None, None, True, parent, True])
 			path = model.get_path(new)
 			treeview.set_cursor_on_cell(path, namecol, cell, True)
 			title("* GPytage")
@@ -126,9 +128,9 @@ def commentRow(window):
 	model, iterdict = mselected(treeview)
 	for iter,value in iterdict.iteritems():
 		if value == True:
-			old = model.get_value(iter, 0)
+			old = model.get_value(iter, E_NAME)
 			if old.startswith("#") is False:
-				model.set_value(iter, 0, "#"+old)
+				model.set_value(iter, E_NAME, "#"+old)
 				fileEdited()
 				title("* GPytage")
 
@@ -138,9 +140,9 @@ def uncommentRow(window):
 	model, iterdict = mselected(treeview)
 	for iter,value in iterdict.iteritems():
 		if value == True:
-			old = model.get_value(iter, 0)
+			old = model.get_value(iter, E_NAME)
 			if old.startswith("#"):
-				model.set_value(iter, 0, old[1:])
+				model.set_value(iter, E_NAME, old[1:])
 				fileEdited()
 				title("* GPytage")
 
@@ -158,6 +160,6 @@ def clicked(view, event):#needs updating from dual panels
 		menu.popup(None, None, None, event.button, event.time)
 
 #Signals
-cell.connect("edited", edited_cb, 0)
-cell1.connect("edited", edited_cb, 1)
+cell.connect("edited", edited_cb, E_NAME)
+cell1.connect("edited", edited_cb, E_DATA)
 rightview.connect("button_press_event", clicked)

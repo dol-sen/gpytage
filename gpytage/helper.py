@@ -58,7 +58,7 @@ def reload():
 	datastore.datastore.clear()
 	for name, store in datastore.lists.iteritems():
 		store.clear()
-	datastore.create_treeiter()
+	datastore.create_tree()
 	datastore.create_lists()
 	from window import title
 	title("GPytage")
