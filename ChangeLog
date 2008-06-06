@@ -1,3 +1,6 @@
+Version svn:
+	* Only modified files are now actually saved
+
 Version 0.2.0_rc1:
 	* Added ability to comment and uncomment items
 	* Migrated dialog windows to glade
