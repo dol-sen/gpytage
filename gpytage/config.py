@@ -30,11 +30,13 @@ test_path = '/etc/testportage/'
 try: # >=portage 2.2 modules
     import portage
     import portage.const as portage_const
-except: # portage 2.1.x modules
+except ImportError, e: # portage 2.1.x modules
+    print >>stderr, "Portage Import Error: ", e
     try:
         import portage
         import portage_const
-    except ImportError:
+    except ImportError, e:
+        print >>stderr, "Portage Import Error: ", e
         exit('Could not find portage module.\n'
              'Are you sure this is a Gentoo system?')
 print >>stderr, ("Config: portage version = " + portage.VERSION)
