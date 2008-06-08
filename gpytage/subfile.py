@@ -24,9 +24,11 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 import gtk.glade
+from sys import stderr
+
 import datastore
 from datastore import E_NAME, E_DATA, E_EDITABLE, E_PARENT, E_MODIFIED, new_entry
-from window import title, unsavedDialog, window
+from window import title, unsavedDialog, window, error_dialog
 from save import SaveFile
 from helper import folder_scan, folder_walk
 from config import get_config_path, config_files
@@ -162,10 +164,15 @@ def convertFile(arg, cb, ftext, convertd, window):
 			from config import get_config_path
 			from helper import reload
 			pconfig = get_config_path()
-			move(pconfig+cbselection, pconfig+nfile) #rename the file
-			mkdir(pconfig+cbselection) #create the parent directory
-			move(pconfig+nfile, "%s/%s" %(pconfig+cbselection,nfile))
-			reload() #sigh
+			try:
+				errors = []
+				move(pconfig+cbselection, pconfig+nfile) #rename the file
+				mkdir(pconfig+cbselection) #create the parent directory
+				move(pconfig+nfile, "%s/%s" %(pconfig+cbselection,nfile))
+				reload() #sigh
+			except IOError, e:
+				errors.append(str(e))
+				error_dialog(errors)
 			convertd.hide()
 
 def delete(window, GLADE_PATH):
@@ -244,8 +251,13 @@ def deleteFile(arg, cb, deld, window):
 		path = ddata[E_DATA]
 		iter = ddata[E_EDITABLE]
 		filePath = pconfig+model.get_value(iter, E_PARENT)+'/'+model.get_value(iter, E_NAME).strip('*')
-		remove(filePath)
-		print "deleteFILE: %s DELETED" % filePath
-		reload()
+		try:
+			errors = []
+			remove(filePath)
+			print "deleteFILE: %s DELETED" % filePath
+			reload()
+		except IOError, e:
+			errors.append(str(e))
+			error_dialog(errors)
 		deld.hide()
 
