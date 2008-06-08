@@ -27,7 +27,7 @@ from sys import stderr
 
 from helper import reload
 from config import get_config_path
-from window import title, window, createMessageDialog
+from window import title, window, createMessageDialog, error_dialog
 import gtk
 from leftpanel import leftview
 import datastore
@@ -103,8 +103,8 @@ class SaveFile:
 				for row in data:
 					f.write(row)
 				f.close
-			except IOError:
-				self.errors.append("%s%s" % (config_path, file))
+			except IOError, e:
+				self.errors.append(str(e))
 				return False
 		else: #subfile
 			try:
@@ -125,14 +125,9 @@ class SaveFile:
 		print >>stderr, "made it thru model.foreach().  checking for errors: ", self.errors
 		if self.errors != []:
 			#spawn dialog
-			err = ',\n'.join(self.errors)
-			message = "Please correct the problem(s) and try again.  It may include running gpytage as the root user\n\n" + err
-			createMessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, 
-					gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, "Error Saving Files...", message)
+			error_dialog(self.errors)
 		else:
 			title("GPytage")
-
-
 
 	def checkModified(self, model, path, iter, *user_data):
 		print >>stderr, model.get_value(iter, E_NAME), ' ', model.get_value(iter, E_MODIFIED)
