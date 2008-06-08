@@ -24,10 +24,11 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 import datastore
+from datastore import E_NAME, E_DATA, E_EDITABLE, E_PARENT, E_MODIFIED
 from helper import folder_scan, folder_walk
 from config import get_config_path, config_files
 from save import SaveFile
-from window import title, unsavedDialog, window
+from window import title, unsavedDialog, window, error_dialog
 
 class rename: #this is mostly just a test... this may be removed entirely
 	#Ideally we should be able to rename a file with rightclick/current selected
@@ -65,8 +66,9 @@ class rename: #this is mostly just a test... this may be removed entirely
 		addb.connect("clicked", self.renameFile, cb, ftext, rDialog, window)
 		closeb.connect("clicked", self.close_renameD, rDialog)
 
+		sbar = wTree.get_widget("sbar")
+		#sbar.hide()
 		if subfiles == []:
-			sbar = wTree.get_widget("sbar")
 			smsg = sbar.get_context_id("standard message")
 			sbar.pop(smsg)
 			sbar.push(smsg, "Error: No subfiles detected")
@@ -82,14 +84,15 @@ class rename: #this is mostly just a test... this may be removed entirely
 		model = cb.get_model()
 		index = cb.get_active()
 		if index >= 0: # prevent index errors
-			oldName =  model[index][0]
+			oldName =  model[index][E_NAME]
 			newName = ftext.get_text()
+			#model[index][E_MODIFIED] = True
 			if window.get_title() != "GPytage":
 				status, uD = unsavedDialog()
 				if status == -8:
 					uD.hide()
 				elif status == 1:
-					SaveFile().save()
+					SaveFile().saveModified()
 					uD.hide()
 				else:
 					uD.hide()
@@ -97,9 +100,10 @@ class rename: #this is mostly just a test... this may be removed entirely
 			if len(newName):
 				#inline function to get our values
 				def findMatch(model, path, iter, user_data):
-					if model.get_value(iter, 0).strip('*') == user_data[0]:
+					if model.get_value(iter, E_NAME).strip('*') == user_data[E_NAME]:
 						self.data = [model, path, iter]
 						return True
+					return False
 				datastore.datastore.foreach(findMatch, [oldName, newName])
 				if self.data:
 					model = self.data[0]
@@ -109,15 +113,25 @@ class rename: #this is mostly just a test... this may be removed entirely
 					from config import get_config_path
 					from helper import reload
 					pconfig = get_config_path() # /
-					if model.get_value(iter, 0) == model.get_value(iter, 3):
+					if model.get_value(iter, E_NAME) == model.get_value(iter, E_PARENT):
 						#technically this wont ever execute the way I have it now
 						print "RENAME: FILE MATCH"
-						filePath = pconfig+model.get_value(iter, 0)
-						move(filePath, pconfig+newName)
+						filePath = pconfig+model.get_value(iter, E_NAME)
+						try:
+							errors = []
+							move(filePath, pconfig+newName)
+						except IOError, e:
+							errors.append(str(e))
+							error_dialog(errors)
 					else:
 						print "RENAME: FILE NOMATCH"
-						filePath = pconfig+model.get_value(iter, 3)+'/'+model.get_value(iter, 0)
-						move(filePath, pconfig+model.get_value(iter, 3)+'/'+newName)
-					reload() #will nuke unsaved changes, implement a unsaved changes dialog?
+						filePath = pconfig+model.get_value(iter, E_PARENT)+'/'+model.get_value(iter, E_NAME)
+						try:
+							errors = []
+							move(filePath, pconfig+model.get_value(iter, E_PARENT)+'/'+newName)
+							reload() #will nuke unsaved changes, implement a unsaved changes dialog?
+						except IOError, e:
+							errors.append(str(e))
+							error_dialog(errors)
 					rDialog.hide()
 
