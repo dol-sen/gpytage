@@ -23,6 +23,7 @@
 
 import pygtk; pygtk.require("2.0")
 import gtk
+from sys import stderr
 
 window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 
@@ -50,3 +51,10 @@ def unsavedDialog():
 	uD.add_button("_Save and Continue", 1)
 	status = uD.run()
 	return status, uD
+
+def error_dialog(errors):
+	"""generic dialog to report file operation errors"""
+	err = ',\n'.join(errors)
+	message = "Please correct the problem(s) and try again.  It may include running gpytage as the root user\n\n" + err
+	createMessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, 
+		gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, "Error Saving Files...", message)
