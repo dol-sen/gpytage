@@ -98,25 +98,19 @@ class SaveFile:
 		print "savefile(), parent=", parent, " file=", file
 		config_path = get_config_path()
 		if parent is None: #main file
-			try:
-				f=open(config_path + file, 'w')
-				for row in data:
-					f.write(row)
-				f.close
-			except IOError, e:
-				self.errors.append(str(e))
-				return False
+			file_path = config_path + file
 		else: #subfile
-			try:
-				f=open(config_path + parent + '/' + file, 'w')
-				for row in data:
-					f.write(row)
-				f.close
-			except IOError, e:
-				print >>stderr, "savefile(), got an error: ", e
-				#self.errors.append("%s%s/%s, error = %s" %(config_path, parent, file, e))
-				self.errors.append(str(e))
-				return False
+			file_path = config_path + parent + '/'  + file
+		try:
+			f=open(file_path, 'w')
+			for row in data:
+				f.write(row)
+			f.close
+		except IOError, e:
+			print >>stderr, "savefile(), got an error: ", e
+			#self.errors.append("%s%s/%s, error = %s" %(config_path, parent, file, e))
+			self.errors.append(str(e))
+			return False
 		return True
 
 	def saveModified(self):
