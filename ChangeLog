@@ -1,5 +1,6 @@
-Version svn:
+Version 0.2.0:
 	* Only modified files are now actually saved
+	* Code cleanup
 
 Version 0.2.0_rc1:
 	* Added ability to comment and uncomment items

@@ -59,42 +59,16 @@ if __name__ == "__main__":
 			sys.path.insert(0, DATA_PATH)
 			print sys.path
 			PIXMAPS = getcwd() + "/pixmaps/"
-			#i18n_DIR = DATA_PATH + 'i18n'
 			RUN_LOCAL = True
-#			from gpytage import save
-#			from window import title, window, unsavedDialog
-#			import leftpanel
-#			import rightpanel
-#			from panelfunctions import selected
-#			import config
 			from gpytage.version import version
 			from gpytage.startup import *
 			local()
-#			from datastore import datastore,config_files,create_treeiter,create_lists
-#			from helper import reload
-#			import subfile
-#			import rename
 			print "GPytage: starting gpytage()"
 
 	if not RUN_LOCAL: # then run the installed modules
 		try:
 			from gpytage.version import version
 			from gpytage.startup import *
-			# set data path for our glade and pixmap files
-#			DATA_PATH = "/usr/share/gpytage/"
-#			PIXMAPS = "/usr/share/pixmaps/"
-			#i18n_DIR = DATA_PATH + 'i18n'
-			#i18n_DIR = "/usr/share/locale/"
-#			from gpytage import save
-#			from gpytage import leftpanel, rightpanel
-#			from gpytage import config
-#			from gpytage.window import title, window, unsavedDialog
-#			from gpytage.version import version
-#			from gpytage.datastore import datastore,config_files,create_treeiter,create_lists
-#			from gpytage.helper import reload
-#			from gpytage import subfile
-#			from gpytage import rename
-			# load prefs
 			print "GPytage: starting gpytage()"
 		except ImportError, e:
 			print "*** Error loading gpytage modules!\n*** If you are running a", \

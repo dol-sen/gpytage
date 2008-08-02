@@ -1,5 +1,3 @@
-WARNING: THIS IS AN BETA RELEASE. BEFORE USING PLEASE BACKUP YOUR /etc/portage/ DIRECTORY.
-
 Note: GPytage must be run under an account that can read/write to /etc/portage, or through su, sudo, or root.
 
 GPytage is a utility that helps manage Portage's user config files with a GTK interface. It supports the package.*/* structure as well as the traditional package.[keywords, unmask, mask, use] file structure. 

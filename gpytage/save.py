@@ -135,9 +135,3 @@ class SaveFile:
 				model.set_value(iter, E_MODIFIED, False)
 		return
 
-	# obsolete
-	#~ def findMatch(self, model, path, iter, user_data):
-		#~ if model.get_value(iter, E_NAME).strip('*') == user_data:
-			#~ model.set_value(iter, E_NAME, user_data)
-			#~ self.fiter = iter
-
