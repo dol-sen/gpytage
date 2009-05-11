@@ -72,6 +72,7 @@ def initTreeModel():
 			folderModel.append(parentIter, row)
 	for file in TLFiles:
 		row = [file.getName(), file]
+		folderModel.append(None, row)
 		
 def clearData():
 	""" Clears the TreeModel and the TLFolder,TLFiles list """
