@@ -24,9 +24,9 @@
 from helper import scan_contents
 import gtk
 
-E_NAME = 0
-E_FLAGS = 1
-E_REF = 2
+L_NAME = 0
+L_FLAGS = 1
+L_REF = 2
 
 class PackageFileObj:
     """ PackageFile objects represent Files and their contents """
@@ -54,4 +54,5 @@ class PackageFileObj:
             self.data.append(row)
 
     def getData(self):
+        """ Return the internal gtk.ListStore """
         return self.data
