@@ -3,7 +3,7 @@
 # GPytage datastore.py module
 #
 ############################################################################
-#    Copyright (C) 2008 by Kenneth Prugh                                   #
+#    Copyright (C) 2008-2009 by Kenneth Prugh                              #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -23,93 +23,58 @@
 
 import pygtk; pygtk.require("2.0")
 import gtk
-from helper import folder_scan, folder_walk, scan_contents
+
+import FolderObj, PackageFileObj
+
+from helper import folder_scan, folder_walk
 from config import config_files
 
-# declare some contants for clarity of code
-E_NAME = 0
-E_DATA = 1
-E_EDITABLE = 2
-E_PARENT = 3
-E_MODIFIED = 4
+# declare some constants for clarity of code
+F_NAME = 0
+F_REF = 1
 
-datastore = gtk.TreeStore(
-											str,		# 0 entry name
-											str,		# 1 entry value(s)
-											bool,		# 2 editable
-											str,		# 3 parent
-											bool,		# 4 modified
-											)			#stores the main files
+folderModel = gtk.TreeStore(
+						    str,        # 0 entry name
+						    object,		# 1 entry reference
+)						                # Folders
 
-#19:33 < Zalamander> Ken69267 use a dictionary to map the names to created 
-                    #lists. "d = {}; for name in list: d[name] = [1,2,3,4,5]" values will be in the dict.
+TLFolders = []
+TLFiles = []
 
-def filedata():
-	"""function to define and return a ListStore structure
-	   defined for the file data
-	"""
-	store = gtk.ListStore(
-							str,		# 0 entry name
-							str,		# 1 entry value(s)
-							bool,		# 2 editable
-							str,		# 3 parent
-							bool,		# 4 modified
-							)			#stores the main file data
-	return store
-
-def new_entry(name=None, value=None, editable=True,  parent=None, modified = True):
-	"""function to generate a new list or datastore entry with passed values or defaults
-		This simplifies and centralizes data model changes in the future
-	"""
-	return [name, value, editable, parent, modified]
-
-def create_lists():
-	parent_folder, simple_files = folder_scan()
-	global lists
-	lists = {}
-	for i in simple_files:
-		lists[i] = filedata() #gtk.ListStore(str, str, bool, str)
-		data = scan_contents(i)
-		for row in data:
-			try:
-				col1 = row[E_NAME].rstrip() #strips \n
-			except:
-				col1 = None
-			try:
-				col2 = row[E_DATA].rstrip() # not all files have 2 cols
-			except:
-				col2 = None
-			lists[i].append(new_entry(name=col1, value=col2, editable=True, parent=i, modified=False))
-			
-	for i in parent_folder:
-		parent = i
-		sub_folders = folder_walk(i)
-		for i in sub_folders:
-			lists[i] = filedata()  #gtk.ListStore(str, str, bool, str)
-			sub_file_path = parent + '/' + i
-			data = scan_contents(sub_file_path)
-			for row in data:
-				try:
-					col1 = row[E_NAME].rstrip() #strips \n
-				except:
-					col1 = None
-				try:
-					col2 = row[E_DATA].rstrip() # not all files have 2 cols
-				except:
-					col2 = None
-				lists[i].append(new_entry(name=col1, value=col2, parent=parent, modified=False))
-	return lists
+def initData():
+	""" Constructs Folder and PackageFile objects """
 	
-def create_tree():#create the parent/main files
-		parent_folder, simple_files = folder_scan()
-		#parent_files = self.folder_walk(parent_folder)
-		for i in simple_files: #needs no sub main rows just data
-			siter = datastore.append(None, new_entry(name=i, editable=False, parent=i, modified=False))
-		for i in parent_folder: #parent_folders is list of folders such as package.keywords
-			#i is a dir such as package.keywords
-			pfolder = i
-			piter = datastore.append(None, new_entry(name=i, editable=False, parent=i, modified=False))
-			complex_files = folder_walk(i) #this needs to return list files in dir
-			for i in complex_files: #"simple files"
-				name = i #folder name being iterated
-				citer = datastore.append(piter, new_entry(name=i, editable=False, parent=pfolder, modified=False))
+	Folders, Files = folder_scan() # Top level folders and files in config path
+	
+	# Handle Folders first
+	for folder in Folders:
+		fobj = FolderObj.FolderObj(folder, folder)
+		TLFolders.append(fobj)
+		subFiles = folder_walk(folder)
+		
+		# These folders contain files
+		for subFile in subFiles:
+			fileobj = PackageFileObj.PackageFileObj(subFile, folder+"/"+subFile, fobj)
+	
+	# Handle Top-level Files
+	for file in Files:
+		fileobj = PackageFileObj.PackageFileObj(file, file, None)
+		TLFiles.append(fileobj)
+		
+def initTreeModel():
+	""" Populate the TreeModel with data """
+	for folder in TLFolders:
+		row = [folder.getName(), folder]
+		parentIter = folderModel.append(None, row)
+		children = folder.getPackages
+		for child in children:
+			row = [child.getName(), child]
+			folderModel.append(parentIter, row)
+	for file in TLFiles:
+		row = [file.getName(), file]
+		
+def clearData():
+	""" Clears the TreeModel and the TLFolder,TLFiles list """
+	folderModel.clear()
+	del TLFolders[:]
+	del TLFiles[:]
