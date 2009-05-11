@@ -3,7 +3,7 @@
 # GPytage helper.py module
 #
 ############################################################################
-#    Copyright (C) 2008 by Kenneth Prugh                                   #
+#    Copyright (C) 2008-2009 by Kenneth Prugh                              #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -21,12 +21,10 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import os
 import pygtk; pygtk.require("2.0")
 import gtk
-from config import get_config_path, config_files
-import config
 import os
+from config import get_config_path, config_files
 
 def folder_scan():
 	""" Return files and directories in the portage config path """
@@ -53,22 +51,21 @@ def folder_walk(dir):
 	return dir_files
 
 def reload():
-	""" Perform a revert, load saved data """
-	import datastore
-	datastore.datastore.clear()
-	for name, store in datastore.lists.iteritems():
-		store.clear()
-	datastore.create_tree()
-	datastore.create_lists()
-	from window import title
-	title("GPytage")
+	""" Revert all saved changes and reinitialize data from the filesystem """
+	from datastore import clearData, initData, initTreeModel
+	clearData()
+	initData()
+	initTreeModel()
+	
+	from window import setTitleEdited
+	setTitleEdited(False)
 
-def scan_contents(arg):
+def scan_contents(filepath):
 	""" Return data in specified file """
 	config_path = get_config_path()
 
 	try:
-		f=open(config_path+arg, 'r')
+		f=open(config_path+filepath, 'r')
 		contents = f.readlines()
 		f.close()
 	except IOError: #needed or everything breaks
@@ -82,4 +79,3 @@ def scan_contents(arg):
 			new = i.split(None,1)
 		data.append(new)
 	return data #return the master list of lists
-
