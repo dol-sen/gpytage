@@ -56,3 +56,6 @@ class PackageFileObj:
     def getData(self):
         """ Return the internal gtk.ListStore """
         return self.data
+    
+    def getName(self):
+        return self.name
