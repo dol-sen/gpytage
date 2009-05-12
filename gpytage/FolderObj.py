@@ -28,17 +28,68 @@ class FolderObj:
         self.Name = name
         self.filePath = filePath
         self.packageFileChildren = [] # List for PackageFile children
+        self.folderChildren = [] # List for FolderObj children
+        self.hasChildren = False # By default we have no folder children
+        self.hasParent = False # Top level default
+        self.parentFolder = None # Parent FolderObj
+        self.treeRowRef = None
     
     def addPackage(self, Package):
         """ Add the specified PackageFile """
-        self.packageChildren.append(Package)
+        self.packageFileChildren.append(Package)
         
     def removePackage(self, Package):
         """ Removes the specified PackageFile """
-        self.packageChildren.remove(Package)
+        self.packageFileChildren.remove(Package)
+        
+    def addFolder(self, folder):
+        """ Add child FolderObj """
+        self.folderChildren.append(folder)
+        
+    def removeFolder(self, folder):
+        """ Remove child FolderObj """
+        self.folderChildren.remove(folder)
+        
+    def setChildren(self, boolean):
+        """ Sets the state of hasChildren with the passed boolean """
+        self.hasChildren = boolean
+        
+    def getChildrenState(self):
+        """ Returns whether the Folder has child Folder objects """
+        return self.hasChildren
         
     def getName(self):
+        """ Return FolderObj Name """
         return self.Name
     
     def getPackages(self):
+        """ Return list of children PackageFileObj's """
         return self.packageFileChildren
+    
+    def getFolders(self):
+        """ Return list of children FolderObj's """
+        return self.folderChildren
+    
+    def setHasParent(self, boolean):
+        """ Set whether the object has a parent or not """
+        self.hasParent = True
+        
+    def getParentState(self):
+        """ Return True if object has a parent """
+        return self.hasParent
+
+    def getParentFolder(self):
+        """ Retrieve parent FolderObj """
+        return self.parentFolder
+
+    def setParentFolder(self, parentFolder):
+        """ Sets the parent FolderObj """
+        self.parentFolder = parentFolder
+
+    def getTreeRowRef(self):
+        """ Returns a gtk.TreeRowReference pointing to this FolderObj """
+        return self.treeRowRef
+
+    def setTreeRowRef(self, value):
+        """ Set the gtk.TreeRowReference for this FolderObj """
+        self.treeRowRef = value
