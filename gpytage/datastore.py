@@ -127,11 +127,17 @@ def initTreeModel():
 				folder.setTreeRowRef(treeRowRef)
  			for subfile in folder.getPackages():
  				row = [subfile.getName(), subfile]
- 				folderModel.append(parentIter, row)
+ 				parentIter = folderModel.append(parentIter, row)
+ 				path = folderModel.get_path(parentIter)
+				treeRowRef = gtk.TreeRowReference(folderModel, path)
+				subfile.setTreeRowRef(treeRowRef)
 	# Top Level Files only
 	for file in TLFiles:
 		row = [file.getName(), file]
-		folderModel.append(None, row)
+		parentIter = folderModel.append(None, row)
+		path = folderModel.get_path(parentIter)
+		treeRowRef = gtk.TreeRowReference(folderModel, path)
+		file.setTreeRowRef(treeRowRef)
 		
 def __clearData():
 	""" Clears the TreeModel and the TLFolder,TLFiles list """
