@@ -165,16 +165,18 @@ def mselected(treeview):
             iterdict[iter] = False
     return model, iterdict
 
-def fileEdited(): #leftpanel
-    """ Mark a file as edited """
-    from leftpanel import leftview
-    model = leftview.get_model()
-    iter, value = selected(leftview)
-    if not model.get_value(iter,E_MODIFIED): # change name to inidcate "modified"
-        #oldName = model.get_value(iter, E_NAME).strip('*')
-        #newName = "*%s" %oldName
-        model.set_value(iter, E_NAME, "*" +  model.get_value(iter, E_NAME))
-        model.set_value(iter, E_MODIFIED, True)
+#===============================================================================
+# def fileEdited(): leftpanel
+#    """ Mark a file as edited """
+#    from leftpanel import leftview
+#    model = leftview.get_model()
+#    iter, value = selected(leftview)
+#    if not model.get_value(iter,E_MODIFIED): # change name to inidcate "modified"
+#        #oldName = model.get_value(iter, E_NAME).strip('*')
+#        #newName = "*%s" %oldName
+#        model.set_value(iter, E_NAME, "*" +  model.get_value(iter, E_NAME))
+#        model.set_value(iter, E_MODIFIED, True)
+#===============================================================================
 
 def switchListView(widget, drag_context, x, y, timestamp, *args):
     """ Hilights leftview drop target during drag operation """
