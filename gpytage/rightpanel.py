@@ -56,17 +56,17 @@ rightview.append_column(useFlagCol)
 
 #render cell
 nameCell = gtk.CellRendererText()
+nameCell.set_property('editable', True)
 flagCell = gtk.CellRendererText()
+flagCell.set_property('editable', True)
 
 #add cols to cell
 namecol.pack_start(nameCell, True)
 namecol.add_attribute(nameCell, 'text', L_NAME)
-namecol.add_attribute(nameCell, "editable", True)#set row editable
 namecol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
 
 useFlagCol.pack_start(flagCell, True)
 useFlagCol.add_attribute(flagCell, 'text', L_FLAGS)
-useFlagCol.add_attribute(flagCell, "editable", True)#set row editable
 useFlagCol.set_expand(True)
 useFlagCol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
 
