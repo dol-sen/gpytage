@@ -3,7 +3,7 @@
 # GPytage config.py module
 #
 ############################################################################
-#    Copyright (C) 2008 by Kenneth Prugh, Brian Dolbec                     #
+#    Copyright (C) 2008-2009 by Kenneth Prugh, Brian Dolbec                #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
