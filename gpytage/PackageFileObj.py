@@ -43,11 +43,11 @@ class PackageFileObj:
         rawData = scan_contents(self.path)
         for line in rawData:
             try:
-                c1 = line[E_NAME].rstrip()
+                c1 = line[L_NAME].rstrip()
             except:
                 c1 = None
             try:
-                c2 = line[E_FLAGS].rstrip()
+                c2 = line[L_FLAGS].rstrip()
             except:
                 c2 = None
             row = [c1, c2, self]
@@ -58,4 +58,5 @@ class PackageFileObj:
         return self.data
     
     def getName(self):
+        """ Return Name """
         return self.name
