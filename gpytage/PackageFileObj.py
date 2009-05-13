@@ -37,6 +37,8 @@ class PackageFileObj:
         self.parentObj = parent
         self.data = gtk.ListStore(str, str, object)
         self.initData()
+        self.edited = False
+        self.treeRowRef = None
         
     def initData(self):
         """ Read contents of File into ListStore """
@@ -60,3 +62,19 @@ class PackageFileObj:
     def getName(self):
         """ Return Name """
         return self.name
+
+    def getEditedState(self):
+        """ Returns whether the PackageFileObj has been modified or not """
+        return self.edited
+
+    def setEditedState(self, boolean):
+        """ Sets the PackageFileObj edited state """
+        self.edited = boolean
+        
+    def getTreeRowRef(self):
+        """ Returns a gtk.TreeRowReference pointing to this PackageFileObj """
+        return self.treeRowRef
+
+    def setTreeRowRef(self, value):
+        """ Set the gtk.TreeRowReference for this PackageFileObj """
+        self.treeRowRef = value
