@@ -3,7 +3,7 @@
 # GPytage window.py module
 #
 ############################################################################
-#    Copyright (C) 2008 by Kenneth Prugh                                   #
+#    Copyright (C) 2008-2009 by Kenneth Prugh                              #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -26,10 +26,27 @@ import gtk
 from sys import stderr
 
 window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+window.set_title("GPytage")
+__editedState = False
 
-def title(text):
-	"""Set the title of the window. Used to indicate changes *"""
-	window.set_title(text)
+def setTitleEdited(bool):
+	"""
+	Changes the state of the title. Edited state causes the title to change to *GPytage.
+	
+	True: Sets as edited
+	
+	"""
+	global __editedState
+	if bool is True:
+		window.set_title("*GPytage")
+		__editedState = True
+	else:
+		window.set_title("GPytage")
+		__editedState = False
+		
+def getTitleState():
+	""" Returns if the title is in the edited state """
+	return __editedState
 
 def createMessageDialog(parent, flags, type, buttons, mtitle, message_format):
 	md = gtk.MessageDialog(None, flags, type, buttons, message_format)

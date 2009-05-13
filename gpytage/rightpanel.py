@@ -3,7 +3,7 @@
 # GPytage rightpanel.py module
 #
 ############################################################################
-#    Copyright (C) 2008 by Kenneth Prugh                                   #
+#    Copyright (C) 2008-2009 by Kenneth Prugh                              #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -23,10 +23,12 @@
 
 import pygtk; pygtk.require("2.0")
 import gtk
-import datastore
-from datastore import E_NAME, E_DATA, E_EDITABLE, E_PARENT, E_MODIFIED, new_entry
-from window import title
-from panelfunctions import mselected, fileEdited
+
+from window import setTitleEdited
+from PackageFileObj import L_NAME, L_FLAGS, L_REF
+#===============================================================================
+# from panelfunctions import mselected, fileEdited
+#===============================================================================
 
 rightview = gtk.TreeView()
 rightselection = rightview.get_selection()
@@ -34,60 +36,55 @@ rightselection = rightview.get_selection()
 #set MULTIPLE selection mode
 rightselection.set_mode(gtk.SELECTION_MULTIPLE)
 
-def setListModel(list): #we need to switch the model on click
+def setListModel(ListStore): #we need to switch the model on click
 	try:
-		rightview.set_model()
-		rightview.set_model(datastore.lists[list]) #example
+		rightview.set_model() # Clear from view first
+		rightview.set_model(ListStore) #example
 		namecol.queue_resize()
-		testcol.queue_resize()
-		filecol.queue_resize()
 	except:
 		print 'RIGHTPANEL: setListModel(); failed'
-		return
 
-rightview.set_search_column(E_NAME)
-#columns
+rightview.set_search_column(L_NAME)
+
+# TreeViewColumns
 namecol = gtk.TreeViewColumn('Value')
-testcol = gtk.TreeViewColumn('Flags')
-boolcol = gtk.TreeViewColumn() #editable col
-filecol = gtk.TreeViewColumn()
-#add to tree
+useFlagCol = gtk.TreeViewColumn('Flags')
+
+# Add TreeViewColumns to TreeView
 rightview.append_column(namecol)
-rightview.append_column(testcol)
-rightview.append_column(boolcol)
-rightview.append_column(filecol)
+rightview.append_column(useFlagCol)
+
 #render cell
-cell = gtk.CellRendererText()
-cell1 = gtk.CellRendererText()
+nameCell = gtk.CellRendererText()
+flagCell = gtk.CellRendererText()
 
 #add cols to cell
-namecol.pack_start(cell, True)
-namecol.set_attributes(cell, text=E_NAME)
-namecol.add_attribute(cell, "editable", E_EDITABLE)#set row editable
+namecol.pack_start(nameCell, True)
+namecol.add_attribute(nameCell, 'text', L_NAME)
+namecol.add_attribute(nameCell, "editable", True)#set row editable
 namecol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
 
-testcol.pack_start(cell1, True)
-testcol.set_attributes(cell1, text=E_DATA)
-testcol.add_attribute(cell1, "editable", E_EDITABLE)#set row editable
-testcol.set_expand(True)
-testcol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+useFlagCol.pack_start(flagCell, True)
+useFlagCol.add_attribute(flagCell, 'text', L_FLAGS)
+useFlagCol.add_attribute(flagCell, "editable", True)#set row editable
+useFlagCol.set_expand(True)
+useFlagCol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
 
-boolcol.set_visible(False)
-filecol.set_visible(False)
-
-###########Scroll Window#########################
+# ScrolledWindow
 scroll = gtk.ScrolledWindow()
 scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 scroll.add_with_viewport(rightview)
 
-############Drag and Drop####################
-rightview.set_reorderable(True) # allow inline drag and drop
-rightview.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, [('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
-rightview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
-import panelfunctions
-rightview.connect("drag_begin", panelfunctions.drag_begin_signal)
-rightview.connect("drag_data_delete", panelfunctions.drag_data_delete_signal)
-rightview.connect("drag_data_received", panelfunctions.get_dragdestdata)
+###########Drag and Drop####################
+#===============================================================================
+# rightview.set_reorderable(True) # allow inline drag and drop
+# rightview.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, [('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
+# rightview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
+# import panelfunctions
+# rightview.connect("drag_begin", panelfunctions.drag_begin_signal)
+# rightview.connect("drag_data_delete", panelfunctions.drag_data_delete_signal)
+# rightview.connect("drag_data_received", panelfunctions.get_dragdestdata)
+#===============================================================================
 
 #Callbacks
 def edited_cb(cell, path, new_text, col):
@@ -160,6 +157,6 @@ def clicked(view, event):#needs updating from dual panels
 		menu.popup(None, None, None, event.button, event.time)
 
 #Signals
-cell.connect("edited", edited_cb, E_NAME)
-cell1.connect("edited", edited_cb, E_DATA)
+nameCell.connect("edited", edited_cb, L_NAME)
+flagCell.connect("edited", edited_cb, L_FLAGS)
 rightview.connect("button_press_event", clicked)

@@ -3,7 +3,7 @@
 # GPytage startup.py module
 #
 ############################################################################
-#    Copyright (C) 2008 by Kenneth Prugh                                   #
+#    Copyright (C) 2008-2009 by Kenneth Prugh                              #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -24,15 +24,14 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 
-from gpytage import save
+# from gpytage import save -----------------------------------------------------
 from gpytage import leftpanel, rightpanel
 from gpytage import config
-from gpytage.window import title, window, unsavedDialog
+from gpytage.window import window, unsavedDialog, setTitleEdited, getTitleState
 from gpytage.version import version
-from gpytage.datastore import datastore, config_files, create_tree, create_lists
-from gpytage.helper import reload
-from gpytage.subfile import new,convert,delete
-from gpytage.rename import rename
+from gpytage.datastore import folderModel, config_files, initTreeModel, initData, reload
+# from gpytage.subfile import new,convert,delete -------------------------------
+# from gpytage.rename import rename --------------------------------------------
 
 #set global defaults
 DATA_PATH = "/usr/share/gpytage/"
@@ -65,14 +64,13 @@ class gpytagemain:
         except:
             print "GPytage could not find its icons!"
         
-        title("GPytage")
         self.window.set_default_size(645, 400)
         
-        self.datastore = datastore
+        self.datastore = folderModel
         self.files = config_files
         
-        create_lists()
-        create_tree() #populate the left panel
+        initData()
+        initTreeModel()
 
         self.uimanager = gtk.UIManager()
         self.accelgroup = self.uimanager.get_accel_group()
@@ -119,22 +117,22 @@ class gpytagemain:
         #This controls the menubar and the toolbar
         self.actiongroup.add_actions([
             ('Quit', gtk.STOCK_QUIT, '_Quit', None, 'Quit GPytage', self.destroy),
-            ('Revert', gtk.STOCK_REVERT_TO_SAVED, '_Revert', None, 'Revert changes', self.reload),
-            ('New', gtk.STOCK_NEW, '_New Subfile', '<Control>n', 'New file', self.new),
-            ('Split', gtk.STOCK_CONVERT, '_Convert file->subfile', None, 'Convert file', self.convert),
-            ('Rename', gtk.STOCK_SAVE_AS, '_Rename subfile', None, 'Rename file', self.rename),
-            ('Delete', gtk.STOCK_DELETE, '_Delete subfile', None, 'Delete file', self.deleteFile),
-            ('File', None, '_File'),
-            ('Save', gtk.STOCK_SAVE, '_Save', '<Control>s', 'Save changes', self.save),
-            ('Edit', None, '_Edit'),
-            ('Expand All', None, '_Expand All', '<Control>slash', 'Expand Rows', self.expand),
-            ('Collapse All', None, '_Collapse All', '<Control>backslash', 'Collapse Rows', self.collapse),
-            ('Add Package', gtk.STOCK_ADD, '_Add Package', '<Control>t', 'Add a package', rightpanel.insertrow),
-            ('Remove Package', gtk.STOCK_REMOVE, '_Remove Package',    'Delete', "Remove a package", rightpanel.deleterow),
-            ('Comment', gtk.STOCK_INDENT, '_Comment', '<Control>period', "Comment a package", self.comment),
-            ('Uncomment', gtk.STOCK_UNINDENT, '_Uncomment', '<Control>comma', "Uncomment a package", self.uncomment),
-            ('View', None, '_View'),
-            ('Help',None,'_Help'),
+            # ('Revert', gtk.STOCK_REVERT_TO_SAVED, '_Revert', None, 'Revert changes', self.reload), 
+            # ('New', gtk.STOCK_NEW, '_New Subfile', '<Control>n', 'New file', self.new), 
+            # ('Split', gtk.STOCK_CONVERT, '_Convert file->subfile', None, 'Convert file', self.convert), 
+            # ('Rename', gtk.STOCK_SAVE_AS, '_Rename subfile', None, 'Rename file', self.rename), 
+            # ('Delete', gtk.STOCK_DELETE, '_Delete subfile', None, 'Delete file', self.deleteFile), 
+            # ('File', None, '_File'), -----------------------------------------
+            # ('Save', gtk.STOCK_SAVE, '_Save', '<Control>s', 'Save changes', self.save), 
+            # ('Edit', None, '_Edit'), -----------------------------------------
+            # ('Expand All', None, '_Expand All', '<Control>slash', 'Expand Rows', self.expand), 
+            # ('Collapse All', None, '_Collapse All', '<Control>backslash', 'Collapse Rows', self.collapse), 
+            # ('Add Package', gtk.STOCK_ADD, '_Add Package', '<Control>t', 'Add a package', rightpanel.insertrow), 
+            # ('Remove Package', gtk.STOCK_REMOVE, '_Remove Package',    'Delete', "Remove a package", rightpanel.deleterow), 
+            # ('Comment', gtk.STOCK_INDENT, '_Comment', '<Control>period', "Comment a package", self.comment), 
+            # ('Uncomment', gtk.STOCK_UNINDENT, '_Uncomment', '<Control>comma', "Uncomment a package", self.uncomment), 
+            # ('View', None, '_View'), -----------------------------------------
+            # ('Help',None,'_Help'), -------------------------------------------
             ('About', gtk.STOCK_ABOUT, '_About', None, 'About GPytage', self.about)])
 
         #Add the UI XML
@@ -163,8 +161,7 @@ class gpytagemain:
         self.window.show_all()
 
     def destroy(self, widget, data=None):
-        title = self.window.get_title()
-        if title != "GPytage":
+        if getTitleState is False:
             status, uD = unsavedDialog()
             if status == -8:   #YES
                 gtk.main_quit()
@@ -184,7 +181,7 @@ class gpytagemain:
     def about(self, *args):
         aboutw = gtk.AboutDialog()
         aboutw.set_name('GPytage')
-        aboutw.set_copyright('Copyright 2008, GPL2')
+        aboutw.set_copyright('Copyright 2008-2009, GPL2')
         aboutw.set_authors(["Kenneth 'ken69267' Prugh", "\nWith patches contributed by Brian Dolbec <dol-sen>\nand Josh 'nightmorph' Saddler. \n\nWith special thanks to the Gentoo \ndevelopers and community. \n\nLicensed under the GPL-2"]) #Fix wording? :)
         f=open(config.PORTDIR + '/licenses/GPL-2')
         gpl2 = f.read()
@@ -200,35 +197,40 @@ class gpytagemain:
         aboutw.run()
         aboutw.hide()
     
-    def reload(self, *args): #reloads all rows in treeview
+    def reload(self, *args):
+        """ Call datastore.reload() """
         reload()
 
-    def expand(self, *args):
-        leftpanel.leftview.expand_all()
-
-    def collapse(self, *args):
-        leftpanel.leftview.collapse_all()
-            
-    def save(self, *args):
-        save.SaveFile().saveModified()
-
-    def new(self, *args):
-        new(self.window, GLADE_PATH)
-
-    def convert(self, *args):
-        convert(self.window, GLADE_PATH)
-
-    def rename(self, *args):
-        rename().renameDialog(self.window, GLADE_PATH)
-
-    def deleteFile(self, *args):
-        delete(self.window, GLADE_PATH)
-
-    def comment(self, *args):
-        rightpanel.commentRow(self.window)
-
-    def uncomment(self, *args):
-        rightpanel.uncommentRow(self.window)
+#===============================================================================
+#    def expand(self, *args):
+#        leftpanel.leftview.expand_all()
+# 
+#    def collapse(self, *args):
+#        leftpanel.leftview.collapse_all()
+#            
+# #===============================================================================
+# #    def save(self, *args):
+# #        save.SaveFile().saveModified()
+# #===============================================================================
+# 
+#    def new(self, *args):
+#        new(self.window, GLADE_PATH)
+# 
+#    def convert(self, *args):
+#        convert(self.window, GLADE_PATH)
+# 
+#    def rename(self, *args):
+#        rename().renameDialog(self.window, GLADE_PATH)
+# 
+#    def deleteFile(self, *args):
+#        delete(self.window, GLADE_PATH)
+# 
+#    def comment(self, *args):
+#        rightpanel.commentRow(self.window)
+# 
+#    def uncomment(self, *args):
+#        rightpanel.uncommentRow(self.window)
+#===============================================================================
 
     def main(self):
         gtk.main()

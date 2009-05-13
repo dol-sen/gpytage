@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 #
-# GPytage config.py module
+# GPytage PackageFileObj.py module
 #
 ############################################################################
-#    Copyright (C) 2008-2009 by Kenneth Prugh, Brian Dolbec                #
+#    Copyright (C) 2009 by Kenneth Prugh                                   #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -21,39 +21,42 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-from sys import exit, stderr
+from helper import scan_contents
+import gtk
 
-config_files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use', 'sets', 'bashrc', \
-        'color.map', 'modules', 'mirrors', 'categories', 'profile']
-test_path = '/etc/testportage/'
+L_NAME = 0
+L_FLAGS = 1
+L_REF = 2
 
-try: # >=portage 2.2 modules
-    import portage
-    import portage.const as portage_const
-except ImportError, e: # portage 2.1.x modules
-    print >>stderr, "Portage Import Error: ", e
-    try:
-        import portage
-        import portage_const
-    except ImportError, e:
-        print >>stderr, "Portage Import Error: ", e
-        exit('Could not find portage module.\n'
-             'Are you sure this is a Gentoo system?')
-print >>stderr, ("Config: portage version = " + portage.VERSION)
+class PackageFileObj:
+    """ PackageFile objects represent Files and their contents """
+    
+    def __init__(self, name, path, parent): # FilePath, FolderObj
+        self.name = name
+        self.path = path
+        self.parentObj = parent
+        self.data = gtk.ListStore(str, str, object)
+        self.initData()
+        
+    def initData(self):
+        """ Read contents of File into ListStore """
+        rawData = scan_contents(self.path)
+        for line in rawData:
+            try:
+                c1 = line[L_NAME].rstrip()
+            except:
+                c1 = None
+            try:
+                c2 = line[L_FLAGS].rstrip()
+            except:
+                c2 = None
+            row = [c1, c2, self]
+            self.data.append(row)
 
-portage_path = portage_const.USER_CONFIG_PATH
-#portage_path = '/etc/portage/'
-
-config_path = portage_path + '/'
-PORTDIR=portage.config(clone=portage.settings).environ()['PORTDIR']
-
-# house cleaning no longer needed imports
-del portage, portage_const
-
-def set_test_path():
-    global config_path, test_path
-    config_path = test_path
-    print "CONFIG: new config_path = " + config_path
-
-def get_config_path():
-    return config_path
+    def getData(self):
+        """ Return the internal gtk.ListStore """
+        return self.data
+    
+    def getName(self):
+        """ Return Name """
+        return self.name
