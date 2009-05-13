@@ -23,14 +23,12 @@
 
 import pygtk; pygtk.require("2.0")
 import gtk
-import datastore
-from datastore import F_NAME, F_REF
-#===============================================================================
-# import rightpanel
-# from panelfunctions import switchListView
-#===============================================================================
 
-leftview = gtk.TreeView(datastore.folderModel) #create the container
+from datastore import F_NAME, F_REF, folderModel
+from rightpanel import setListModel
+import PackageFileObj, FolderObj
+
+leftview = gtk.TreeView(folderModel) #create the container
 
 leftview.set_search_column(F_NAME)
 
@@ -62,24 +60,20 @@ def __clicked(treeview, *args):
 	global __lastSelected
 	model, iter = treeview.get_selection().get_selected()
 	if iter: # None if no row is selected 
-		parent = model.get_value(iter, F_REF).getName()
+		target = model.get_value(iter, F_REF)
+		targetName = target.getName()
 	else: 
-		parent = lastSelected
-	# has the selection really changed?
-	if parent != last_parent:
+		targetName = __lastSelected
+	# Has the selection changed
+	if targetName != __lastSelected:
 		print("LEFTPANEL: parent change detected")
-		list = model.get_value(iter, F_NAME).strip('*')
-		print list
-		print parent
-		if parent.strip('*') == 'package.' + list:
-			rightpanel.setListModel(parent.strip('*'))
-		else:
-			rightpanel.setListModel(list.strip('*'))
-	else: #fixes bug: if two subfiles are selected after each other with same parent
-		list = model.get_value(iter, E_NAME).strip('*')
-		rightpanel.setListModel(list)
+		if isinstance(target, PackageFileObj.PackageFileObj): # A file
+			print "attempting to change to:", target.getName()
+			setListModel(target.getData())
+		elif isinstance(target, FolderObj.FolderObj): # A folder
+			pass
 	# save current selection as last selected
-	lastSelected = parent
+	__lastSelected = targetName
 
 # Signals
 leftview.connect("cursor-changed", __clicked)
