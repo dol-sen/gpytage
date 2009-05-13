@@ -21,55 +21,15 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import pygtk; pygtk.require("2.0")
-import gtk
-import os
-from config import get_config_path, config_files
-
-def folder_scan():
-	""" Return files and directories in the portage config path """
-	config_path = get_config_path()
-	dirs = []
-	file = []
-	for i in config_files:
-		result = os.path.isdir(config_path+i)
-		if(result):
-			dirs.append(i)
-		elif(os.access(config_path+i, os.F_OK)):
-			file.append(i)
-		else:
-			print "%s DOES NOT EXIST" % i
-			continue
-	return dirs, file
-
-def folder_walk(dir):
-	""" Return list of files in specified directory """
-	config_path = get_config_path()
-	dir_files = []
-	for i in os.listdir(config_path+dir):
-		dir_files.append(i)
-	return dir_files
-
-def reload():
-	""" Revert all saved changes and reinitialize data from the filesystem """
-	from datastore import clearData, initData, initTreeModel
-	clearData()
-	initData()
-	initTreeModel()
-	
-	from window import setTitleEdited
-	setTitleEdited(False)
-
 def scan_contents(filepath):
-	""" Return data in specified file """
-	config_path = get_config_path()
-
+	""" Return data in specified file in a list of a list [[col1, col2]]"""
 	try:
-		f=open(config_path+filepath, 'r')
+		f=open(filepath, 'r')
 		contents = f.readlines()
 		f.close()
 	except IOError: #needed or everything breaks
-		print 'HELPER: scan_contents(); Warning: Critical file %s%s not found' % (config_path, arg)
+		contents = None
+		print 'HELPER: scan_contents(); Warning: Critical file %s not found' % (filepath)
 
 	data = [] #list of list: eg [['python','x86']]
 	for i in contents:
