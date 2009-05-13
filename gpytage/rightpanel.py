@@ -86,15 +86,22 @@ scroll.add_with_viewport(rightview)
 # rightview.connect("drag_data_received", panelfunctions.get_dragdestdata)
 #===============================================================================
 
-#Callbacks
+# Callbacks
 def edited_cb(cell, path, new_text, col):
 	""" Indicate file has been edited """
 	model = rightview.get_model()
 	model[path][col] = new_text
-	model[path][E_MODIFIED] = True
-	#Indicate file status
-	fileEdited() #edit rightpanel to show status
-	title("* GPytage")
+	file = model[path][L_REF]
+	file.setEditedState(True)
+	# Indicate file status in TreeView
+	lpath = file.getTreeRowRef().get_path()
+	lmodel = file.getTreeRowRef().get_model()
+	treename = lmodel[lpath][L_NAME]
+	if treename == file.getName():
+		# mark as edited
+		lmodel[lpath][L_NAME] = "*" + treename
+	# Reflect in title
+	setTitleEdited(True)
 	return
 
 def insertrow(arg):
