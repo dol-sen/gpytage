@@ -25,6 +25,7 @@ import pygtk; pygtk.require("2.0")
 import gtk
 
 from window import setTitleEdited
+from helper import fileEdited
 from PackageFileObj import L_NAME, L_FLAGS, L_REF
 #===============================================================================
 # from panelfunctions import mselected, fileEdited
@@ -94,17 +95,9 @@ def edited_cb(cell, path, new_text, col):
 	file = model[path][L_REF]
 	file.setEditedState(True)
 	# Indicate file status in TreeView
-	lpath = file.getTreeRowRef().get_path()
-	lmodel = file.getTreeRowRef().get_model()
-	treename = lmodel[lpath][L_NAME]
-	if treename == file.getName():
-		# mark as edited
-		lmodel[lpath][L_NAME] = "*" + treename
-	# Reflect in title
-	setTitleEdited(True)
-	return
+	fileEdited(file)
 
-def insertrow(arg):
+def insertRow(arg):
 	""" Insert row below selected row(s) """
 	treeview = rightview
 	model, iterdict = mselected(treeview)

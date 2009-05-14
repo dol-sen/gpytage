@@ -66,7 +66,6 @@ def initData():
 				TLFiles.append(fileobj)
 		else: # No longer top level, we are inside a folder
 			tlname = rootDir.split("/")[-1] # /etc/portage/sets => sets
-			print tlname
 			#construct
 			for folder in folders: # recursive folder
 				parent = __getParent(tlname, "folder") # FolderObj

@@ -21,21 +21,15 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-def scan_contents(filepath):
-	""" Return data in specified file in a list of a list [[col1, col2]]"""
-	try:
-		f=open(filepath, 'r')
-		contents = f.readlines()
-		f.close()
-	except IOError: #needed or everything breaks
-		contents = None
-		print 'HELPER: scan_contents(); Warning: Critical file %s not found' % (filepath)
+from window import setTitleEdited
+from PackageFileObj import L_NAME, L_FLAGS, L_REF
 
-	data = [] #list of list: eg [['python','x86']]
-	for i in contents:
-		if i.startswith('#'): #don't split if its a comment
-			new = [i, None]
-		else:
-			new = i.split(None,1)
-		data.append(new)
-	return data #return the master list of lists
+def fileEdited(file):
+	lpath = file.getTreeRowRef().get_path()
+	lmodel = file.getTreeRowRef().get_model()
+	treename = lmodel[lpath][L_NAME]
+	if treename == file.getName():
+		# mark as edited
+		lmodel[lpath][L_NAME] = "*" + treename
+	# Reflect in title
+	setTitleEdited(True)

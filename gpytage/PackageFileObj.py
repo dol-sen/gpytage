@@ -21,7 +21,6 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-from helper import scan_contents
 import gtk
 
 L_NAME = 0
@@ -42,7 +41,7 @@ class PackageFileObj:
         
     def initData(self):
         """ Read contents of File into ListStore """
-        rawData = scan_contents(self.path)
+        rawData = self.scanFileContents(self.path)
         for line in rawData:
             try:
                 c1 = line[L_NAME].rstrip()
@@ -78,3 +77,22 @@ class PackageFileObj:
     def setTreeRowRef(self, value):
         """ Set the gtk.TreeRowReference for this PackageFileObj """
         self.treeRowRef = value
+        
+    def scanFileContents(self, filepath):
+        """ Return data in specified file in a list of a list [[col1, col2]]"""
+        try:
+            f=open(filepath, 'r')
+            contents = f.readlines()
+            f.close()
+        except IOError: #needed or everything breaks
+            contents = None
+            print 'HELPER: scan_contents(); Warning: Critical file %s not found' % (filepath)
+    
+        data = [] #list of list: eg [['python','x86']]
+        for i in contents:
+            if i.startswith('#'): #don't split if its a comment
+                new = [i, None]
+            else:
+                new = i.split(None,1)
+            data.append(new)
+        return data #return the master list of lists
