@@ -25,11 +25,8 @@ import pygtk; pygtk.require("2.0")
 import gtk
 
 from window import setTitleEdited
-from helper import fileEdited
+from helper import fileEdited, getMultiSelection, getCurrentFile
 from PackageFileObj import L_NAME, L_FLAGS, L_REF
-#===============================================================================
-# from panelfunctions import mselected, fileEdited
-#===============================================================================
 
 rightview = gtk.TreeView()
 rightselection = rightview.get_selection()
@@ -55,13 +52,13 @@ useFlagCol = gtk.TreeViewColumn('Flags')
 rightview.append_column(namecol)
 rightview.append_column(useFlagCol)
 
-#render cell
+# CellRenderer construction
 nameCell = gtk.CellRendererText()
 nameCell.set_property('editable', True)
 flagCell = gtk.CellRendererText()
 flagCell.set_property('editable', True)
 
-#add cols to cell
+# Add CellRenderer to TreeViewColumns
 namecol.pack_start(nameCell, True)
 namecol.add_attribute(nameCell, 'text', L_NAME)
 namecol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
@@ -93,21 +90,39 @@ def edited_cb(cell, path, new_text, col):
 	model = rightview.get_model()
 	model[path][col] = new_text
 	file = model[path][L_REF]
-	file.setEditedState(True)
 	# Indicate file status in TreeView
 	fileEdited(file)
 
 def insertRow(arg):
 	""" Insert row below selected row(s) """
-	treeview = rightview
-	model, iterdict = mselected(treeview)
-	for iter,value in iterdict.iteritems(): #Should only have 1 via right click.. funky results with accelerator.
-		if value == True:
-			parent = model.get_value(iter, E_PARENT)
-			new = model.insert_after(iter, new_entry(parent=parent))
-			path = model.get_path(new)
-			treeview.set_cursor_on_cell(path, namecol, cell, True)
-			title("* GPytage")
+	rowReferences = getMultiSelection(rightview)
+	try:
+		lastRowSelectedPath = rowReferences[-1].get_path()
+		model = rowReferences[-1].get_model()
+	except:
+		# Well, we got a blank file
+		PackageFile, lModel = getCurrentFile()
+		model = rightview.get_model()
+		newRow = model.append([None, None, PackageFile])
+		# Set the cursor on the new row and start editing the name column
+		path = model.get_path(newRow)
+		rightview.set_cursor(path, namecol, True)
+		# Fire off the edited methods
+		fileEdited(PackageFile)
+		setTitleEdited(True)
+		return
+	
+	lastRowIter = model.get_iter(lastRowSelectedPath)
+	# We need to link this new row with its PackageFile Object
+	PackageFile = model.get_value(lastRowIter, L_REF)
+	# Insert into the model
+	newRow = model.insert_after(lastRowIter, [None, None, PackageFile])
+	# Set the cursor on the new row and start editing the name column
+	path = model.get_path(newRow)
+	rightview.set_cursor(path, namecol, True)
+	# Fire off the edited methods
+	fileEdited(PackageFile)
+	setTitleEdited(True)
 
 def deleterow(arg):
 	""" Delete selected row(s) """
@@ -143,12 +158,12 @@ def uncommentRow(window):
 				fileEdited()
 				title("* GPytage")
 
-def clicked(view, event):#needs updating from dual panels
-	""" Right click menu for rightview """
+def __rightClicked(view, event):
+	""" Right click menu for package options """
 	if event.button == 3:
 		menu = gtk.Menu()
 		irow = gtk.MenuItem("Insert Package")
-		irow.connect("activate", insertrow)
+		irow.connect("activate", insertRow)
 		drow = gtk.MenuItem("Delete Package")
 		drow.connect("activate", deleterow)
 		menu.append(irow)
@@ -159,4 +174,4 @@ def clicked(view, event):#needs updating from dual panels
 #Signals
 nameCell.connect("edited", edited_cb, L_NAME)
 flagCell.connect("edited", edited_cb, L_FLAGS)
-rightview.connect("button_press_event", clicked)
+rightview.connect("button_press_event", __rightClicked)

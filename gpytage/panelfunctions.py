@@ -151,20 +151,6 @@ def selected(treeview): #helper function
         value = False
     return iter, value
 
-def mselected(treeview):
-    """ Return model and dictionary of iters:values from currently selected rows """
-    selection = treeview.get_selection()
-    model, iters = selection.get_selected_rows() #iters == paths
-    iterdict = {}
-    for i in iters:
-        iref = gtk.TreeRowReference(model, i)
-        iter = model.get_iter(i)
-        try:
-            iterdict[iter] = model.get_value(iter, E_EDITABLE)
-        except:
-            iterdict[iter] = False
-    return model, iterdict
-
 def switchListView(widget, drag_context, x, y, timestamp, *args):
     """ Hilights leftview drop target during drag operation """
     from leftpanel import leftview
