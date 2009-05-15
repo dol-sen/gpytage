@@ -124,15 +124,16 @@ def insertRow(arg):
 	fileEdited(PackageFile)
 	setTitleEdited(True)
 
-def deleterow(arg):
+def deleteRow(arg):
 	""" Delete selected row(s) """
-	treeview = rightview
-	model, iterdict = mselected(treeview)
-	for iter,value in iterdict.iteritems():
-		if value == True:
-			model.remove(iter)
-			fileEdited()
-			title("* GPytage")
+	rowReferences = getMultiSelection(rightview)
+	model = rightview.get_model()
+	PackageFile, lModel = getCurrentFile()
+	for ref in rowReferences:
+		iter = model.get_iter(ref.get_path())
+		model.remove(iter)
+	fileEdited(PackageFile)
+	setTitleEdited(True)
 
 def commentRow(window):
 	""" Comment selected row(s) """
@@ -165,7 +166,7 @@ def __rightClicked(view, event):
 		irow = gtk.MenuItem("Insert Package")
 		irow.connect("activate", insertRow)
 		drow = gtk.MenuItem("Delete Package")
-		drow.connect("activate", deleterow)
+		drow.connect("activate", deleteRow)
 		menu.append(irow)
 		menu.append(drow)
 		menu.show_all()
