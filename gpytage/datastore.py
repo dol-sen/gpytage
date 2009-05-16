@@ -95,7 +95,7 @@ def __getParent(tlname, type):
 def initTreeModel():
 	""" Populate the TreeModel with data """
 	for folder in TLFolders: #Contains *all* folders
-		# Handle Folders with no folder children first
+		# Handle Top level Folders with no folder children first
 		if (folder.getChildrenState() == False and folder.getParentState() == False):
 			row = [folder.getName(), folder]
 			parentIter = folderModel.append(None, row)
@@ -124,10 +124,11 @@ def initTreeModel():
 				path = folderModel.get_path(parentIter)
 				treeRowRef = gtk.TreeRowReference(folderModel, path)
 				folder.setTreeRowRef(treeRowRef)
- 			for subfile in folder.getPackages():
- 				row = [subfile.getName(), subfile]
- 				parentIter = folderModel.append(parentIter, row)
- 				path = folderModel.get_path(parentIter)
+				
+	 		for subfile in folder.getPackages():
+	 			row = [subfile.getName(), subfile]
+	 			FileIter = folderModel.append(parentIter, row)
+	 			path = folderModel.get_path(FileIter)
 				treeRowRef = gtk.TreeRowReference(folderModel, path)
 				subfile.setTreeRowRef(treeRowRef)
 	# Top Level Files only
