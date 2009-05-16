@@ -45,7 +45,7 @@ def setListModel(ListStore): #we need to switch the model on click
 rightview.set_search_column(L_NAME)
 
 # TreeViewColumns
-namecol = gtk.TreeViewColumn('Value')
+namecol = gtk.TreeViewColumn('Package')
 useFlagCol = gtk.TreeViewColumn('Flags')
 
 # Add TreeViewColumns to TreeView
