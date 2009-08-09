@@ -41,8 +41,7 @@ except ImportError, e: # portage 2.1.x modules
              'Are you sure this is a Gentoo system?')
 print >>stderr, ("Config: portage version = " + portage.VERSION)
 
-portage_path = portage_const.USER_CONFIG_PATH
-#portage_path = '/etc/portage/'
+portage_path = "/" + portage_const.USER_CONFIG_PATH
 
 config_path = portage_path + '/'
 PORTDIR=portage.config(clone=portage.settings).environ()['PORTDIR']
