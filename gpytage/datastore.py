@@ -45,6 +45,7 @@ TLFiles = []
 def initData():
 	""" Constructs Folder and PackageFile objects """
 	path = get_config_path()
+	#print "USING PATH: " + path
 	for rootDir, folders, files in os.walk(path, topdown=True):
 		# Begin the construction
 		if rootDir is get_config_path(): # we are top level, no children
@@ -105,7 +106,10 @@ def initTreeModel():
 			children = folder.getPackages()
 			for child in children: #Add children files to treeview
 				row = [child.getName(), child]
-				folderModel.append(parentIter, row)
+				childIter = folderModel.append(parentIter, row)
+				path = folderModel.get_path(childIter)
+				treeRowRef = gtk.TreeRowReference(folderModel, path)
+				child.setTreeRowRef(treeRowRef)
 		else: # Folders have folder children (an unknown amount unfortunately) (Recursive)
 			#Add the parent folder to the treeview
 			row = [folder.getName(), folder]
