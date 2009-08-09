@@ -24,14 +24,12 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 
-# from gpytage import save -----------------------------------------------------
 from gpytage import leftpanel, rightpanel
 from gpytage import config
 from gpytage.window import window, unsavedDialog, setTitleEdited, getTitleState
 from gpytage.version import version
 from gpytage.datastore import folderModel, config_files, initTreeModel, initData, reload
-# from gpytage.subfile import new,convert,delete -------------------------------
-# from gpytage.rename import rename --------------------------------------------
+from rightpanel import insertRow, deleteRow
 
 #set global defaults
 DATA_PATH = "/usr/share/gpytage/"
@@ -64,7 +62,7 @@ class gpytagemain:
         except:
             print "GPytage could not find its icons!"
         
-        self.window.set_default_size(645, 400)
+        self.window.set_default_size(800, 500)
         
         self.datastore = folderModel
         self.files = config_files
@@ -82,12 +80,11 @@ class gpytagemain:
                     <menuitem action="New"/>
                     <separator/>
                     <menuitem action="Save"/>
+                    <menuitem action="Revert"/>
                     <separator/>
                     <menuitem action="Quit"/>
                 </menu>
                 <menu action="Edit">
-                    <menuitem action="Revert"/>
-                    <separator/>
                     <menuitem action="Add Package"/>
                     <menuitem action="Remove Package"/>
                     <separator/>
@@ -114,26 +111,29 @@ class gpytagemain:
             </toolbar>
         </ui>'''
 
-        #This controls the menubar and the toolbar
+        #This controls the MenuBar and the ToolBar
         self.actiongroup.add_actions([
+            ('File', None, '_File'),
+            ('New', gtk.STOCK_NEW, '_New Subfile', '<Control>n', 'New file', self.TODO),
+            ('Save', gtk.STOCK_SAVE, '_Save', '<Control>s', 'Save changes', self.TODO),
+            ('Revert', gtk.STOCK_REVERT_TO_SAVED, '_Revert', None, 'Revert changes', self.reload),
             ('Quit', gtk.STOCK_QUIT, '_Quit', None, 'Quit GPytage', self.destroy),
-            # ('Revert', gtk.STOCK_REVERT_TO_SAVED, '_Revert', None, 'Revert changes', self.reload), 
-            # ('New', gtk.STOCK_NEW, '_New Subfile', '<Control>n', 'New file', self.new), 
-            # ('Split', gtk.STOCK_CONVERT, '_Convert file->subfile', None, 'Convert file', self.convert), 
-            # ('Rename', gtk.STOCK_SAVE_AS, '_Rename subfile', None, 'Rename file', self.rename), 
-            # ('Delete', gtk.STOCK_DELETE, '_Delete subfile', None, 'Delete file', self.deleteFile), 
-            # ('File', None, '_File'), -----------------------------------------
-            # ('Save', gtk.STOCK_SAVE, '_Save', '<Control>s', 'Save changes', self.save), 
-            # ('Edit', None, '_Edit'), -----------------------------------------
-            # ('Expand All', None, '_Expand All', '<Control>slash', 'Expand Rows', self.expand), 
-            # ('Collapse All', None, '_Collapse All', '<Control>backslash', 'Collapse Rows', self.collapse), 
-            # ('Add Package', gtk.STOCK_ADD, '_Add Package', '<Control>t', 'Add a package', rightpanel.insertrow), 
-            # ('Remove Package', gtk.STOCK_REMOVE, '_Remove Package',    'Delete', "Remove a package", rightpanel.deleterow), 
-            # ('Comment', gtk.STOCK_INDENT, '_Comment', '<Control>period', "Comment a package", self.comment), 
-            # ('Uncomment', gtk.STOCK_UNINDENT, '_Uncomment', '<Control>comma', "Uncomment a package", self.uncomment), 
-            # ('View', None, '_View'), -----------------------------------------
-            # ('Help',None,'_Help'), -------------------------------------------
-            ('About', gtk.STOCK_ABOUT, '_About', None, 'About GPytage', self.about)])
+            
+            ('Edit', None, '_Edit'),
+            ('Add Package', gtk.STOCK_ADD, '_Add Package', '<Control>Plus', 'Add a package', insertRow),
+            ('Remove Package', gtk.STOCK_REMOVE, '_Remove Package',    '<Control>-', "Remove a package", deleteRow),
+            ('Delete', gtk.STOCK_DELETE, '_Delete subfile', None, 'Delete file', self.TODO),
+            ('Split', gtk.STOCK_CONVERT, '_Convert file->subfile', None, 'Convert file', self.TODO),
+            ('Rename', gtk.STOCK_SAVE_AS, '_Rename subfile', None, 'Rename file', self.TODO),
+            ('Comment', gtk.STOCK_INDENT, '_Comment', '<Control>period', "Comment a package", self.TODO),
+            ('Uncomment', gtk.STOCK_UNINDENT, '_Uncomment', '<Control>comma', "Uncomment a package", self.TODO),
+             
+            ('View', None, '_View'),
+            ('Expand All', None, '_Expand All', '<Control>slash', 'Expand Rows', self.TODO),
+            ('Collapse All', None, '_Collapse All', '<Control>backslash', 'Collapse Rows', self.TODO), 
+            ('Help',None,'_Help'),
+            ('About', gtk.STOCK_ABOUT, '_About', None, 'About GPytage', self.about)
+        ])
 
         #Add the UI XML
         self.uimanager.insert_action_group(self.actiongroup, 0)
@@ -142,7 +142,7 @@ class gpytagemain:
         #Menubar
         self.menubar = self.uimanager.get_widget('/MenuBar')
         self.toolbar = self.uimanager.get_widget('/ToolBar')
-        self.vbox = gtk.VBox() #the master widgit
+        self.vbox = gtk.VBox() #the master Widget
         self.vbox.pack_start(self.menubar, False)
         self.vbox.pack_start(self.toolbar, False)
         
@@ -150,7 +150,7 @@ class gpytagemain:
         self.window.connect("destroy", self.destroy)
         self.window.connect("delete_event", self.delete_event)
 
-        #Show Widgits
+        #Show Widgets
         self.pane = gtk.HPaned()
         self.pane.pack1(leftpanel.scroll, True, True)
         self.pane.pack2(rightpanel.scroll, True, True)
@@ -231,6 +231,9 @@ class gpytagemain:
 #    def uncomment(self, *args):
 #        rightpanel.uncommentRow(self.window)
 #===============================================================================
+
+    def TODO(self):
+        pass
 
     def main(self):
         gtk.main()
