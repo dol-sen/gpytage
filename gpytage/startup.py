@@ -129,8 +129,8 @@ class gpytagemain:
             ('Uncomment', gtk.STOCK_UNINDENT, '_Uncomment', '<Control>comma', "Uncomment a package", self.TODO),
              
             ('View', None, '_View'),
-            ('Expand All', None, '_Expand All', '<Control>slash', 'Expand Rows', self.TODO),
-            ('Collapse All', None, '_Collapse All', '<Control>backslash', 'Collapse Rows', self.TODO), 
+            ('Expand All', None, '_Expand All', '<Control>slash', 'Expand Rows', self.expandRows),
+            ('Collapse All', None, '_Collapse All', '<Control>backslash', 'Collapse Rows', self.collapseRows), 
             ('Help',None,'_Help'),
             ('About', gtk.STOCK_ABOUT, '_About', None, 'About GPytage', self.about)
         ])
@@ -201,12 +201,11 @@ class gpytagemain:
         """ Call datastore.reload() """
         reload()
 
-#===============================================================================
-#    def expand(self, *args):
-#        leftpanel.leftview.expand_all()
-# 
-#    def collapse(self, *args):
-#        leftpanel.leftview.collapse_all()
+    def expandRows(self, *args):
+        leftpanel.expandRows()
+ 
+    def collapseRows(self, *args):
+        leftpanel.collapseRows()
 #            
 # #===============================================================================
 # #    def save(self, *args):

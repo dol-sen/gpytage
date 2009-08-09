@@ -52,6 +52,15 @@ scroll = gtk.ScrolledWindow()
 scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 scroll.add_with_viewport(leftview)
 
+def expandRows(*args):
+	""" Expand all columns in the left panel """
+	leftview.expand_all()
+	
+def collapseRows(*args):
+	""" Collapse all columns in the left panel """
+	leftview.collapse_all()
+	
+
 # Allows us to check if the user simply clicked on the same file or on another one
 __lastSelected = None
 
