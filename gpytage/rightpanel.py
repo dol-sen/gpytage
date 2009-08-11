@@ -137,27 +137,29 @@ def deleteRow(arg):
 
 def commentRow(window):
 	""" Comment selected row(s) """
-	treeview = rightview
-	model, iterdict = mselected(treeview)
-	for iter,value in iterdict.iteritems():
-		if value == True:
-			old = model.get_value(iter, E_NAME)
-			if old.startswith("#") is False:
-				model.set_value(iter, E_NAME, "#"+old)
-				fileEdited()
-				title("* GPytage")
+	rowReferences = getMultiSelection(rightview)
+	model = rightview.get_model()
+	PackageFile, lModel = getCurrentFile()
+	for ref in rowReferences:
+		iter = model.get_iter(ref.get_path())
+		cText = model.get_value(iter, L_NAME)
+		if not cText.startswith("#"):
+			model.set_value(iter, L_NAME, "#"+cText)
+	fileEdited(PackageFile)
+	setTitleEdited(True)
 
 def uncommentRow(window):
 	""" Uncomment selected row(s) """
-	treeview = rightview
-	model, iterdict = mselected(treeview)
-	for iter,value in iterdict.iteritems():
-		if value == True:
-			old = model.get_value(iter, E_NAME)
-			if old.startswith("#"):
-				model.set_value(iter, E_NAME, old[1:])
-				fileEdited()
-				title("* GPytage")
+	rowReferences = getMultiSelection(rightview)
+	model = rightview.get_model()
+	PackageFile, lModel = getCurrentFile()
+	for ref in rowReferences:
+		iter = model.get_iter(ref.get_path())
+		cText = model.get_value(iter, L_NAME)
+		if cText.startswith("#"):
+			model.set_value(iter, L_NAME, cText[1:])
+	fileEdited(PackageFile)
+	setTitleEdited(True)
 
 def __rightClicked(view, event):
 	""" Right click menu for package options """

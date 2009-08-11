@@ -24,12 +24,14 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 
-from gpytage import leftpanel, rightpanel
+from gpytage.leftpanel import expandRows, collapseRows
+from gpytage.leftpanel import scroll as lScroll
+from gpytage.rightpanel import scroll as rScroll
 from gpytage import config
 from gpytage.window import window, unsavedDialog, setTitleEdited, getTitleState
 from gpytage.version import version
 from gpytage.datastore import folderModel, config_files, initTreeModel, initData, reload
-from rightpanel import insertRow, deleteRow
+from rightpanel import insertRow, deleteRow, commentRow, uncommentRow
 
 #set global defaults
 DATA_PATH = "/usr/share/gpytage/"
@@ -125,12 +127,12 @@ class gpytagemain:
             ('Delete', gtk.STOCK_DELETE, '_Delete subfile', None, 'Delete file', self.TODO),
             ('Split', gtk.STOCK_CONVERT, '_Convert file->subfile', None, 'Convert file', self.TODO),
             ('Rename', gtk.STOCK_SAVE_AS, '_Rename subfile', None, 'Rename file', self.TODO),
-            ('Comment', gtk.STOCK_INDENT, '_Comment', '<Control>period', "Comment a package", self.TODO),
-            ('Uncomment', gtk.STOCK_UNINDENT, '_Uncomment', '<Control>comma', "Uncomment a package", self.TODO),
+            ('Comment', gtk.STOCK_INDENT, '_Comment', '<Control>period', "Comment a package", commentRow),
+            ('Uncomment', gtk.STOCK_UNINDENT, '_Uncomment', '<Control>comma', "Uncomment a package", uncommentRow),
              
             ('View', None, '_View'),
-            ('Expand All', None, '_Expand All', '<Control>slash', 'Expand Rows', self.expandRows),
-            ('Collapse All', None, '_Collapse All', '<Control>backslash', 'Collapse Rows', self.collapseRows), 
+            ('Expand All', None, '_Expand All', '<Control>slash', 'Expand Rows', expandRows),
+            ('Collapse All', None, '_Collapse All', '<Control>backslash', 'Collapse Rows', collapseRows), 
             ('Help',None,'_Help'),
             ('About', gtk.STOCK_ABOUT, '_About', None, 'About GPytage', self.about)
         ])
@@ -152,8 +154,8 @@ class gpytagemain:
 
         #Show Widgets
         self.pane = gtk.HPaned()
-        self.pane.pack1(leftpanel.scroll, True, True)
-        self.pane.pack2(rightpanel.scroll, True, True)
+        self.pane.pack1(lScroll, True, True)
+        self.pane.pack2(rScroll, True, True)
         self.pane.set_position(200)
         self.vbox.pack_start(self.pane)
         self.window.add_accel_group(self.accelgroup)
@@ -161,12 +163,12 @@ class gpytagemain:
         self.window.show_all()
 
     def destroy(self, widget, data=None):
-        if getTitleState is False:
+        state = getTitleState()
+        print "STATE IS: "
+        print state
+        if state is True: #There are edited files
             status, uD = unsavedDialog()
             if status == -8:   #YES
-                gtk.main_quit()
-            elif status == 1:  #SAVE
-                self.save()
                 gtk.main_quit()
             else:              #NO and other unhandled signals
                 uD.hide()
@@ -200,12 +202,6 @@ class gpytagemain:
     def reload(self, *args):
         """ Call datastore.reload() """
         reload()
-
-    def expandRows(self, *args):
-        leftpanel.expandRows()
- 
-    def collapseRows(self, *args):
-        leftpanel.collapseRows()
 #            
 # #===============================================================================
 # #    def save(self, *args):
@@ -223,12 +219,6 @@ class gpytagemain:
 # 
 #    def deleteFile(self, *args):
 #        delete(self.window, GLADE_PATH)
-# 
-#    def comment(self, *args):
-#        rightpanel.commentRow(self.window)
-# 
-#    def uncomment(self, *args):
-#        rightpanel.uncommentRow(self.window)
 #===============================================================================
 
     def TODO(self):
