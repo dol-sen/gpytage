@@ -61,11 +61,9 @@ def unsavedDialog():
 	YES returns -8. NO returns -9. Save returns 1.
 	
 	"""
-	uD = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_YES_NO, message_format="You have unsaved changes, if you proceed these changes will be lost.\n\n Do you wish to continue?")
+	uD = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_YES_NO, message_format="You have unsaved changes, if you proceed these changes will be lost.\n\n Do you wish to Quit?")
 	uD.set_title("You have unsaved changes")
 	uD.set_default_response(gtk.RESPONSE_NO)
-	RESPONSE_SAVE = 1
-	uD.add_button("_Save and Continue", 1)
 	status = uD.run()
 	return status, uD
 
