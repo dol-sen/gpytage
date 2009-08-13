@@ -80,7 +80,7 @@ def __clicked(treeview, *args):
 			print "attempting to change to:", target.getName()
 			setListModel(target.getData())
 		elif isinstance(target, FolderObj.FolderObj): # A folder
-			pass
+			setListModel(None)
 	# save current selection as last selected
 	__lastSelected = targetName
 
