@@ -93,3 +93,7 @@ class FolderObj:
     def setTreeRowRef(self, value):
         """ Set the gtk.TreeRowReference for this FolderObj """
         self.treeRowRef = value
+        
+    def getPath(self):
+        """ Returns the filepath for this FolderObj """
+        return self.filePath

@@ -78,6 +78,10 @@ class PackageFileObj:
         """ Set the gtk.TreeRowReference for this PackageFileObj """
         self.treeRowRef = value
         
+    def getPath(self):
+        """ Returns the filepath for this PackageFileObj """
+        return self.path
+        
     def scanFileContents(self, filepath):
         """ Return data in specified file in a list of a list [[col1, col2]]"""
         try:

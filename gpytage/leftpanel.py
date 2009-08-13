@@ -70,14 +70,14 @@ def __clicked(treeview, *args):
 	model, iter = treeview.get_selection().get_selected()
 	if iter: # None if no row is selected 
 		target = model.get_value(iter, F_REF)
-		targetName = target.getName()
+		targetName = target.getPath()
 	else: 
 		targetName = __lastSelected
 	# Has the selection changed
 	if targetName != __lastSelected:
 		print("LEFTPANEL: parent change detected")
 		if isinstance(target, PackageFileObj.PackageFileObj): # A file
-			print "attempting to change to:", target.getName()
+			print "attempting to change to:", target.getPath()
 			setListModel(target.getData())
 		elif isinstance(target, FolderObj.FolderObj): # A folder
 			setListModel(None)
