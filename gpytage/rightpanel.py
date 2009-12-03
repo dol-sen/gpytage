@@ -24,9 +24,9 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 
-from window import setTitleEdited
-from helper import fileEdited, getMultiSelection, getCurrentFile
+from helper import getMultiSelection, getCurrentFile
 from PackageFileObj import L_NAME, L_FLAGS, L_REF
+from fileOperations import fileEdited
 
 rightview = gtk.TreeView()
 rightselection = rightview.get_selection()
@@ -109,7 +109,6 @@ def insertRow(arg):
 		rightview.set_cursor(path, namecol, True)
 		# Fire off the edited methods
 		fileEdited(PackageFile)
-		setTitleEdited(True)
 		return
 	
 	lastRowIter = model.get_iter(lastRowSelectedPath)
@@ -122,7 +121,6 @@ def insertRow(arg):
 	rightview.set_cursor(path, namecol, True)
 	# Fire off the edited methods
 	fileEdited(PackageFile)
-	setTitleEdited(True)
 
 def deleteRow(arg):
 	""" Delete selected row(s) """
@@ -133,7 +131,6 @@ def deleteRow(arg):
 		iter = model.get_iter(ref.get_path())
 		model.remove(iter)
 	fileEdited(PackageFile)
-	setTitleEdited(True)
 
 def commentRow(window):
 	""" Comment selected row(s) """
@@ -146,7 +143,6 @@ def commentRow(window):
 		if not cText.startswith("#"):
 			model.set_value(iter, L_NAME, "#"+cText)
 	fileEdited(PackageFile)
-	setTitleEdited(True)
 
 def uncommentRow(window):
 	""" Uncomment selected row(s) """
@@ -159,7 +155,6 @@ def uncommentRow(window):
 		if cText.startswith("#"):
 			model.set_value(iter, L_NAME, cText[1:])
 	fileEdited(PackageFile)
-	setTitleEdited(True)
 
 def __rightClicked(view, event):
 	""" Right click menu for package options """

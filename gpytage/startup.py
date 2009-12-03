@@ -31,6 +31,7 @@ from gpytage import config
 from gpytage.window import window, unsavedDialog, setTitleEdited, getTitleState
 from gpytage.version import version
 from gpytage.datastore import folderModel, config_files, initTreeModel, initData, reload
+from gpytage.fileOperations import saveModifiedFiles
 from rightpanel import insertRow, deleteRow, commentRow, uncommentRow
 
 #set global defaults
@@ -117,8 +118,9 @@ class gpytagemain:
         self.actiongroup.add_actions([
             ('File', None, '_File'),
             ('New', gtk.STOCK_NEW, '_New Subfile', '<Control>n', 'New file', self.TODO),
-            ('Save', gtk.STOCK_SAVE, '_Save', '<Control>s', 'Save changes', self.TODO),
-            ('Revert', gtk.STOCK_REVERT_TO_SAVED, '_Revert', None, 'Revert changes', self.reload),
+            ('Save', gtk.STOCK_SAVE, '_Save', '<Control>s', 'Save changes',
+				saveModifiedFiles),
+            ('Revert', gtk.STOCK_REVERT_TO_SAVED, '_Revert', None, 'Revert changes', reload),
             ('Quit', gtk.STOCK_QUIT, '_Quit', None, 'Quit GPytage', self.destroy),
             
             ('Edit', None, '_Edit'),
@@ -198,11 +200,7 @@ class gpytagemain:
             print "ABOUT(): Logo could not be set"
         aboutw.run()
         aboutw.hide()
-    
-    def reload(self, *args):
-        """ Call datastore.reload() """
-        reload()
-#            
+
 # #===============================================================================
 # #    def save(self, *args):
 # #        save.SaveFile().saveModified()

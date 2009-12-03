@@ -149,7 +149,7 @@ def __clearData():
 	del TLFolders[:]
 	del TLFiles[:]
 	
-def reload():
+def reload(*args):
 	""" Revert all saved changes and reinitialize data from the filesystem """
 	__clearData()
 	initData()
@@ -158,3 +158,5 @@ def reload():
 	from window import setTitleEdited
 	setTitleEdited(False)
 	
+	from rightpanel import setListModel
+	setListModel(None)

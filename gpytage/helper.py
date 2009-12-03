@@ -25,18 +25,6 @@ import gtk
 from window import setTitleEdited
 from PackageFileObj import L_NAME, L_FLAGS, L_REF
 
-def fileEdited(file):
-	""" Set the passed PackageFileObj as edited """
-	file.setEditedState(True)
-	lpath = file.getTreeRowRef().get_path()
-	lmodel = file.getTreeRowRef().get_model()
-	treename = lmodel[lpath][L_NAME]
-	if treename == file.getName():
-		# mark as edited
-		lmodel[lpath][L_NAME] = "*" + treename
-	# Reflect in title
-	setTitleEdited(True)
-	
 def getMultiSelection(treeview):
     """ Return a list of the currently selected rows in the form of TreeRowReferences """
     selection = treeview.get_selection()
