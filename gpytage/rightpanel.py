@@ -139,6 +139,9 @@ def commentRow(window):
 	rowReferences = getMultiSelection(rightview)
 	model = rightview.get_model()
 	PackageFile, lModel = getCurrentFile()
+	# Is anything even selected?
+	if len(rowReferences) == 0:
+		return
 	for ref in rowReferences:
 		iter = model.get_iter(ref.get_path())
 		cText = model.get_value(iter, L_NAME)
@@ -151,6 +154,9 @@ def uncommentRow(window):
 	rowReferences = getMultiSelection(rightview)
 	model = rightview.get_model()
 	PackageFile, lModel = getCurrentFile()
+	# Is anything even selected?
+	if len(rowReferences) == 0:
+		return
 	for ref in rowReferences:
 		iter = model.get_iter(ref.get_path())
 		cText = model.get_value(iter, L_NAME)
@@ -164,6 +170,9 @@ def toggleComment(*args):
 	model = rightview.get_model()
 	file, lModel = getCurrentFile()
 	comment = True
+	# Is anything even selected?
+	if len(rowReferences) == 0:
+		return
 	# Lets see what the first comment is
 	ref = rowReferences[0]
 	iter = model.get_iter(ref.get_path())
