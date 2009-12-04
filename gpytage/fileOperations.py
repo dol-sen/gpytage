@@ -96,3 +96,9 @@ def revertSelected(*args):
 	if file in modifiedFiles:
 		file.initData()
 		__fileSaved(file) # Well, it is unedited...
+
+def revertAllModified(*args):
+	""" Reverts all files that have been modified """
+	for file in modifiedFiles[:]:
+		file.initData()
+		__fileSaved(file)
