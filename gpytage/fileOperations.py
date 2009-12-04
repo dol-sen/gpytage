@@ -87,3 +87,12 @@ def __hasModified():
 		return False
 	else:
 		return True
+
+def revertSelected(*args):
+	""" Reverts the currently selected file """
+	# Discover file currently selected
+	from helper import getCurrentFile
+	file, model = getCurrentFile()
+	if file in modifiedFiles:
+		file.initData()
+		__fileSaved(file) # Well, it is unedited...
