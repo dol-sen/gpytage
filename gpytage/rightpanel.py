@@ -102,7 +102,11 @@ def insertRow(arg):
 	except:
 		# Well, we got a blank file
 		PackageFile, lModel = getCurrentFile()
+		if PackageFile == None: # No file is actually selected
+			return
 		model = rightview.get_model()
+		if model == None: # A folder is selected
+			return
 		newRow = model.append([None, None, PackageFile])
 		# Set the cursor on the new row and start editing the name column
 		path = model.get_path(newRow)
