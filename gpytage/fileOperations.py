@@ -34,11 +34,15 @@ def fileEdited(file):
 #		save routine?
 def saveModifiedFiles(*args):
 	""" Saves all modified files """
-	for file in modifiedFiles:
+	for file in modifiedFiles[:]:
 		__saveFile(file)
 
-def saveModifiedFile(file):
-	""" Saves the file passed to the method """
+def saveModifiedFile(*args):
+	""" Saves the file currently selected """
+	# Discover file currently selected
+	from helper import getCurrentFile
+	file, model = getCurrentFile()
+	# save it
 	if file in modifiedFiles:
 		__saveFile(file)
 

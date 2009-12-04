@@ -31,7 +31,7 @@ from gpytage import config
 from gpytage.window import window, unsavedDialog, setTitleEdited, getTitleState
 from gpytage.version import version
 from gpytage.datastore import folderModel, config_files, initTreeModel, initData, reload
-from gpytage.fileOperations import saveModifiedFiles
+from gpytage.fileOperations import saveModifiedFile
 from rightpanel import insertRow, deleteRow, commentRow, uncommentRow
 
 #set global defaults
@@ -119,7 +119,7 @@ class gpytagemain:
             ('File', None, '_File'),
             ('New', gtk.STOCK_NEW, '_New Subfile', '<Control>n', 'New file', self.TODO),
             ('Save', gtk.STOCK_SAVE, '_Save', '<Control>s', 'Save changes',
-				saveModifiedFiles),
+				saveModifiedFile),
             ('Revert', gtk.STOCK_REVERT_TO_SAVED, '_Revert', None, 'Revert changes', reload),
             ('Quit', gtk.STOCK_QUIT, '_Quit', None, 'Quit GPytage', self.destroy),
             
