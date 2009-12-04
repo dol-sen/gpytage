@@ -40,6 +40,9 @@ def getCurrentFile():
 	from leftpanel import leftview
 	model, iter = leftview.get_selection().get_selected()
 	from datastore import F_REF
-	PackageFile = model.get_value(iter, F_REF)
+	try:
+		PackageFile = model.get_value(iter, F_REF)
+	except: #Nothing selected
+		PackageFile = None
 	return [PackageFile, model]
 	
