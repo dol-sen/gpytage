@@ -26,6 +26,37 @@ def fileEdited(file):
 	# Add to the modifiedFiles
 	__appendModifiedFile(file)
 
+#TODO: Test if files are writable os.access before proceeding further in the
+#		save routine?
 def saveModifiedFiles(*args):
+	""" Saves all modified files """
 	for file in modifiedFiles:
-		print file.getName()
+		__saveFile(file)
+
+def saveModifiedFile(file):
+	""" Saves the file passed to the method """
+	if file in modifiedFiles:
+		__saveFile(file)
+
+#TODO: Remove modified status on file and update the UI accordingly
+def __saveFile(file):
+	""" Private method to write file to desk """
+	# Save the file
+	print "Attempting to save " + file.getPath()
+	try:
+		f=open(file.getPath(), 'w')
+		datalist = file.getData()
+		for row in datalist:
+			if row[0] is not None:
+				c1 = row[0]
+			else:
+				c1 = ""
+			if row[1] is not None:
+				c2 = row[1]
+			else:
+				c2 = ""
+			f.write(c1 + " " + c2 + "\n")
+		f.close()
+	except IOError, e:
+		print >>stderr, "Error saving: ", e
+
