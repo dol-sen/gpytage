@@ -181,6 +181,7 @@ def toggleComment(*args):
 			cText = model.get_value(iter, L_NAME)
 			if cText.startswith("#"):
 				model.set_value(iter, L_NAME, cText[1:])
+	fileEdited(file)
 
 def __rightClicked(view, event):
 	""" Right click menu for package options """
