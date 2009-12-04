@@ -130,7 +130,9 @@ def deleteRow(arg):
 	for ref in rowReferences:
 		iter = model.get_iter(ref.get_path())
 		model.remove(iter)
-	fileEdited(PackageFile)
+	# If nothing is deleted we shouldn't show 
+	if len(rowReferences) > 0:
+		fileEdited(PackageFile)
 
 def commentRow(window):
 	""" Comment selected row(s) """
