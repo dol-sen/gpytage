@@ -12,6 +12,10 @@ def __appendModifiedFile(file):
 	if file not in modifiedFiles:
 		modifiedFiles.append(file)
 
+def __removeModifiedFile(file):
+	if file in modifiedFiles:
+		modifiedFiles.remove(file)
+
 def fileEdited(file):
 	""" Set the passed PackageFileObj as edited """
 	file.setEditedState(True)
@@ -38,7 +42,6 @@ def saveModifiedFile(file):
 	if file in modifiedFiles:
 		__saveFile(file)
 
-#TODO: Remove modified status on file and update the UI accordingly
 def __saveFile(file):
 	""" Private method to write file to desk """
 	# Save the file
@@ -57,6 +60,26 @@ def __saveFile(file):
 				c2 = ""
 			f.write(c1 + " " + c2 + "\n")
 		f.close()
+		__fileSaved(file)
 	except IOError, e:
 		print >>stderr, "Error saving: ", e
 
+def __fileSaved(file):
+	""" Set the passed PackageFileObj as un-edited """
+	file.setEditedState(False)
+	lpath = file.getTreeRowRef().get_path()
+	lmodel = file.getTreeRowRef().get_model()
+	# mark as unedited
+	lmodel[lpath][L_NAME] = file.getName()
+	# remove from the modifiedFiles
+	__removeModifiedFile(file)
+	# Reflect in title
+	if __hasModified() is False:
+		setTitleEdited(False)
+
+def __hasModified():
+	""" Return whether the modifiedFiles list is empty """
+	if len(modifiedFiles) == 0:
+		return False
+	else:
+		return True
