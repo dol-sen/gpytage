@@ -100,7 +100,6 @@ class PackageFileObj:
             else:
                 new = i.split(None,1)
             # NoneType's are annoying...lets replace them with an empty string
-            print new
             # Occurs when no flags present
             if len(new) == 1:
                 new.append("")
