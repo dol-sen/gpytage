@@ -98,5 +98,13 @@ class PackageFileObj:
                 new = [i, None]
             else:
                 new = i.split(None,1)
+            # NoneType's are annoying...lets replace them with an empty string
+            print new
+            # Occurs when no flags present
+            if len(new) == 1:
+                new.append("")
+            # Blank line
+            if len(new) == 0:
+                new = ["", ""]
             data.append(new)
         return data #return the master list of lists
