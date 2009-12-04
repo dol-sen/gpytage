@@ -32,7 +32,7 @@ from gpytage.window import window, unsavedDialog, setTitleEdited, getTitleState
 from gpytage.version import version
 from gpytage.datastore import folderModel, config_files, initTreeModel, initData, reload
 from gpytage.fileOperations import saveModifiedFile, saveModifiedFiles
-from rightpanel import insertRow, deleteRow, commentRow, uncommentRow
+from rightpanel import insertRow, deleteRow, commentRow, uncommentRow, toggleComment
 
 #set global defaults
 DATA_PATH = "/usr/share/gpytage/"
@@ -91,6 +91,7 @@ class gpytagemain:
                 <menu action="Edit">
                     <menuitem action="Add Package"/>
                     <menuitem action="Remove Package"/>
+					<menuitem action="Toggle Comment"/>
                     <separator/>
                     <menuitem action="Delete"/>
                     <menuitem action="Split"/>
@@ -131,9 +132,10 @@ class gpytagemain:
             ('Delete', gtk.STOCK_DELETE, '_Delete subfile', None, 'Delete file', self.TODO),
             ('Split', gtk.STOCK_CONVERT, '_Convert file->subfile', None, 'Convert file', self.TODO),
             ('Rename', gtk.STOCK_SAVE_AS, '_Rename subfile', None, 'Rename file', self.TODO),
-            ('Comment', gtk.STOCK_INDENT, '_Comment', '<Control>period', "Comment a package", commentRow),
-            ('Uncomment', gtk.STOCK_UNINDENT, '_Uncomment', '<Control>comma', "Uncomment a package", uncommentRow),
-             
+            ('Comment', gtk.STOCK_INDENT, '_Comment', None, "Comment a package", commentRow),
+            ('Uncomment', gtk.STOCK_UNINDENT, '_Uncomment', None, "Uncomment a package", uncommentRow),
+            ('Toggle Comment', gtk.STOCK_CONVERT, '_Toggle Comment', '<Control>c', "Toggle comment packages", toggleComment),
+
             ('View', None, '_View'),
             ('Expand All', None, '_Expand All', '<Control>slash', 'Expand Rows', expandRows),
             ('Collapse All', None, '_Collapse All', '<Control>backslash', 'Collapse Rows', collapseRows), 

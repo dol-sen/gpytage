@@ -156,6 +156,32 @@ def uncommentRow(window):
 			model.set_value(iter, L_NAME, cText[1:])
 	fileEdited(PackageFile)
 
+def toggleComment(*args):
+	""" Toggle comments on selected rows based on the first row """
+	rowReferences = getMultiSelection(rightview)
+	model = rightview.get_model()
+	file, lModel = getCurrentFile()
+	comment = True
+	# Lets see what the first comment is
+	ref = rowReferences[0]
+	iter = model.get_iter(ref.get_path())
+	cText = model.get_value(iter, L_NAME)
+	if cText.startswith("#"):
+		comment = False
+	# Lets proceed now
+	if comment: # Comment all lines
+		for ref in rowReferences:
+			iter = model.get_iter(ref.get_path())
+			cText = model.get_value(iter, L_NAME)
+			if not cText.startswith("#"):
+				model.set_value(iter, L_NAME, "#"+cText)
+	else: # Uncomment all lines
+		for ref in rowReferences:
+			iter = model.get_iter(ref.get_path())
+			cText = model.get_value(iter, L_NAME)
+			if cText.startswith("#"):
+				model.set_value(iter, L_NAME, cText[1:])
+
 def __rightClicked(view, event):
 	""" Right click menu for package options """
 	if event.button == 3:
