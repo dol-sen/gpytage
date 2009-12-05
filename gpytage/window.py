@@ -23,7 +23,6 @@
 
 import pygtk; pygtk.require("2.0")
 import gtk
-from sys import stderr
 
 window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 window.set_title("GPytage")

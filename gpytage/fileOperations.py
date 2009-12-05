@@ -4,6 +4,7 @@
 
 from window import setTitleEdited
 from PackageFileObj import L_NAME, L_FLAGS, L_REF
+from sys import stderr
 
 # List of files that have been edited and need saving or reverting
 modifiedFiles = []
