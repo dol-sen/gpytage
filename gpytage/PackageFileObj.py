@@ -82,7 +82,7 @@ class PackageFileObj:
     def getPath(self):
         """ Returns the filepath for this PackageFileObj """
         return self.path
-        
+
     def __scanFileContents(self, filepath):
         """ Return data in specified file in a list of a list [[col1, col2]]"""
         try:
@@ -108,3 +108,7 @@ class PackageFileObj:
                 new = ["", ""]
             data.append(new)
         return data #return the master list of lists
+    
+    def getParentFolder(self):
+        return self.parentObj
+
