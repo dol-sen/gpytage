@@ -78,10 +78,10 @@ def __fileSaved(file):
 	# remove from the modifiedFiles
 	__removeModifiedFile(file)
 	# Reflect in title
-	if __hasModified() is False:
+	if hasModified() is False:
 		setTitleEdited(False)
 
-def __hasModified():
+def hasModified():
 	""" Return whether the modifiedFiles list is empty """
 	if len(modifiedFiles) == 0:
 		return False
