@@ -32,6 +32,7 @@ from gpytage.window import window, unsavedDialog, setTitleEdited, getTitleState
 from gpytage.version import version
 from gpytage.datastore import folderModel, config_files, initTreeModel, initData
 from gpytage.fileOperations import saveModifiedFile, saveModifiedFiles, revertSelected, revertAllModified
+from gpytage.newFile import newFile
 from rightpanel import insertRow, deleteRow, commentRow, uncommentRow, toggleComment
 
 #set global defaults
@@ -120,7 +121,7 @@ class gpytagemain:
         #This controls the MenuBar and the ToolBar
         self.actiongroup.add_actions([
             ('File', None, '_File'),
-            ('New', gtk.STOCK_NEW, '_New Subfile', '<Control>n', 'New file', self.TODO),
+            ('New', gtk.STOCK_NEW, '_New File', '<Control>n', 'New file', newFile),
             ('Save', gtk.STOCK_SAVE, '_Save', '<Control>s', 'Save changes',
 				saveModifiedFile),
 			('Save All', gtk.STOCK_SAVE_AS, 'Save _All', None, 'Save all changes', saveModifiedFiles),
