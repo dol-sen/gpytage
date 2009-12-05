@@ -149,3 +149,11 @@ def __clearData():
 	del TLFolders[:]
 	del TLFiles[:]
 	
+def reinitializeDatabase():
+	""" Clears the backend and rebuilds the database from disk """
+	__clearData()
+	initData()
+	initTreeModel()
+
+	from rightpanel import setListModel
+	setListModel(None)
