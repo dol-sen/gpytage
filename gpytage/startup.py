@@ -137,7 +137,7 @@ class gpytagemain:
             ('Rename', gtk.STOCK_SAVE_AS, '_Rename subfile', None, 'Rename file', self.TODO),
             ('Comment', gtk.STOCK_INDENT, '_Comment', None, "Comment a package", commentRow),
             ('Uncomment', gtk.STOCK_UNINDENT, '_Uncomment', None, "Uncomment a package", uncommentRow),
-            ('Toggle Comment', gtk.STOCK_CONVERT, '_Toggle Comment', '<Control>c', "Toggle comment packages", toggleComment),
+            ('Toggle Comment', gtk.STOCK_CONVERT, '_Toggle Comment', '<Control><Shift>c', "Toggle comment packages", toggleComment),
 
             ('View', None, '_View'),
             ('Expand All', None, '_Expand All', '<Control>slash', 'Expand Rows', expandRows),
