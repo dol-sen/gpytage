@@ -89,16 +89,16 @@ class gpytagemain:
                     <menuitem action="Revert"/>
 					<menuitem action="Revert All"/>
                     <separator/>
+                    <menuitem action="Delete File/Folder"/>
+                    <menuitem action="Split"/>
+                    <menuitem action="Rename"/>
+                    <separator/>
                     <menuitem action="Quit"/>
                 </menu>
                 <menu action="Edit">
                     <menuitem action="Add Package"/>
                     <menuitem action="Remove Package"/>
 					<menuitem action="Toggle Comment"/>
-                    <separator/>
-                    <menuitem action="Delete File/Folder"/>
-                    <menuitem action="Split"/>
-                    <menuitem action="Rename"/>
                 </menu>
                 <menu action="View">
                     <menuitem action="Expand All"/>
