@@ -33,6 +33,7 @@ from gpytage.version import version
 from gpytage.datastore import folderModel, config_files, initTreeModel, initData
 from gpytage.fileOperations import saveModifiedFile, saveModifiedFiles, revertSelected, revertAllModified
 from gpytage.newFile import newFile
+from gpytage.deleteFile import deleteFile
 from rightpanel import insertRow, deleteRow, commentRow, uncommentRow, toggleComment
 
 #set global defaults
@@ -95,7 +96,7 @@ class gpytagemain:
                     <menuitem action="Remove Package"/>
 					<menuitem action="Toggle Comment"/>
                     <separator/>
-                    <menuitem action="Delete"/>
+                    <menuitem action="Delete File/Folder"/>
                     <menuitem action="Split"/>
                     <menuitem action="Rename"/>
                 </menu>
@@ -132,7 +133,7 @@ class gpytagemain:
             ('Edit', None, '_Edit'),
             ('Add Package', gtk.STOCK_ADD, '_Add Package', '<Control>Plus', 'Add a package', insertRow),
             ('Remove Package', gtk.STOCK_REMOVE, '_Remove Package',    '<Control>-', "Remove a package", deleteRow),
-            ('Delete', gtk.STOCK_DELETE, '_Delete subfile', None, 'Delete file', self.TODO),
+            ('Delete File/Folder', gtk.STOCK_DELETE, '_Delete File/Folder', None, 'Delete currently selected file or folder', deleteFile),
             ('Split', gtk.STOCK_CONVERT, '_Convert file->subfile', None, 'Convert file', self.TODO),
             ('Rename', gtk.STOCK_SAVE_AS, '_Rename subfile', None, 'Rename file', self.TODO),
             ('Comment', gtk.STOCK_INDENT, '_Comment', None, "Comment a package", commentRow),
