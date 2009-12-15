@@ -65,7 +65,7 @@ if __name__ == "__main__":
 			RUN_LOCAL = True
 			from gpytage.version import version
 			from gpytage.startup import *
-			local()
+			#local()
 			print "GPytage: starting gpytage()"
 
 	if not RUN_LOCAL: # then run the installed modules

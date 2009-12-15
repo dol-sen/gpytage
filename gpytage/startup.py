@@ -44,13 +44,20 @@ GLADE_PATH = "/usr/share/gpytage/glade/"
 
 def local():
     """ set global defaults for running locally """
-    from os import getcwd
+    
     global DATA_PATH, PIXMAPS, GLADE_PATH
-    DATA_PATH = getcwd() + "/../"
+    DATA_PATH =  os.path.abspath(__file__)
     print DATA_PATH
     PIXMAPS = DATA_PATH + "gpytage/pixmaps/"
     GLADE_PATH = DATA_PATH + "gpytage/glade/"
+
+
+import os
+location = os.path.abspath(__file__)
+if "site-packages" not in location:
+    local()
     
+del os
 
 class gpytagemain:
     def __init__(self):
@@ -86,9 +93,9 @@ class gpytagemain:
                     <menuitem action="New"/>
                     <separator/>
                     <menuitem action="Save"/>
-					<menuitem action="Save All"/>
+                    <menuitem action="Save All"/>
                     <menuitem action="Revert"/>
-					<menuitem action="Revert All"/>
+                    <menuitem action="Revert All"/>
                     <separator/>
                     <menuitem action="Delete File/Folder"/>
                     <menuitem action="Split"/>
@@ -99,7 +106,7 @@ class gpytagemain:
                 <menu action="Edit">
                     <menuitem action="Add Package"/>
                     <menuitem action="Remove Package"/>
-					<menuitem action="Toggle Comment"/>
+                    <menuitem action="Toggle Comment"/>
                 </menu>
                 <menu action="View">
                     <menuitem action="Expand All"/>
@@ -125,10 +132,10 @@ class gpytagemain:
             ('File', None, '_File'),
             ('New', gtk.STOCK_NEW, '_New File', '<Control>n', 'New file', newFile),
             ('Save', gtk.STOCK_SAVE, '_Save', '<Control>s', 'Save changes',
-				saveModifiedFile),
-			('Save All', gtk.STOCK_SAVE_AS, 'Save _All', None, 'Save all changes', saveModifiedFiles),
+                saveModifiedFile),
+            ('Save All', gtk.STOCK_SAVE_AS, 'Save _All', None, 'Save all changes', saveModifiedFiles),
             ('Revert', gtk.STOCK_REVERT_TO_SAVED, '_Revert', None, 'Revert changes', revertSelected),
-			('Revert All', gtk.STOCK_REVERT_TO_SAVED, 'Re_vert All', None, 'Revert all changes', revertAllModified),
+            ('Revert All', gtk.STOCK_REVERT_TO_SAVED, 'Re_vert All', None, 'Revert all changes', revertAllModified),
             ('Quit', gtk.STOCK_QUIT, '_Quit', None, 'Quit GPytage', self.destroy),
             
             ('Edit', None, '_Edit'),
@@ -195,7 +202,10 @@ class gpytagemain:
         aboutw = gtk.AboutDialog()
         aboutw.set_name('GPytage')
         aboutw.set_copyright('Copyright 2008-2009, GPL2')
-        aboutw.set_authors(["Kenneth 'ken69267' Prugh", "\nWith patches contributed by Brian Dolbec <dol-sen>\nand Josh 'nightmorph' Saddler. \n\nWith special thanks to the Gentoo \ndevelopers and community. \n\nLicensed under the GPL-2"]) #Fix wording? :)
+        aboutw.set_authors(["Kenneth 'ken69267' Prugh", 
+            "\nWith patches contributed by Brian Dolbec <dol-sen>\nand Josh 'nightmorph' Saddler. \n" +
+            "\nWith special thanks to the Gentoo \ndevelopers and community. \n\n" +
+            "Licensed under the GPL-2"]) #Fix wording? :)
         f=open(config.PORTDIR + '/licenses/GPL-2')
         gpl2 = f.read()
         f.close
