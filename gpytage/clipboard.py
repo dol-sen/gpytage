@@ -75,7 +75,6 @@ class clipboard():
             fileEdited(PackageFile)
 
     def __formatPaste(self, text):
-        print "CLIPTEXT: " + text
         rawData = []
 
         tmpdata = text.split('\n')
@@ -84,6 +83,4 @@ class clipboard():
             if len(line) > 0:
                 rawData.append(line.split(None, 1))
 
-        print "FCLIPTEXT: "
-        print rawData
         return rawData
