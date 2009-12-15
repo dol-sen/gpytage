@@ -46,25 +46,24 @@ def local():
     """ set global defaults for running locally """
     
     global DATA_PATH, PIXMAPS, GLADE_PATH
-    DATA_PATH =  os.path.abspath(__file__)
+    DATA_PATH =  os.path.dirname(os.path.abspath(__file__))
     print DATA_PATH
-    PIXMAPS = DATA_PATH + "gpytage/pixmaps/"
-    GLADE_PATH = DATA_PATH + "gpytage/glade/"
+    PIXMAPS = os.path.join(DATA_PATH , "pixmaps/")
+    GLADE_PATH = os.path.join(DATA_PATH, "glade/")
 
-
-import os
+import os.path
 location = os.path.abspath(__file__)
 if "site-packages" not in location:
     local()
     
-del os
+del os.path
 
 class gpytagemain:
     def __init__(self):
         self.window = window
         
         try: #load icons as pixbufs and set as default icon
-            print PIXMAPS
+            print " gpytagemain: PIXMAPS =", PIXMAPS
             self.i16 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-16x16.png")
             self.i24 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-24x24.png")
             self.i32 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-32x32.png")
