@@ -22,7 +22,6 @@
 ############################################################################
 
 import gtk
-from window import setTitleEdited
 from PackageFileObj import L_NAME, L_FLAGS, L_REF
 
 def getMultiSelection(treeview):
