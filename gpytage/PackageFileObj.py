@@ -47,11 +47,11 @@ class PackageFileObj:
             try:
                 c1 = line[L_NAME].rstrip()
             except:
-                c1 = None
+                c1 = ""
             try:
                 c2 = line[L_FLAGS].rstrip()
             except:
-                c2 = None
+                c2 = ""
             row = [c1, c2, self]
             self.data.append(row)
 
