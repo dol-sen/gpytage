@@ -12,6 +12,8 @@ from datastore import reinitializeDatabase
 from PackageFileObj import PackageFileObj
 from FolderObj import FolderObj
 from sys import stderr
+from os import rename
+from datastore import reinitializeDatabase
 
 def renameFile(*args):
     """ Renames the currently selected file """
@@ -31,6 +33,7 @@ def renameFile(*args):
             setFolder = object.getParentFolder().getPath()
         if __ensureNotModified():
             __createRenameDialog(object, type, setFolder)
+            reinitializeDatabase()
     except TypeError,e:
         print >>stderr, "__renameFile:",e
 
@@ -53,7 +56,11 @@ def __createRenameDialog(object, type, setFolder):
             
 def __writeRenamedFile(oldFile, newFile):
     """ Performs the actual renaming of the file """
-    print oldFile + " renamed to " + newFile
+    try:
+        rename(oldFile, newFile)
+        print oldFile + " renamed to " + newFile
+    except IOError,e:
+        print >>stderr, "Rename: ",e
 
 def __ensureNotModified():
     """ Ensure no files have been modified before proceeding, returns True if
