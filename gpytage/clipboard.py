@@ -5,7 +5,7 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 
-from helper import getMultiSelection, getCurrentFile
+from helper import getMultiSelection
 from PackageFileObj import L_NAME, L_FLAGS
 
 class clipboard():
@@ -13,6 +13,7 @@ class clipboard():
         self.clipboard = gtk.Clipboard() 
 
     def copyToClipboard(self, rightview):
+        """ Copies selected rows into the clipboard """
         selectedRefs = getMultiSelection(rightview)
         if len(selectedRefs) == 0:
             return
@@ -27,3 +28,9 @@ class clipboard():
             clipText += c1 + ' ' + c2 + '\n'
 
         self.clipboard.set_text(clipText, -1)
+
+    def cutToClipboard(self, rightview):
+        """ Copies selected rows into the clipboard and then deletes them """
+        self.copyToClipboard(rightview)
+        from rightpanel import deleteRow
+        deleteRow(rightview)

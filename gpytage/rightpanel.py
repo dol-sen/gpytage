@@ -233,7 +233,8 @@ def __handleKeyPress(widget, event):
     # cut
     if event.keyval == gtk.gdk.keyval_from_name("x"):
         if (modifiers & event.state) == gtk.gdk.CONTROL_MASK:
-            pass
+            from window import clipboard
+            clipboard.cutToClipboard(rightview)
 
 
 #Signals
