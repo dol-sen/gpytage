@@ -28,6 +28,9 @@ window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 window.set_title("GPytage")
 __editedState = False
 
+from clipboard import clipboard
+clipboard = clipboard()
+
 def setTitleEdited(bool):
 	"""
 	Changes the state of the title. Edited state causes the title to change to *GPytage.

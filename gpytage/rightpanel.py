@@ -35,12 +35,12 @@ rightselection = rightview.get_selection()
 rightselection.set_mode(gtk.SELECTION_MULTIPLE)
 
 def setListModel(ListStore): #we need to switch the model on click
-	try:
-		rightview.set_model() # Clear from view first
-		rightview.set_model(ListStore) #example
-		namecol.queue_resize()
-	except:
-		print 'RIGHTPANEL: setListModel(); failed'
+    try:
+        rightview.set_model() # Clear from view first
+        rightview.set_model(ListStore) #example
+        namecol.queue_resize()
+    except:
+        print 'RIGHTPANEL: setListModel(); failed'
 
 rightview.set_search_column(L_NAME)
 
@@ -86,140 +86,158 @@ scroll.add_with_viewport(rightview)
 
 # Callbacks
 def edited_cb(cell, path, new_text, col):
-	""" Indicate file has been edited """
-	model = rightview.get_model()
-	model[path][col] = new_text
-	file = model[path][L_REF]
-	# Indicate file status in TreeView
-	fileEdited(file)
+    """ Indicate file has been edited """
+    model = rightview.get_model()
+    model[path][col] = new_text
+    file = model[path][L_REF]
+    # Indicate file status in TreeView
+    fileEdited(file)
 
 def insertRow(arg):
-	""" Insert row below selected row(s) """
-	rowReferences = getMultiSelection(rightview)
-	try:
-		lastRowSelectedPath = rowReferences[-1].get_path()
-		model = rowReferences[-1].get_model()
-	except:
-		# Well, we got a blank file
-		PackageFile, lModel = getCurrentFile()
-		if PackageFile == None: # No file is actually selected
-			return
-		model = rightview.get_model()
-		if model == None: # A folder is selected
-			return
-		newRow = model.append([None, None, PackageFile])
-		# Set the cursor on the new row and start editing the name column
-		path = model.get_path(newRow)
-		rightview.set_cursor(path, namecol, True)
-		# Fire off the edited methods
-		fileEdited(PackageFile)
-		return
-	
-	lastRowIter = model.get_iter(lastRowSelectedPath)
-	# We need to link this new row with its PackageFile Object
-	PackageFile = model.get_value(lastRowIter, L_REF)
-	# Insert into the model
-	newRow = model.insert_after(lastRowIter, [None, None, PackageFile])
-	# Set the cursor on the new row and start editing the name column
-	path = model.get_path(newRow)
-	rightview.set_cursor(path, namecol, True)
-	# Fire off the edited methods
-	fileEdited(PackageFile)
+    """ Insert row below selected row(s) """
+    rowReferences = getMultiSelection(rightview)
+    try:
+        lastRowSelectedPath = rowReferences[-1].get_path()
+        model = rowReferences[-1].get_model()
+    except:
+        # Well, we got a blank file
+        PackageFile, lModel = getCurrentFile()
+        if PackageFile == None: # No file is actually selected
+            return
+        model = rightview.get_model()
+        if model == None: # A folder is selected
+            return
+        newRow = model.append([None, None, PackageFile])
+        # Set the cursor on the new row and start editing the name column
+        path = model.get_path(newRow)
+        rightview.set_cursor(path, namecol, True)
+        # Fire off the edited methods
+        fileEdited(PackageFile)
+        return
+    
+    lastRowIter = model.get_iter(lastRowSelectedPath)
+    # We need to link this new row with its PackageFile Object
+    PackageFile = model.get_value(lastRowIter, L_REF)
+    # Insert into the model
+    newRow = model.insert_after(lastRowIter, [None, None, PackageFile])
+    # Set the cursor on the new row and start editing the name column
+    path = model.get_path(newRow)
+    rightview.set_cursor(path, namecol, True)
+    # Fire off the edited methods
+    fileEdited(PackageFile)
 
 def deleteRow(arg):
-	""" Delete selected row(s) """
-	rowReferences = getMultiSelection(rightview)
-	model = rightview.get_model()
-	PackageFile, lModel = getCurrentFile()
-	for ref in rowReferences:
-		iter = model.get_iter(ref.get_path())
-		model.remove(iter)
-	# If nothing is deleted we shouldn't show 
-	if len(rowReferences) > 0:
-		fileEdited(PackageFile)
+    """ Delete selected row(s) """
+    rowReferences = getMultiSelection(rightview)
+    model = rightview.get_model()
+    PackageFile, lModel = getCurrentFile()
+    for ref in rowReferences:
+        iter = model.get_iter(ref.get_path())
+        model.remove(iter)
+    # If nothing is deleted we shouldn't show 
+    if len(rowReferences) > 0:
+        fileEdited(PackageFile)
 
 def commentRow(window):
-	""" Comment selected row(s) """
-	rowReferences = getMultiSelection(rightview)
-	model = rightview.get_model()
-	PackageFile, lModel = getCurrentFile()
-	# Is anything even selected?
-	if len(rowReferences) == 0:
-		return
-	for ref in rowReferences:
-		iter = model.get_iter(ref.get_path())
-		cText = model.get_value(iter, L_NAME)
-		if not cText.startswith("#"):
-			model.set_value(iter, L_NAME, "#"+cText)
-	fileEdited(PackageFile)
+    """ Comment selected row(s) """
+    rowReferences = getMultiSelection(rightview)
+    model = rightview.get_model()
+    PackageFile, lModel = getCurrentFile()
+    # Is anything even selected?
+    if len(rowReferences) == 0:
+        return
+    for ref in rowReferences:
+        iter = model.get_iter(ref.get_path())
+        cText = model.get_value(iter, L_NAME)
+        if not cText.startswith("#"):
+            model.set_value(iter, L_NAME, "#"+cText)
+    fileEdited(PackageFile)
 
 def uncommentRow(window):
-	""" Uncomment selected row(s) """
-	rowReferences = getMultiSelection(rightview)
-	model = rightview.get_model()
-	PackageFile, lModel = getCurrentFile()
-	# Is anything even selected?
-	if len(rowReferences) == 0:
-		return
-	for ref in rowReferences:
-		iter = model.get_iter(ref.get_path())
-		cText = model.get_value(iter, L_NAME)
-		if cText.startswith("#"):
-			model.set_value(iter, L_NAME, cText[1:])
-	fileEdited(PackageFile)
+    """ Uncomment selected row(s) """
+    rowReferences = getMultiSelection(rightview)
+    model = rightview.get_model()
+    PackageFile, lModel = getCurrentFile()
+    # Is anything even selected?
+    if len(rowReferences) == 0:
+        return
+    for ref in rowReferences:
+        iter = model.get_iter(ref.get_path())
+        cText = model.get_value(iter, L_NAME)
+        if cText.startswith("#"):
+            model.set_value(iter, L_NAME, cText[1:])
+    fileEdited(PackageFile)
 
 def toggleComment(*args):
-	""" Toggle comments on selected rows based on the first row """
-	rowReferences = getMultiSelection(rightview)
-	model = rightview.get_model()
-	file, lModel = getCurrentFile()
-	comment = True
-	# Is anything even selected?
-	if len(rowReferences) == 0:
-		return
-	# Lets see what the first comment is
-	ref = rowReferences[0]
-	iter = model.get_iter(ref.get_path())
-	cText = model.get_value(iter, L_NAME)
-	if cText.startswith("#"):
-		comment = False
-	# Lets proceed now
-	if comment: # Comment all lines
-		for ref in rowReferences:
-			iter = model.get_iter(ref.get_path())
-			cText = model.get_value(iter, L_NAME)
-			if not cText.startswith("#"):
-				model.set_value(iter, L_NAME, "#"+cText)
-	else: # Uncomment all lines
-		for ref in rowReferences:
-			iter = model.get_iter(ref.get_path())
-			cText = model.get_value(iter, L_NAME)
-			if cText.startswith("#"):
-				model.set_value(iter, L_NAME, cText[1:])
-	fileEdited(file)
+    """ Toggle comments on selected rows based on the first row """
+    rowReferences = getMultiSelection(rightview)
+    model = rightview.get_model()
+    file, lModel = getCurrentFile()
+    comment = True
+    # Is anything even selected?
+    if len(rowReferences) == 0:
+        return
+    # Lets see what the first comment is
+    ref = rowReferences[0]
+    iter = model.get_iter(ref.get_path())
+    cText = model.get_value(iter, L_NAME)
+    if cText.startswith("#"):
+        comment = False
+    # Lets proceed now
+    if comment: # Comment all lines
+        for ref in rowReferences:
+            iter = model.get_iter(ref.get_path())
+            cText = model.get_value(iter, L_NAME)
+            if not cText.startswith("#"):
+                model.set_value(iter, L_NAME, "#"+cText)
+    else: # Uncomment all lines
+        for ref in rowReferences:
+            iter = model.get_iter(ref.get_path())
+            cText = model.get_value(iter, L_NAME)
+            if cText.startswith("#"):
+                model.set_value(iter, L_NAME, cText[1:])
+    fileEdited(file)
 
 def __rightClicked(view, event):
-	""" Right click menu for package options """
-	if event.button == 3:
-		menu = gtk.Menu()
-		irow = gtk.MenuItem("Insert Package")
-		irow.connect("activate", insertRow)
-		drow = gtk.MenuItem("Delete Package")
-		drow.connect("activate", deleteRow)
-		menu.append(irow)
-		menu.append(drow)
-		separator = gtk.MenuItem()
-		crow = gtk.MenuItem("Comment Package")
-		urow = gtk.MenuItem("Uncomment Package")
-		crow.connect("activate", commentRow)
-		urow.connect("activate", uncommentRow)
-		menu.append(separator)
-		menu.append(crow)
-		menu.append(urow)
-		menu.show_all()
-		menu.popup(None, None, None, event.button, event.time)
+    """ Right click menu for package options """
+    if event.button == 3:
+        menu = gtk.Menu()
+        irow = gtk.MenuItem("Insert Package")
+        irow.connect("activate", insertRow)
+        drow = gtk.MenuItem("Delete Package")
+        drow.connect("activate", deleteRow)
+        menu.append(irow)
+        menu.append(drow)
+        separator = gtk.MenuItem()
+        crow = gtk.MenuItem("Comment Package")
+        urow = gtk.MenuItem("Uncomment Package")
+        crow.connect("activate", commentRow)
+        urow.connect("activate", uncommentRow)
+        menu.append(separator)
+        menu.append(crow)
+        menu.append(urow)
+        menu.show_all()
+        menu.popup(None, None, None, event.button, event.time)
+
+def __handleKeyPress(widget, event):
+    modifiers = gtk.accelerator_get_default_mod_mask()  
+    # copy
+    if event.keyval == gtk.gdk.keyval_from_name("c"):
+        if (modifiers & event.state) == gtk.gdk.CONTROL_MASK:
+            from window import clipboard
+            clipboard.copyToClipboard(rightview)
+    # paste
+    if event.keyval == gtk.gdk.keyval_from_name("p"):
+        if (modifiers & event.state) == gtk.gdk.CONTROL_MASK:
+            pass
+    # cut
+    if event.keyval == gtk.gdk.keyval_from_name("x"):
+        if (modifiers & event.state) == gtk.gdk.CONTROL_MASK:
+            pass
+
 
 #Signals
 nameCell.connect("edited", edited_cb, L_NAME)
 flagCell.connect("edited", edited_cb, L_FLAGS)
 rightview.connect("button_press_event", __rightClicked)
+rightview.connect("key_press_event", __handleKeyPress)
