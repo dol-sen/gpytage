@@ -5,8 +5,8 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 
-from helper import getMultiSelection
-from PackageFileObj import L_NAME, L_FLAGS
+from helper import getMultiSelection, getCurrentFile
+from PackageFileObj import L_NAME, L_FLAGS, L_REF
 
 class clipboard():
     def __init__(self):
@@ -34,3 +34,56 @@ class clipboard():
         self.copyToClipboard(rightview)
         from rightpanel import deleteRow
         deleteRow(rightview)
+
+    def pasteClipboard(self, rightview):
+        """ Pastes the clipboard below the current selection """
+        selectedRegs = getMultiSelection(rightview)
+        
+        rowReferences = getMultiSelection(rightview)
+        model = rightview.get_model()
+
+        # Grab the actual clipboard text
+        clipText = self.clipboard.wait_for_text()
+
+        # Get a list to store into the PackageFile
+        newData = self.__formatPaste(clipText)
+
+        try:
+            # A row has been selected and we should paste below it
+            lastRowSelectedPath = rowReferences[-1].get_path()
+            
+            lastRowIter = model.get_iter(lastRowSelectedPath)
+            # We need to link this new row with its PackageFile Object
+            PackageFile = model.get_value(lastRowIter, L_REF)
+
+            for row in newData:
+                #insert the new row
+                newRow = model.insert_after(lastRowIter, [row[0], row[1], PackageFile])
+                newPath = model.get_path(newRow)
+                lastRowIter = model.get_iter(newPath)
+
+        except IndexError:
+            # No row selected
+            PackageFile, lModel = getCurrentFile()
+
+            for row in newData:
+                #insert the new row
+                newRow = model.append([row[0], row[1], PackageFile])
+
+            # Fire off the edited methods
+            from fileOperations import fileEdited
+            fileEdited(PackageFile)
+
+    def __formatPaste(self, text):
+        print "CLIPTEXT: " + text
+        rawData = []
+
+        tmpdata = text.split('\n')
+
+        for line in tmpdata:
+            if len(line) > 0:
+                rawData.append(line.split(None, 1))
+
+        print "FCLIPTEXT: "
+        print rawData
+        return rawData

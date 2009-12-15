@@ -107,7 +107,7 @@ def insertRow(arg):
         model = rightview.get_model()
         if model == None: # A folder is selected
             return
-        newRow = model.append([None, None, PackageFile])
+        newRow = model.append(["", "", PackageFile])
         # Set the cursor on the new row and start editing the name column
         path = model.get_path(newRow)
         rightview.set_cursor(path, namecol, True)
@@ -119,7 +119,7 @@ def insertRow(arg):
     # We need to link this new row with its PackageFile Object
     PackageFile = model.get_value(lastRowIter, L_REF)
     # Insert into the model
-    newRow = model.insert_after(lastRowIter, [None, None, PackageFile])
+    newRow = model.insert_after(lastRowIter, ["", "", PackageFile])
     # Set the cursor on the new row and start editing the name column
     path = model.get_path(newRow)
     rightview.set_cursor(path, namecol, True)
@@ -227,9 +227,10 @@ def __handleKeyPress(widget, event):
             from window import clipboard
             clipboard.copyToClipboard(rightview)
     # paste
-    if event.keyval == gtk.gdk.keyval_from_name("p"):
+    if event.keyval == gtk.gdk.keyval_from_name("v"):
         if (modifiers & event.state) == gtk.gdk.CONTROL_MASK:
-            pass
+            from window import clipboard
+            clipboard.pasteClipboard(rightview)
     # cut
     if event.keyval == gtk.gdk.keyval_from_name("x"):
         if (modifiers & event.state) == gtk.gdk.CONTROL_MASK:
