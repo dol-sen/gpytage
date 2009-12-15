@@ -29,11 +29,14 @@ def renameFile(*args):
         elif isinstance(object, FolderObj): # A folder 
             type = "Directory"
             setFolder = object.getParentFolder().getPath()
-        __createRenameDialog(object, type, setFolder)
+        if __ensureNotModified():
+            __createRenameDialog(object, type, setFolder)
     except TypeError,e:
         print >>stderr, "__renameFile:",e
 
 def __createRenameDialog(object, type, setFolder):
+    """ Spawms the Rename Dialog where a user can choose what the file should
+    be renamed to """
     fc = gtk.FileChooserDialog("Rename file...", None,
             gtk.FILE_CHOOSER_ACTION_SAVE, (gtk.STOCK_CANCEL,
                 gtk.RESPONSE_CANCEL, gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
@@ -41,20 +44,25 @@ def __createRenameDialog(object, type, setFolder):
     fc.set_filename(object.getPath()) #Set the fc to the object to be renamed
     fc.set_extra_widget(gtk.Label("Renaming " + object.getPath()))
     response = fc.run()
-    # todo return the value to renameFile and handle accordingly
     if response == gtk.RESPONSE_ACCEPT:
         if fc.get_filename() != None:
-            print object.getPath() + " renamed to " + fc.get_filename()
+            __writeRenamedFile(object.getPath(), fc.get_filename())
         else:
             print >>stderr, "Invalid rename request"
     fc.destroy()
+            
+def __writeRenamedFile(oldFile, newFile):
+    """ Performs the actual renaming of the file """
+    print oldFile + " renamed to " + newFile
 
 def __ensureNotModified():
+    """ Ensure no files have been modified before proceeding, returns True if
+    nothing is modified """
     if hasModified():
         #inform user to save
         createMessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT,
                 gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, "Unsaved Files Found...",
-                "A new file cannot be created with unsaved changes. Please save your changes.")
+                "A file cannot be renamed with unsaved changes. Please save your changes.")
         return False
     else:
         return True
