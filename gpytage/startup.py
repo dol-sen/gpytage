@@ -210,24 +210,6 @@ class gpytagemain:
         aboutw.run()
         aboutw.hide()
 
-# #===============================================================================
-# #    def save(self, *args):
-# #        save.SaveFile().saveModified()
-# #===============================================================================
-# 
-#    def new(self, *args):
-#        new(self.window, GLADE_PATH)
-# 
-#    def convert(self, *args):
-#        convert(self.window, GLADE_PATH)
-# 
-#    def rename(self, *args):
-#        rename().renameDialog(self.window, GLADE_PATH)
-# 
-#    def deleteFile(self, *args):
-#        delete(self.window, GLADE_PATH)
-#===============================================================================
-
     def TODO(self):
         pass
 
