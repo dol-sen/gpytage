@@ -28,6 +28,10 @@ from datastore import F_NAME, F_REF, folderModel
 from rightpanel import setListModel
 import PackageFileObj, FolderObj
 
+from gpytage.newFile import newFile
+from gpytage.deleteFile import deleteFile
+from gpytage.rename import renameFile
+
 leftview = gtk.TreeView(folderModel) #create the container
 
 leftview.set_search_column(F_NAME)
@@ -84,5 +88,22 @@ def __clicked(treeview, *args):
 	# save current selection as last selected
 	__lastSelected = targetName
 
+def __rightClicked(view, event):
+    """ Right click menu for file options """
+    if event.button == 3:
+        menu = gtk.Menu()
+        new = gtk.MenuItem("New File")
+        new.connect("activate", newFile)
+        menu.append(new)
+        rename = gtk.MenuItem("Rename File")
+        rename.connect("activate", renameFile)
+        menu.append(rename)
+        delete = gtk.MenuItem("Delete File")
+        delete.connect("activate", deleteFile)
+        menu.append(delete)
+        menu.show_all()
+        menu.popup(None, None, None, event.button, event.time)
+
 # Signals
 leftview.connect("cursor-changed", __clicked)
+leftview.connect("button_press_event", __rightClicked)
