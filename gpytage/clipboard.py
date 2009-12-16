@@ -75,12 +75,20 @@ class clipboard():
             fileEdited(PackageFile)
 
     def __formatPaste(self, text):
+        """ Formats the clipboard text into a form acceptible for storing into
+        the Package File """
         rawData = []
 
         tmpdata = text.split('\n')
 
         for line in tmpdata:
-            if len(line) > 0:
-                rawData.append(line.split(None, 1))
+            if len(line.strip()) > 0:
+                cols = line.split(None, 1)
+                # If after splitting we only have 1 element in our column
+                # list we need to append a blank so that GPytage may store it
+                # in its PackageFile object
+                if len(cols) == 1:
+                    cols.append("")
 
+                rawData.append(cols)
         return rawData

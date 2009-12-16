@@ -27,6 +27,7 @@ import gtk
 from helper import getMultiSelection, getCurrentFile
 from PackageFileObj import L_NAME, L_FLAGS, L_REF
 from fileOperations import fileEdited
+from window import clipboard
 
 rightview = gtk.TreeView()
 rightselection = rightview.get_selection()
@@ -42,7 +43,9 @@ def setListModel(ListStore): #we need to switch the model on click
     except:
         print 'RIGHTPANEL: setListModel(); failed'
 
-rightview.set_search_column(L_NAME)
+# Currently interfering with copy/paste/cut
+#rightview.set_search_column(L_NAME)
+rightview.set_enable_search(False)
 
 # TreeViewColumns
 namecol = gtk.TreeViewColumn('Package')
@@ -216,25 +219,45 @@ def __rightClicked(view, event):
         menu.append(separator)
         menu.append(crow)
         menu.append(urow)
+        menu.append(separator)
+
+        cut = gtk.MenuItem("Cut")
+        cut.connect("activate", __menuCut)
+        copy = gtk.MenuItem("Copy")
+        copy.connect("activate", __menuCopy)
+        paste = gtk.MenuItem("Paste")
+        paste.connect("activate", __menuPaste)
+        menu.append(cut)
+        menu.append(copy)
+        menu.append(paste)
+
         menu.show_all()
         menu.popup(None, None, None, event.button, event.time)
+
+# Methods that __rightClicked can call for cut/copy/paste
+def __menuCut(*args):
+    clipboard.cutToClipboard(rightview)
+
+def __menuCopy(*args):
+    clipboard.copyToClipboard(rightview)
+
+def __menuPaste(*args):
+    clipboard.pasteClipboard(rightview)
+
 
 def __handleKeyPress(widget, event):
     modifiers = gtk.accelerator_get_default_mod_mask()  
     # copy
     if event.keyval == gtk.gdk.keyval_from_name("c"):
         if (modifiers & event.state) == gtk.gdk.CONTROL_MASK:
-            from window import clipboard
             clipboard.copyToClipboard(rightview)
     # paste
     if event.keyval == gtk.gdk.keyval_from_name("v"):
         if (modifiers & event.state) == gtk.gdk.CONTROL_MASK:
-            from window import clipboard
             clipboard.pasteClipboard(rightview)
     # cut
     if event.keyval == gtk.gdk.keyval_from_name("x"):
         if (modifiers & event.state) == gtk.gdk.CONTROL_MASK:
-            from window import clipboard
             clipboard.cutToClipboard(rightview)
 
 
