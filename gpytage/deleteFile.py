@@ -74,7 +74,7 @@ def __ensureNotModified():
         #inform user to save
         createMessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT,
                 gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, "Unsaved Files Found...",
-                "A new file cannot be created with unsaved changes. Please save your changes.")
+                "A file cannot be deleted with unsaved changes. Please save your changes.")
         return False
     else:
         return True
