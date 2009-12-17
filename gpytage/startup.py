@@ -139,8 +139,8 @@ class gpytagemain:
             ('Quit', gtk.STOCK_QUIT, '_Quit', None, 'Quit GPytage', self.destroy),
             
             ('Edit', None, '_Edit'),
-            ('Add Package', gtk.STOCK_ADD, '_Add Package', '<Control>Plus', 'Add a package', insertRow),
-            ('Remove Package', gtk.STOCK_REMOVE, '_Remove Package',    '<Control>-', "Remove a package", deleteRow),
+            ('Add Package', gtk.STOCK_ADD, '_Add Package', '<Control>e', 'Add a package', insertRow),
+            ('Remove Package', gtk.STOCK_REMOVE, '_Remove Package', '<Control>d', "Remove a package", deleteRow),
             ('Delete File/Folder', gtk.STOCK_DELETE, '_Delete File/Folder', None, 'Delete currently selected file or folder', deleteFile),
             ('Split', gtk.STOCK_CONVERT, '_Convert file->subfile', None, 'Convert file', self.TODO),
             ('Rename', gtk.STOCK_SAVE_AS, '_Rename', None, 'Rename file', renameFile),
