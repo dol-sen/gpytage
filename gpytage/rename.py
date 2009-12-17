@@ -33,7 +33,6 @@ def renameFile(*args):
             setFolder = object.getParentFolder().getPath()
         if __ensureNotModified():
             __createRenameDialog(object, type, setFolder)
-            reinitializeDatabase()
     except TypeError,e:
         print >>stderr, "__renameFile:",e
 
@@ -50,6 +49,8 @@ def __createRenameDialog(object, type, setFolder):
     if response == gtk.RESPONSE_ACCEPT:
         if fc.get_filename() != None:
             __writeRenamedFile(object.getPath(), fc.get_filename())
+            reinitializeDatabase()
+            __reselectAfterRename(fc.get_filename(), type)
         else:
             print >>stderr, "Invalid rename request"
     fc.destroy()
@@ -73,3 +74,24 @@ def __ensureNotModified():
         return False
     else:
         return True
+
+def __reselectAfterRename(filePath, type):
+    """ Reselects the parent folder of the deleted object """
+    from leftpanel import leftview
+    model = leftview.get_model()
+    model.foreach(getMatch, [filePath, leftview, type])
+
+def getMatch(model, path, iter, data):
+    """ Obtain the match and perform the selection """
+    testObject = model.get_value(iter, 1) #col 1 stores the reference
+    # clarify values passed in from data list
+    filePath = data[0]
+    leftview = data[1]
+    type = data[2]
+    if testObject.getPath() == filePath:
+        # We found the file object we just renamed, lets select it
+        leftview.expand_to_path(path)
+        leftview.set_cursor(path, None, False)
+        return True
+    else:
+        return False
