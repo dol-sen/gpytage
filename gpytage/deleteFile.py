@@ -99,6 +99,7 @@ def getMatch(model, path, iter, data):
         # since we delete the object, we need to just expand to the folder we
         # were in
         leftview.expand_to_path(path)
+        leftview.set_cursor(path, None, False)
         return True
     else:
         return False

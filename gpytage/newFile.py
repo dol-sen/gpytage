@@ -97,8 +97,9 @@ def getMatch(model, path, iter, data):
     if testObject.getPath() == filePath:
         # We found the file object we just added, lets select it
         leftview.expand_to_path(path)
-        from rightpanel import setListModel
-        setListModel(testObject.getData())
+        leftview.set_cursor(path, None, False)
+        #from rightpanel import setListModel
+        #setListModel(testObject.getData())
         return True
     else:
         return False
