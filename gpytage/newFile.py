@@ -20,6 +20,7 @@ def newFile(*args):
         if nFile is not None:
             __saveToDisk(nFile)
             reinitializeDatabase()
+            __reselectAfterNew(nFile)
 
 def __saveToDisk(nFile):
     print "Saving new file: " + nFile
@@ -81,3 +82,23 @@ def __getNewFileChoice():
     dialog.destroy()
     return name
 
+def __reselectAfterNew(filePath):
+    """ Reselects the parent folder of the deleted object """
+    from leftpanel import leftview
+    model = leftview.get_model()
+    model.foreach(getMatch, [filePath, leftview])
+
+def getMatch(model, path, iter, data):
+    """ Obtain the match and perform the selection """
+    testObject = model.get_value(iter, 1) #col 1 stores the reference
+    # clarify values passed in from data list
+    filePath = data[0]
+    leftview = data[1]
+    if testObject.getPath() == filePath:
+        # We found the file object we just added, lets select it
+        leftview.expand_to_path(path)
+        from rightpanel import setListModel
+        setListModel(testObject.getData())
+        return True
+    else:
+        return False

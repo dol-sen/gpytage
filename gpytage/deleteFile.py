@@ -95,9 +95,6 @@ def getMatch(model, path, iter, data):
     # clarify values passed in from data list
     folderPath = data[0]
     leftview = data[1]
-    print "FOLDERPATH"
-    print folderPath
-    print testObject.getPath()
     if testObject.getPath() == folderPath:
         # since we delete the object, we need to just expand to the folder we
         # were in
