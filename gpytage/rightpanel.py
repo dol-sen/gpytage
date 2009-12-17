@@ -95,6 +95,17 @@ def edited_cb(cell, path, new_text, col):
     file = model[path][L_REF]
     # Indicate file status in TreeView
     fileEdited(file)
+    # Now it's time to move our edit to the next appropriate cell
+    # If we are editing col 1 of a row, we should switch to editing col2, but
+    # if we are editing col2 of a row, we should switch to editing col1 of the
+    # next row
+    if col == L_NAME: # We are editing col 1
+        rightview.set_cursor_on_cell(path, rightview.get_column(L_FLAGS), None, True)
+    if col == L_FLAGS: # We are editing col2
+        nextRow = model.iter_next(model.get_iter(path)) # iter to next row
+        if nextRow != None:
+            rightview.set_cursor_on_cell(model.get_path(nextRow),
+                    rightview.get_column(L_NAME), None, True)
 
 def insertRow(arg):
     """ Insert row below selected row(s) """
