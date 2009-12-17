@@ -55,8 +55,9 @@ import os.path
 location = os.path.abspath(__file__)
 if "site-packages" not in location:
     local()
-    
-del os.path
+
+# Somehow, this line breaks deleteFile.py's shutil.rmtree
+#del os.path
 
 class gpytagemain:
     def __init__(self):
