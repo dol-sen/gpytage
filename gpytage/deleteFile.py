@@ -36,6 +36,8 @@ def deleteFile(*args):
                     __removeFile(file.getPath())
                     dialog.destroy()
                     reinitializeDatabase()
+                    if file.getParentFolder() != None:
+                        __reselectAfterDelete(file.getParentFolder().getPath())
                 else:
                     dialog.destroy()
             elif isinstance(object, FolderObj): # A folder 
@@ -51,6 +53,8 @@ def deleteFile(*args):
                     __removeDirectory(folder.getPath())
                     dialog.destroy()
                     reinitializeDatabase()
+                    if folder.getParentState():
+                        __reselectAfterDelete(folder.getParentFolder().getPath())
                 else:
                     dialog.destroy()
         except TypeError,e:
@@ -78,3 +82,27 @@ def __ensureNotModified():
         return False
     else:
         return True
+
+def __reselectAfterDelete(folderPath):
+    """ Reselects the parent folder of the deleted object """
+    from leftpanel import leftview
+    model = leftview.get_model()
+    model.foreach(getMatch, [folderPath, leftview])
+
+def getMatch(model, path, iter, data):
+    """ Obtain the match and perform the selection """
+    testObject = model.get_value(iter, 1) #col 1 stores the reference
+    # clarify values passed in from data list
+    folderPath = data[0]
+    leftview = data[1]
+    print "FOLDERPATH"
+    print folderPath
+    print testObject.getPath()
+    if testObject.getPath() == folderPath:
+        # since we delete the object, we need to just expand to the folder we
+        # were in
+        leftview.expand_to_path(path)
+        return True
+    else:
+        return False
+
