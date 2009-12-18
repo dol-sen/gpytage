@@ -28,6 +28,7 @@ from helper import getMultiSelection, getCurrentFile
 from PackageFileObj import L_NAME, L_FLAGS, L_REF
 from fileOperations import fileEdited
 from window import clipboard
+from sys import stderr
 
 rightview = gtk.TreeView()
 rightselection = rightview.get_selection()
@@ -39,9 +40,52 @@ def setListModel(ListStore): #we need to switch the model on click
     try:
         rightview.set_model() # Clear from view first
         rightview.set_model(ListStore) #example
+        cFormatter = __splitComments(rightview)
+        cFormatter.format()
+        del cFormatter
         namecol.queue_resize()
-    except:
-        print 'RIGHTPANEL: setListModel(); failed'
+    except: 
+        print >>stderr, 'RIGHTPANEL: setListModel(); failed'
+
+class __splitComments():
+    """ Used to properly format long comment strings inside portage config
+        files """
+    def __init__(self, rightview):
+        self.largest = 0
+        self.rightview = rightview
+        self.model = rightview.get_model()
+        self.commentIters = []
+        self.model.foreach(self.getNormalizedLength)
+
+    def format(self):
+        """ If the comment iter is longer than self.largest, the comment is
+            split into 2 columns. The first column holds the length of the comment
+            equal to self.largest and the second column holds the rest of the
+            comment """
+        for iter in self.commentIters:
+            comment = self.model.get_value(iter, 0).strip()
+            if len(comment) > self.largest and self.largest != 0:
+                # Comment is larger than the longest standard line which means
+                # we should break the excess length into the second column for
+                # the comment
+                c1 = comment[:self.largest]
+                c2 = comment[self.largest:]
+                self.model.set_value(iter, 0, c1)
+                self.model.set_value(iter, 1, c2)
+
+    def getNormalizedLength(self, model, path, iter):
+        """ Records the largest length of a entry that is not a comment and
+            stores those which are comments in self.commentIters """
+        colOne = model.get_value(iter, 0).strip()
+        # Non-comment line
+        if not colOne.startswith("#"):
+            size = len(colOne)
+            if size > self.largest:
+                self.largest = size
+        else:
+            # A comment line
+            self.commentIters.append(iter)
+
 
 # Currently interfering with copy/paste/cut
 #rightview.set_search_column(L_NAME)
@@ -101,7 +145,7 @@ def edited_cb(cell, path, new_text, col):
     # next row
     if col == L_NAME: # We are editing col 1
         rightview.set_cursor_on_cell(path, rightview.get_column(L_FLAGS), None, True)
-    if col == L_FLAGS: # We are editing col2
+    elif col == L_FLAGS: # We are editing col2
         nextRow = model.iter_next(model.get_iter(path)) # iter to next row
         if nextRow != None:
             rightview.set_cursor_on_cell(model.get_path(nextRow),
