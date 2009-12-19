@@ -3,7 +3,7 @@
 #   fileOperations.py GPytage module
 #
 ############################################################################
-#    Copyright (C) 2008-2009 by Kenneth Prugh                              #
+#    Copyright (C) 2009 by Kenneth Prugh                                   #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
