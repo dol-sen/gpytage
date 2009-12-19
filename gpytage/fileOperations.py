@@ -97,9 +97,16 @@ def revertSelected(*args):
 	if file in modifiedFiles:
 		file.initData()
 		__fileSaved(file) # Well, it is unedited...
+        from rightpanel import setListModel
+        setListModel(file.getData())
 
 def revertAllModified(*args):
 	""" Reverts all files that have been modified """
+	from helper import getCurrentFile
+	cfile, model = getCurrentFile()
 	for file in modifiedFiles[:]:
 		file.initData()
 		__fileSaved(file)
+        if file == cfile:
+            from rightpanel import setListModel
+            setListModel(file.getData())
