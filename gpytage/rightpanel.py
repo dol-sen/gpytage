@@ -59,19 +59,23 @@ class __splitComments():
 
     def format(self):
         """ If the comment iter is longer than self.largest, the comment is
-            split into 2 columns. The first column holds the length of the comment
-            equal to self.largest and the second column holds the rest of the
-            comment """
+            split into 2 columns at a word, if the comment is a single line
+            with no word breaks no split is done """
         for iter in self.commentIters:
             comment = self.model.get_value(iter, 0).strip()
             if len(comment) > self.largest and self.largest != 0:
                 # Comment is larger than the longest standard line which means
                 # we should break the excess length into the second column for
-                # the comment
-                c1 = comment[:self.largest]
-                c2 = comment[self.largest:]
-                self.model.set_value(iter, 0, c1)
-                self.model.set_value(iter, 1, c2)
+                # the comment, split at a word
+                try:
+                    split = comment.rindex(" ", 0, self.largest+1)
+                    c1 = comment[:split].strip()
+                    c2 = comment[split:].strip()
+                    self.model.set_value(iter, 0, c1)
+                    self.model.set_value(iter, 1, c2)
+                except ValueError:
+                    # We couldn't break at a word
+                    pass
 
     def getNormalizedLength(self, model, path, iter):
         """ Records the largest length of a entry that is not a comment and
