@@ -99,10 +99,40 @@ useFlagCol = gtk.TreeViewColumn('Flags')
 rightview.append_column(namecol)
 rightview.append_column(useFlagCol)
 
+class myCellRendererText(gtk.CellRendererText):
+    """ class to have tab behave when editing """
+    def __init__(self, colNum):
+        gtk.CellRendererText.__init__(self)
+        self.connect("editing-started", self.editing)
+        self.col = colNum
+
+    def editing(self, cell, editable, path):
+        editable.connect("key-press-event", self.key)
+        return False
+
+    def key(self, widget, event):
+        if event.keyval == gtk.gdk.keyval_from_name("Tab"): 
+            # Save any current editing changes to the cell
+            widget.editing_done()
+            # Now it's time to move our edit to the next appropriate cell
+            # If we are editing col 1 of a row, we should switch to editing col2, but
+            # if we are editing col2 of a row, we should switch to editing col1 of the
+            # next row
+            model = rightview.get_model()
+            refs = getMultiSelection(rightview)
+            path = refs[-1].get_path()
+            if self.col == L_NAME: # We are editing col 1
+                rightview.set_cursor_on_cell(path, rightview.get_column(L_FLAGS), None, True)
+            elif self.col == L_FLAGS: # We are editing col2
+                nextRow = model.iter_next(model.get_iter(path)) # iter to next row
+                if nextRow != None:
+                    rightview.set_cursor_on_cell(model.get_path(nextRow),
+                            rightview.get_column(L_NAME), None, True)
+
 # CellRenderer construction
-nameCell = gtk.CellRendererText()
+nameCell = myCellRendererText(0)
 nameCell.set_property('editable', True)
-flagCell = gtk.CellRendererText()
+flagCell = myCellRendererText(1)
 flagCell.set_property('editable', True)
 
 # Add CellRenderer to TreeViewColumns
@@ -139,17 +169,6 @@ def edited_cb(cell, path, new_text, col):
     file = model[path][L_REF]
     # Indicate file status in TreeView
     fileEdited(file)
-    # Now it's time to move our edit to the next appropriate cell
-    # If we are editing col 1 of a row, we should switch to editing col2, but
-    # if we are editing col2 of a row, we should switch to editing col1 of the
-    # next row
-    if col == L_NAME: # We are editing col 1
-        rightview.set_cursor_on_cell(path, rightview.get_column(L_FLAGS), None, True)
-    elif col == L_FLAGS: # We are editing col2
-        nextRow = model.iter_next(model.get_iter(path)) # iter to next row
-        if nextRow != None:
-            rightview.set_cursor_on_cell(model.get_path(nextRow),
-                    rightview.get_column(L_NAME), None, True)
 
 def insertRow(arg):
     """ Insert row below selected row(s) """
@@ -299,7 +318,6 @@ def __menuCopy(*args):
 def __menuPaste(*args):
     clipboard.pasteClipboard(rightview)
 
-
 def __handleKeyPress(widget, event):
     modifiers = gtk.accelerator_get_default_mod_mask()  
     # copy
@@ -314,7 +332,6 @@ def __handleKeyPress(widget, event):
     if event.keyval == gtk.gdk.keyval_from_name("x"):
         if (modifiers & event.state) == gtk.gdk.CONTROL_MASK:
             clipboard.cutToClipboard(rightview)
-
 
 #Signals
 nameCell.connect("edited", edited_cb, L_NAME)
