@@ -1,15 +1,34 @@
-Note: GPytage must be run under an account that can read/write to /etc/portage, or through su, sudo, or root.
+Note: GPytage must be run under an account that can read/write to /etc/portage,
+or through su, sudo, or root.
 
-GPytage is a utility that helps manage Portage's user config files with a GTK interface. It supports the package.*/* structure as well as the traditional package.[keywords, unmask, mask, use] file structure. 
+GPytage is a utility that helps manage Portage's user config files with a GTK
+interface. It supports the standard configuration file such as
+package.keywords and the directory type such as 
+package.keywords/foo. Directories can be of any depth.
 
-GPytage allows you to edit, add, and remove entries from your package files with an easy to use interface.
+GPytage allows you to edit, add, and remove entries from your package files with
+an easy to use interface.
+
+== REQUIREMENTS ==
+>=dev-lang/python-2.6
+>=dev-python/pygtk-2.14
+and of course portage!
 
 == INSTALLATION ==
 Installation is accomplished through the setup.py script. 
 
-`python setup.py install`
+# python setup.py install
 
-== RUNNING FROM THIS FOLDER ==
+== RUNNING FROM A LOCAL CHECKOUT ==
 To run gpytage from this folder without installing:
 
-`./gpytage -l`
+# cd scripts
+# ./gpytage -l
+
+== TESTING ==
+If you do not want to run GPytage over your real portage files, the -t flag
+will instead use the directory /etc/testportage/. This can be used to safely
+test without harming your config.
+
+== BUGS AND FEATURE REQUESTS ==
+See https://gna.org/projects/gpytage/
