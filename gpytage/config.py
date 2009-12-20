@@ -23,8 +23,11 @@
 
 from sys import exit, stderr
 
-config_files = ['package.keywords', 'package.unmask', 'package.mask', 'package.use', 'sets', 'bashrc', \
-        'color.map', 'modules', 'mirrors', 'categories', 'profile']
+config_files = ['bashrc', 'categories', 'color.map', 'mirrors', 'modules', \
+        'package.keywords', 'package.license', 'package.mask',\
+        'package.properties', 'package.unmask', 'package.use', 'repos.conf',\
+        'profile', 'sets']
+
 test_path = '/etc/testportage/'
 
 try: # >=portage 2.2 modules
