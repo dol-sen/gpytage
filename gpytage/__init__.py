@@ -1,1 +1,4 @@
-__all__ = ['config', 'helper', 'subfile',  'rightpanel',  'version', 'datastore', 'leftpanel',  'panelfunctions',  'save', 'window', 'rename', 'startup']
+__all__ = ['clipboard', 'config', 'datastore', 'deleteFile',\
+        'fileOperations', 'FolderObj', 'helper', 'leftpanel',\
+        'newFile', 'PackageFileObj', 'rename', 'rightpanel',\
+        'startup', 'version', 'window']
