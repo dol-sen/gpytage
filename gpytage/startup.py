@@ -3,7 +3,7 @@
 # GPytage startup.py module
 #
 ############################################################################
-#    Copyright (C) 2008-2009 by Kenneth Prugh                              #
+#    Copyright (C) 2008-20010 by Kenneth Prugh                             #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -28,7 +28,7 @@ from gpytage.leftpanel import expandRows, collapseRows
 from gpytage.leftpanel import scroll as lScroll
 from gpytage.rightpanel import scroll as rScroll
 from gpytage import config
-from gpytage.window import window, unsavedDialog, setTitleEdited, getTitleState
+from gpytage.window import window, unsavedDialog, getTitleState
 from gpytage.version import version
 from gpytage.datastore import folderModel, config_files, initTreeModel, initData
 from gpytage.fileOperations import saveModifiedFile, saveModifiedFiles, revertSelected, revertAllModified
@@ -98,7 +98,6 @@ class gpytagemain:
                     <menuitem action="Revert All"/>
                     <separator/>
                     <menuitem action="Delete File/Folder"/>
-                    <menuitem action="Split"/>
                     <menuitem action="Rename"/>
                     <separator/>
                     <menuitem action="Quit"/>
@@ -142,7 +141,6 @@ class gpytagemain:
             ('Add Package', gtk.STOCK_ADD, '_Add Package', '<Control>e', 'Add a package', insertRow),
             ('Remove Package', gtk.STOCK_REMOVE, '_Remove Package', '<Control>d', "Remove a package", deleteRow),
             ('Delete File/Folder', gtk.STOCK_DELETE, '_Delete File/Folder', None, 'Delete currently selected file or folder', deleteFile),
-            ('Split', gtk.STOCK_CONVERT, '_Convert file->subfile', None, 'Convert file', self.TODO),
             ('Rename', gtk.STOCK_SAVE_AS, '_Rename', None, 'Rename file', renameFile),
             ('Comment', gtk.STOCK_INDENT, '_Comment', None, "Comment a package", commentRow),
             ('Uncomment', gtk.STOCK_UNINDENT, '_Uncomment', None, "Uncomment a package", uncommentRow),
