@@ -3,7 +3,7 @@
 #   rename.py GPytage module
 #
 ############################################################################
-#    Copyright (C) 2009 by Kenneth Prugh                                   #
+#    Copyright (C) 2009-2010 by Kenneth Prugh                              #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -32,7 +32,6 @@ from PackageFileObj import PackageFileObj
 from FolderObj import FolderObj
 from sys import stderr
 from os import rename
-from datastore import reinitializeDatabase
 
 def renameFile(*args):
     """ Renames the currently selected file """
@@ -106,7 +105,7 @@ def getMatch(model, path, iter, data):
     # clarify values passed in from data list
     filePath = data[0]
     leftview = data[1]
-    type = data[2]
+    #type = data[2]
     if testObject.getPath() == filePath:
         # We found the file object we just renamed, lets select it
         leftview.expand_to_path(path)

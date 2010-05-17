@@ -3,7 +3,7 @@
 # GPytage helper.py module
 #
 ############################################################################
-#    Copyright (C) 2008-2009 by Kenneth Prugh                              #
+#    Copyright (C) 2008-2010 by Kenneth Prugh                              #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -22,7 +22,6 @@
 ############################################################################
 
 import gtk
-from PackageFileObj import L_NAME, L_FLAGS, L_REF
 
 def getMultiSelection(treeview):
     """ Return a list of the currently selected rows in the form of TreeRowReferences """
@@ -37,8 +36,8 @@ def getMultiSelection(treeview):
 def getCurrentFile():
 	""" Return  [PackageFileObj, model] when it cannot be retrieved by others means """
 	from leftpanel import leftview
-	model, iter = leftview.get_selection().get_selected()
 	from datastore import F_REF
+	model, iter = leftview.get_selection().get_selected()
 	try:
 		PackageFile = model.get_value(iter, F_REF)
 	except: #Nothing selected

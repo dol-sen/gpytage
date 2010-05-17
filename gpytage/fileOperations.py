@@ -3,7 +3,7 @@
 #   fileOperations.py GPytage module
 #
 ############################################################################
-#    Copyright (C) 2009 by Kenneth Prugh                                   #
+#    Copyright (C) 2009-2010 by Kenneth Prugh                              #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -22,7 +22,7 @@
 ############################################################################
 
 from window import setTitleEdited
-from PackageFileObj import L_NAME, L_FLAGS, L_REF
+from PackageFileObj import L_NAME
 from sys import stderr
 
 # List of files that have been edited and need saving or reverting
