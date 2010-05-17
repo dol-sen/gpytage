@@ -3,7 +3,7 @@
 # GPytage config.py module
 #
 ############################################################################
-#    Copyright (C) 2008-2009 by Kenneth Prugh, Brian Dolbec                #
+#    Copyright (C) 2008-2010 by Kenneth Prugh, Brian Dolbec                #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -30,27 +30,21 @@ config_files = ['bashrc', 'categories', 'color.map', 'mirrors', 'modules', \
 
 test_path = '/etc/testportage/'
 
-try: # >=portage 2.2 modules
+try: # >=portage 2.1 modules
     import portage
-    import portage.const as portage_const
-except ImportError, e: # portage 2.1.x modules
+    import portage.const
+except ImportError, e:
     print >>stderr, "Portage Import Error: ", e
-    try:
-        import portage
-        import portage_const
-    except ImportError, e:
-        print >>stderr, "Portage Import Error: ", e
-        exit('Could not find portage module.\n'
-             'Are you sure this is a Gentoo system?')
+    exit('Could not find portage module.\n'
+         'Are you sure this is a Gentoo system?')
+
 print >>stderr, ("Config: portage version = " + portage.VERSION)
 
-portage_path = "/" + portage_const.USER_CONFIG_PATH
-
-config_path = portage_path + '/'
+config_path = "/" + portage.const.USER_CONFIG_PATH + "/"
 PORTDIR=portage.config(clone=portage.settings).environ()['PORTDIR']
 
 # house cleaning no longer needed imports
-del portage, portage_const
+del portage
 
 def set_test_path():
     global config_path, test_path
