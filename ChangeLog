@@ -1,3 +1,8 @@
+Version 0.3.0: (In progress...)
+	* Implemented Error Dialogs for most exceptions that were only printed to
+		console otherwise
+	* Removed old broken convert function out of the File menu
+
 Version 0.3.0: (RC 1)
 	* Almost entirely rewritten
 	* Improved UI
