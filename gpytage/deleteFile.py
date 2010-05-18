@@ -3,7 +3,7 @@
 #   deleteFile.py GPytage module
 #
 ############################################################################
-#    Copyright (C) 2009 by Kenneth Prugh                                   #
+#    Copyright (C) 2009-2010 by Kenneth Prugh                              #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -27,11 +27,11 @@ import gtk
 from sys import stderr
 from shutil import rmtree
 from os import remove
-from window import createMessageDialog
 from fileOperations import hasModified
 from PackageFileObj import PackageFileObj
 from FolderObj import FolderObj
 from datastore import reinitializeDatabase 
+from errorDialog import errorDialog
 
 def deleteFile(*args):
     """ Deletes the currently selected file """
@@ -85,19 +85,23 @@ def __removeFile(path):
         remove(path)
     except OSError,e:
         print >>stderr,e
+        d = errorDialog("Error Deleting File...", str(e))
+        d.spawn()
 
 def __removeDirectory(path):
     try:
         rmtree(path)
-    except IOError, e:
+    except OSError, e:
         print >>stderr, e
+        d = errorDialog("Error Deleting Directory...", str(e))
+        d.spawn()
 
 def __ensureNotModified():
     if hasModified():
         #inform user to save
-        createMessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT,
-                gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, "Unsaved Files Found...",
-                "A file cannot be deleted with unsaved changes. Please save your changes.")
+        msg = "A file cannot be deleted with unsaved changes. Please save your changes."
+        d = errorDialog("Unsaved Files Found...", msg)
+        d.spawn()
         return False
     else:
         return True

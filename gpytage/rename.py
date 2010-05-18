@@ -89,7 +89,7 @@ def __ensureNotModified():
     if hasModified():
         #inform user to save
         msg = "A file cannot be renamed with unsaved changes. Please save your changes."
-        d = errorDialog("Error Saving...", msg) 
+        d = errorDialog("Unsaved Files Found...", msg) 
         d.spawn()
         return False
     else:
