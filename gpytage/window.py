@@ -50,12 +50,6 @@ def getTitleState():
 	""" Returns if the title is in the edited state """
 	return __editedState
 
-def createMessageDialog(parent, flags, type, buttons, mtitle, message_format):
-	md = gtk.MessageDialog(None, flags, type, buttons, message_format)
-	md.set_title(mtitle)
-	md.run()
-	md.destroy()
-
 def unsavedDialog():
 	"""
 	Spawn Generic Yes/No/Save Dialog when unsaved changes are present.
