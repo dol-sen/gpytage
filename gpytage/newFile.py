@@ -3,7 +3,7 @@
 #   newFile.py GPytage module
 #
 ############################################################################
-#    Copyright (C) 2009 by Kenneth Prugh                                   #
+#    Copyright (C) 2009-2010 by Kenneth Prugh                              #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -26,11 +26,11 @@ import gtk
 
 from config import get_config_path
 from fileOperations import hasModified
-from window import createMessageDialog
 from datastore import reinitializeDatabase 
 from PackageFileObj import PackageFileObj
 from FolderObj import FolderObj
 from sys import stderr
+from errorDialog import errorDialog
 
 def newFile(*args):
     """ Create a new file """
@@ -50,13 +50,15 @@ def __saveToDisk(nFile):
         f.close
     except IOError, e:
         print >>stderr, e
+        d = errorDialog("Error Creating File...", str(e))
+        d.spawn()
 
 def __ensureNotModified():
     if hasModified():
         #inform user to save
-        createMessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT,
-                gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, "Unsaved Files Found...",
-                "A new file cannot be created with unsaved changes. Please save your changes.")
+        msg = "A new file cannot be created with unsaved changes. Please save your changes."
+        d = errorDialog("Unsaved Files Found...", msg)
+        d.spawn()
         return False
     else:
         return True
