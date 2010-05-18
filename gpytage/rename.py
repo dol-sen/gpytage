@@ -26,12 +26,12 @@ import gtk
 
 from config import get_config_path
 from fileOperations import hasModified
-from window import createMessageDialog
 from datastore import reinitializeDatabase 
 from PackageFileObj import PackageFileObj
 from FolderObj import FolderObj
 from sys import stderr
 from os import rename
+from errorDialog import errorDialog
 
 def renameFile(*args):
     """ Renames the currently selected file """
@@ -78,17 +78,19 @@ def __writeRenamedFile(oldFile, newFile):
     try:
         rename(oldFile, newFile)
         print oldFile + " renamed to " + newFile
-    except IOError,e:
+    except OSError,e:
         print >>stderr, "Rename: ",e
+        d = errorDialog("Error Renaming...", str(e))
+        d.spawn()
 
 def __ensureNotModified():
     """ Ensure no files have been modified before proceeding, returns True if
     nothing is modified """
     if hasModified():
         #inform user to save
-        createMessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT,
-                gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, "Unsaved Files Found...",
-                "A file cannot be renamed with unsaved changes. Please save your changes.")
+        msg = "A file cannot be renamed with unsaved changes. Please save your changes."
+        d = errorDialog("Error Saving...", msg) 
+        d.spawn()
         return False
     else:
         return True
