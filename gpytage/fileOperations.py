@@ -24,6 +24,7 @@
 from window import setTitleEdited
 from PackageFileObj import L_NAME
 from sys import stderr
+from errorDialog import errorDialog
 
 # List of files that have been edited and need saving or reverting
 modifiedFiles = []
@@ -90,6 +91,8 @@ def __saveFile(file):
         __fileSaved(file)
     except IOError, e:
         print >>stderr, "Error saving: ", e
+        d = errorDialog("Error Saving...", str(e))
+        d.spawn()
 
 def __fileSaved(file):
     """ Set the passed PackageFileObj as un-edited """
