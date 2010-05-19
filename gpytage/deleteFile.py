@@ -46,7 +46,7 @@ def deleteFile(*args):
             if isinstance(object, PackageFileObj): # A file
                 file = object
                 dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_WARNING, gtk.BUTTONS_YES_NO,\
-                        "This operation is irreversible, are you sure you want to delete " + file.getName() + "?")
+                        "This operation is irreversible, are you sure you want to delete " + str(file) + "?")
                 dialog.set_default_response(gtk.RESPONSE_NO)
                 dialog.set_title("File removal...")
                 response = dialog.run()
@@ -63,7 +63,7 @@ def deleteFile(*args):
                 folder = object
                 dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_WARNING, gtk.BUTTONS_YES_NO,\
                         "This operation is irreversible, are you sure you want to delete directory " + \
-                                folder.getName() + " and its contents?")
+                                str(folder) + " and its contents?")
                 dialog.set_default_response(gtk.RESPONSE_NO)
                 dialog.set_title("Directory removal...")
                 response = dialog.run()

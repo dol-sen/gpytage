@@ -43,7 +43,7 @@ def fileEdited(file):
     lpath = file.getTreeRowRef().get_path()
     lmodel = file.getTreeRowRef().get_model()
     treename = lmodel[lpath][L_NAME]
-    if treename == file.getName():
+    if treename == str(file):
         # mark as edited
         lmodel[lpath][L_NAME] = "*" + treename
     # Reflect in title
@@ -100,7 +100,7 @@ def __fileSaved(file):
     lpath = file.getTreeRowRef().get_path()
     lmodel = file.getTreeRowRef().get_model()
     # mark as unedited
-    lmodel[lpath][L_NAME] = file.getName()
+    lmodel[lpath][L_NAME] = file
     # remove from the modifiedFiles
     __removeModifiedFile(file)
     # Reflect in title

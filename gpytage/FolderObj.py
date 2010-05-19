@@ -23,9 +23,11 @@
 
 class FolderObj:
     """ FolderObj represent Folders """
+    def __repr__(self):
+        return self.name
     
     def __init__(self, name, filePath):
-        self.Name = name
+        self.name = name
         self.filePath = filePath
         self.packageFileChildren = [] # List for PackageFile children
         self.folderChildren = [] # List for FolderObj children
@@ -58,10 +60,6 @@ class FolderObj:
         """ Returns whether the Folder has child Folder objects """
         return self.hasChildren
         
-    def getName(self):
-        """ Return FolderObj Name """
-        return self.Name
-    
     def getPackages(self):
         """ Return list of children PackageFileObj's """
         return self.packageFileChildren

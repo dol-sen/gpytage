@@ -29,6 +29,8 @@ L_REF = 2
 
 class PackageFileObj:
     """ PackageFile objects represent Files and their contents """
+    def __repr__(self):
+        return self.name
     
     def __init__(self, name, path, parent): # FilePath, FolderObj
         self.name = name
@@ -58,10 +60,6 @@ class PackageFileObj:
     def getData(self):
         """ Return the internal gtk.ListStore """
         return self.data
-    
-    def getName(self):
-        """ Return Name """
-        return self.name
 
     def getEditedState(self):
         """ Returns whether the PackageFileObj has been modified or not """
