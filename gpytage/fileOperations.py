@@ -45,7 +45,7 @@ def fileEdited(file):
     treename = lmodel[lpath][L_NAME]
     if treename == str(file):
         # mark as edited
-        lmodel[lpath][L_NAME] = "*" + treename
+        lmodel[lpath][L_NAME] = "*" + "<i>" + treename + "</i>"
     # Reflect in title
     setTitleEdited(True)
     # Add to the modifiedFiles

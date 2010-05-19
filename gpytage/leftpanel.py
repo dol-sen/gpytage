@@ -46,7 +46,8 @@ cell = gtk.CellRendererText()
 
 # add CellRenderer to TreeViewColumn
 namecol.pack_start(cell, True)
-namecol.add_attribute(cell, 'text', F_NAME)
+# Let us use pango markup
+namecol.add_attribute(cell, 'markup', F_NAME)
 namecol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
 
 #===============================================================================
