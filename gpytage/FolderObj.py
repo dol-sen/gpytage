@@ -47,7 +47,7 @@ class FolderObj(object):
 
     def getPackages(self):
         """ Return list of children PackageFileObj's """
-        return self.packageFileChildren
+        return self._packageFileChildren
         
     def removePackage(self, Package):
         """ Removes the specified PackageFile """
