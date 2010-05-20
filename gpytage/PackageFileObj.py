@@ -27,19 +27,19 @@ L_NAME = 0
 L_FLAGS = 1
 L_REF = 2
 
-class PackageFileObj:
+class PackageFileObj(object):
     """ PackageFile objects represent Files and their contents """
     def __repr__(self):
-        return self.name
+        return self._name
     
     def __init__(self, name, path, parent): # FilePath, FolderObj
-        self.name = name
-        self.path = path
-        self.parentObj = parent
-        self.data = gtk.ListStore(str, str, object)
+        self._name = name
+        self._path = path
+        self._parent = parent
+        self._data = gtk.ListStore(str, str, object)
+        self._edited = False
+        self._treeRowRef = None
         self.initData()
-        self.edited = False
-        self.treeRowRef = None
         
     def initData(self):
         """ Read contents of File into ListStore """
@@ -56,35 +56,46 @@ class PackageFileObj:
                 c2 = ""
             row = [c1, c2, self]
             self.data.append(row)
+        
+    @property
+    def path(self):
+        """ filepath for this PackageFileObj """
+        return self._path
 
-    def getData(self):
-        """ Return the internal gtk.ListStore """
-        return self.data
+    @property
+    def parent(self):
+        """ The parent folder """
+        return self._parent
 
-    def getEditedState(self):
-        """ Returns whether the PackageFileObj has been modified or not """
-        return self.edited
+    @property
+    def data(self):
+        """ internal gtk.ListStore """
+        return self._data
 
-    def setEditedState(self, boolean):
+    @property
+    def edited(self):
+        """ The state of the file being edited """
+        return self._edited
+
+    @edited.setter
+    def edited(self, boolean):
         """ Sets the PackageFileObj edited state """
-        self.edited = boolean
+        self._edited = boolean
         
-    def getTreeRowRef(self):
-        """ Returns a gtk.TreeRowReference pointing to this PackageFileObj """
-        return self.treeRowRef
+    @property
+    def treeRowRef(self):
+        """ gtk.TreeRowReference pointing to this PackageFileObj """
+        return self._treeRowRef
 
-    def setTreeRowRef(self, value):
+    @treeRowRef.setter
+    def treeRowRef(self, boolean):
         """ Set the gtk.TreeRowReference for this PackageFileObj """
-        self.treeRowRef = value
-        
-    def getPath(self):
-        """ Returns the filepath for this PackageFileObj """
-        return self.path
+        self._treeRowRef = boolean
 
     def __scanFileContents(self, filepath):
         """ Return data in specified file in a list of a list [[col1, col2]]"""
         try:
-            f=open(filepath, 'r')
+            f = open(filepath, 'r')
             contents = f.readlines()
             f.close()
         except IOError: #needed or everything breaks
@@ -96,7 +107,7 @@ class PackageFileObj:
             if i.startswith('#'): #don't split if its a comment
                 new = [i, None]
             else:
-                new = i.split(None,1)
+                new = i.split(None, 1)
             # NoneType's are annoying...lets replace them with an empty string
             # Occurs when no flags present
             if len(new) == 1:
@@ -107,6 +118,3 @@ class PackageFileObj:
             data.append(new)
         return data #return the master list of lists
     
-    def getParentFolder(self):
-        return self.parentObj
-
