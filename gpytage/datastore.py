@@ -55,15 +55,15 @@ def initData():
                 if folder not in config_files:
                     folders.remove(folder) #ignore unrelated folders
             # Files sanity
-            for file in files[:]:
-                if file not in config_files:
-                    files.remove(file) #ignore unrelated files
+            for pfile in files[:]:
+                if pfile not in config_files:
+                    files.remove(pfile) #ignore unrelated files
             #construct
             for folder in folders:
                 foldobj = FolderObj.FolderObj(folder, rootDir + "/" + folder)
                 TLFolders.append(foldobj)
-            for file in files:
-                fileobj = PackageFileObj.PackageFileObj(file, rootDir + "/" + file, None)
+            for pfile in files:
+                fileobj = PackageFileObj.PackageFileObj(pfile, rootDir + "/" + pfile, None)
                 TLFiles.append(fileobj)
         else: # No longer top level, we are inside a folder
             tlname = rootDir.split("/")[-1] # /etc/portage/sets => sets
@@ -71,14 +71,14 @@ def initData():
             for folder in folders: # recursive folder
                 parent = __getParent(tlname, "folder") # FolderObj
                 foldobj = FolderObj.FolderObj(folder, rootDir + "/" + folder)
-                foldobj.setHasParent(True)
-                foldobj.setParentFolder(parent)
+                foldobj.parentState = True
+                foldobj.parent = parent
                 parent.addFolder(foldobj)
-                parent.setChildren(True)
+                parent.childState = True
                 TLFolders.append(foldobj)
-            for file in files:
+            for pfile in files:
                 parent = __getParent(tlname, "file") #PackageFileObj
-                fileobj = PackageFileObj.PackageFileObj(file, rootDir + "/" + file, parent)
+                fileobj = PackageFileObj.PackageFileObj(pfile, rootDir + "/" + pfile, parent)
                 parent.addPackage(fileobj)
                 #TLFiles.append(fileobj)
             
@@ -97,51 +97,51 @@ def initTreeModel():
     """ Populate the TreeModel with data """
     for folder in TLFolders: #Contains *all* folders
         # Handle Top level Folders with no folder children first
-        if (folder.getChildrenState() == False and folder.getParentState() == False):
+        if (folder.childState == False and folder.parentState == False):
             row = [folder, folder]
             parentIter = folderModel.append(None, row)
             path = folderModel.get_path(parentIter)
             treeRowRef = gtk.TreeRowReference(folderModel, path)
-            folder.setTreeRowRef(treeRowRef)
+            folder.treeRowRef = treeRowRef 
             children = folder.getPackages()
             for child in children: #Add children files to treeview
                 row = [child, child]
                 childIter = folderModel.append(parentIter, row)
                 path = folderModel.get_path(childIter)
                 treeRowRef = gtk.TreeRowReference(folderModel, path)
-                child.setTreeRowRef(treeRowRef)
+                child.treeRowRef = treeRowRef
         else: # Folders have folder children (an unknown amount unfortunately) (Recursive)
             #Add the parent folder to the treeview
             row = [folder, folder]
-            if folder.getParentState() == False: #Top level
+            if folder.parentState == False: #Top level
                 parentIter = folderModel.append(None, row)
                 path = folderModel.get_path(parentIter)
                 treeRowRef = gtk.TreeRowReference(folderModel, path)
-                folder.setTreeRowRef(treeRowRef) # We will need this later to pack the children
+                folder.treeRowRef = treeRowRef # We will need this later to pack the children
                                                  # in the treeview
             else: #child folder
                 # We gotta find the stupid things parent row
-                parent = folder.getParentFolder()
-                path = parent.getTreeRowRef().get_path()
+                parent = folder.parent
+                path = parent.treeRowRef.get_path()
                 grandIter = folderModel.get_iter(path)
                 parentIter = folderModel.append(grandIter, row)
                 path = folderModel.get_path(parentIter)
                 treeRowRef = gtk.TreeRowReference(folderModel, path)
-                folder.setTreeRowRef(treeRowRef)
+                folder.treeRowRef = treeRowRef
                 
             for subfile in folder.getPackages():
                 row = [subfile, subfile]
                 FileIter = folderModel.append(parentIter, row)
                 path = folderModel.get_path(FileIter)
                 treeRowRef = gtk.TreeRowReference(folderModel, path)
-                subfile.setTreeRowRef(treeRowRef)
+                subfile.treeRowRef = treeRowRef
     # Top Level Files only
-    for file in TLFiles:
-        row = [file, file]
+    for pfile in TLFiles:
+        row = [pfile, pfile]
         parentIter = folderModel.append(None, row)
         path = folderModel.get_path(parentIter)
         treeRowRef = gtk.TreeRowReference(folderModel, path)
-        file.setTreeRowRef(treeRowRef)
+        pfile.treeRowRef = treeRowRef
         
 def __clearData():
     """ Clears the TreeModel and the TLFolder,TLFiles list """

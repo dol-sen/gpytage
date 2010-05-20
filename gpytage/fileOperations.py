@@ -39,9 +39,9 @@ def __removeModifiedFile(file):
 
 def fileEdited(file):
     """ Set the passed PackageFileObj as edited """
-    file.setEditedState(True)
-    lpath = file.getTreeRowRef().get_path()
-    lmodel = file.getTreeRowRef().get_model()
+    file.edited = True
+    lpath = file.treeRowRef.get_path()
+    lmodel = file.treeRowRef.get_model()
     treename = lmodel[lpath][L_NAME]
     if treename == str(file):
         # mark as edited
@@ -70,10 +70,10 @@ def saveModifiedFile(*args):
 def __saveFile(file):
     """ Private method to write file to desk """
     # Save the file
-    print "Attempting to save " + file.getPath()
+    print "Attempting to save " + file.path
     try:
-        f=open(file.getPath(), 'w')
-        datalist = file.getData()
+        f=open(file.path, 'w')
+        datalist = file.data
         for row in datalist:
             if row[0] is not None:
                 c1 = row[0]
@@ -96,9 +96,9 @@ def __saveFile(file):
 
 def __fileSaved(file):
     """ Set the passed PackageFileObj as un-edited """
-    file.setEditedState(False)
-    lpath = file.getTreeRowRef().get_path()
-    lmodel = file.getTreeRowRef().get_model()
+    file.edited = False
+    lpath = file.treeRowRef.get_path()
+    lmodel = file.treeRowRef.get_model()
     # mark as unedited
     lmodel[lpath][L_NAME] = file
     # remove from the modifiedFiles
@@ -123,7 +123,7 @@ def revertSelected(*args):
         file.initData()
         __fileSaved(file) # Well, it is unedited...
         from rightpanel import setListModel
-        setListModel(file.getData())
+        setListModel(file.data)
 
 def revertAllModified(*args):
     """ Reverts all files that have been modified """
@@ -134,4 +134,4 @@ def revertAllModified(*args):
         __fileSaved(file)
         if file == cfile:
             from rightpanel import setListModel
-            setListModel(file.getData())
+            setListModel(file.data)

@@ -79,13 +79,13 @@ def __getNewFileChoice():
     try:
         object = model.get_value(iter, F_REF)
         if isinstance(object, PackageFileObj): # A file
-            folder = object.getParentFolder()
+            folder = object.parent
         elif isinstance(object, FolderObj): # A folder 
             folder = object
         if folder == None:
             folderPath = get_config_path()
         else:
-            folderPath = folder.getPath() # Get the path to the folder object
+            folderPath = folder.path # Get the path to the folder object
     except TypeError,e:
         print >>stderr, "__getNewFileChoice:",e
         #Nothing selected, select default
@@ -115,12 +115,12 @@ def getMatch(model, path, iter, data):
     # clarify values passed in from data list
     filePath = data[0]
     leftview = data[1]
-    if testObject.getPath() == filePath:
+    if testObject.path == filePath:
         # We found the file object we just added, lets select it
         leftview.expand_to_path(path)
         leftview.set_cursor(path, None, False)
         #from rightpanel import setListModel
-        #setListModel(testObject.getData())
+        #setListModel(testObject.data)
         return True
     else:
         return False

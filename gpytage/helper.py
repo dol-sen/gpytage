@@ -34,13 +34,13 @@ def getMultiSelection(treeview):
     return rowReferences
 
 def getCurrentFile():
-	""" Return  [PackageFileObj, model] when it cannot be retrieved by others means """
-	from leftpanel import leftview
-	from datastore import F_REF
-	model, iter = leftview.get_selection().get_selected()
-	try:
-		PackageFile = model.get_value(iter, F_REF)
-	except: #Nothing selected
-		PackageFile = None
-	return [PackageFile, model]
-	
+    """ Return  [PackageFileObj, model] when it cannot be retrieved by others means """
+    from leftpanel import leftview
+    from datastore import F_REF
+    model, iter = leftview.get_selection().get_selected()
+    try:
+        PackageFile = model.get_value(iter, F_REF)
+    except: #Nothing selected
+        PackageFile = None
+    return [PackageFile, model]
+    

@@ -51,12 +51,12 @@ def deleteFile(*args):
                 dialog.set_title("File removal...")
                 response = dialog.run()
                 if response == gtk.RESPONSE_YES:
-                    print "Test delete file: " + file.getPath()
-                    __removeFile(file.getPath())
+                    print "Test delete file: " + file.path
+                    __removeFile(file.path)
                     dialog.destroy()
                     reinitializeDatabase()
-                    if file.getParentFolder() != None:
-                        __reselectAfterDelete(file.getParentFolder().getPath())
+                    if file.parent != None:
+                        __reselectAfterDelete(file.parent.path)
                 else:
                     dialog.destroy()
             elif isinstance(object, FolderObj): # A folder 
@@ -68,12 +68,12 @@ def deleteFile(*args):
                 dialog.set_title("Directory removal...")
                 response = dialog.run()
                 if response == gtk.RESPONSE_YES:
-                    print "Test delete dir: " + folder.getPath()
-                    __removeDirectory(folder.getPath())
+                    print "Test delete dir: " + folder.path
+                    __removeDirectory(folder.path)
                     dialog.destroy()
                     reinitializeDatabase()
-                    if folder.getParentState():
-                        __reselectAfterDelete(folder.getParentFolder().getPath())
+                    if folder.parentState:
+                        __reselectAfterDelete(folder.parent.path)
                 else:
                     dialog.destroy()
         except TypeError,e:
@@ -118,7 +118,7 @@ def getMatch(model, path, iter, data):
     # clarify values passed in from data list
     folderPath = data[0]
     leftview = data[1]
-    if testObject.getPath() == folderPath:
+    if testObject.path == folderPath:
         # since we delete the object, we need to just expand to the folder we
         # were in
         leftview.expand_to_path(path)

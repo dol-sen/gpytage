@@ -42,13 +42,13 @@ def renameFile(*args):
         object = model.get_value(iter, F_REF)
         if isinstance(object, PackageFileObj): # A file
             type = "File"
-            if object.getParentFolder() == None:
+            if object.parent == None:
                 setFolder = get_config_path()
             else:
-                setFolder = object.getParentFolder().getPath()
+                setFolder = object.parent.path
         elif isinstance(object, FolderObj): # A folder 
             type = "Directory"
-            setFolder = object.getParentFolder().getPath()
+            setFolder = object.parent.path
         if __ensureNotModified():
             __createRenameDialog(object, type, setFolder)
     except TypeError,e:
@@ -61,12 +61,12 @@ def __createRenameDialog(object, type, setFolder):
             gtk.FILE_CHOOSER_ACTION_SAVE, (gtk.STOCK_CANCEL,
                 gtk.RESPONSE_CANCEL, gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
     fc.set_do_overwrite_confirmation(True)
-    fc.set_filename(object.getPath()) #Set the fc to the object to be renamed
-    fc.set_extra_widget(gtk.Label("Renaming " + object.getPath()))
+    fc.set_filename(object.path) #Set the fc to the object to be renamed
+    fc.set_extra_widget(gtk.Label("Renaming " + object.path))
     response = fc.run()
     if response == gtk.RESPONSE_ACCEPT:
         if fc.get_filename() != None:
-            __writeRenamedFile(object.getPath(), fc.get_filename())
+            __writeRenamedFile(object.path, fc.get_filename())
             reinitializeDatabase()
             __reselectAfterRename(fc.get_filename(), type)
         else:
@@ -108,7 +108,7 @@ def getMatch(model, path, iter, data):
     filePath = data[0]
     leftview = data[1]
     #type = data[2]
-    if testObject.getPath() == filePath:
+    if testObject.path == filePath:
         # We found the file object we just renamed, lets select it
         leftview.expand_to_path(path)
         leftview.set_cursor(path, None, False)
