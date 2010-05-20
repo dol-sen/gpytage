@@ -293,6 +293,7 @@ def __rightClicked(view, event):
         menu.append(irow)
         menu.append(drow)
         separator = gtk.MenuItem()
+        sepcutcopypaste = gtk.MenuItem()
         crow = gtk.MenuItem("Comment Package")
         urow = gtk.MenuItem("Uncomment Package")
         crow.connect("activate", commentRow)
@@ -300,7 +301,7 @@ def __rightClicked(view, event):
         menu.append(separator)
         menu.append(crow)
         menu.append(urow)
-        menu.append(separator)
+        menu.append(sepcutcopypaste)
 
         cut = gtk.MenuItem("Cut")
         cut.connect("activate", __menuCut)
