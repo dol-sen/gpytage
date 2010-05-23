@@ -135,3 +135,14 @@ def revertAllModified(*args):
         if file == cfile:
             from rightpanel import setListModel
             setListModel(file.data)
+
+def ensureNotModified(msg):
+    """ Ensure no files have been modified before proceeding, returns True if
+    nothing is modified. If false a dialog is presented to the user """
+    if hasModified():
+        #inform user to save
+        d = errorDialog("Unsaved Files Found...", msg) 
+        d.spawn()
+        return False
+    else:
+        return True

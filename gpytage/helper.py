@@ -43,4 +43,3 @@ def getCurrentFile():
     except: #Nothing selected
         PackageFile = None
     return [PackageFile, model]
-    

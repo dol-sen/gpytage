@@ -27,15 +27,17 @@ import gtk
 from sys import stderr
 from shutil import rmtree
 from os import remove
-from fileOperations import hasModified
 from PackageFileObj import PackageFileObj
 from FolderObj import FolderObj
 from datastore import reinitializeDatabase 
 from errorDialog import errorDialog
+from fileOperations import ensureNotModified 
+
+msg = "A file cannot be deleted with unsaved changes. Please save your changes."
 
 def deleteFile(*args):
     """ Deletes the currently selected file """
-    if __ensureNotModified():
+    if ensureNotModified(msg):
 
         # What exactly is currently selected?
         from leftpanel import leftview
@@ -95,16 +97,6 @@ def __removeDirectory(path):
         print >>stderr, e
         d = errorDialog("Error Deleting Directory...", str(e))
         d.spawn()
-
-def __ensureNotModified():
-    if hasModified():
-        #inform user to save
-        msg = "A file cannot be deleted with unsaved changes. Please save your changes."
-        d = errorDialog("Unsaved Files Found...", msg)
-        d.spawn()
-        return False
-    else:
-        return True
 
 def __reselectAfterDelete(folderPath):
     """ Reselects the parent folder of the deleted object """

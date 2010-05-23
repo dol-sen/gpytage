@@ -25,13 +25,15 @@ import pygtk; pygtk.require("2.0")
 import gtk
 
 from config import get_config_path
-from fileOperations import hasModified
 from datastore import reinitializeDatabase 
 from PackageFileObj import PackageFileObj
 from FolderObj import FolderObj
 from sys import stderr
 from os import rename
 from errorDialog import errorDialog
+from fileOperations import ensureNotModified 
+
+msg = "A file cannot be renamed with unsaved changes. Please save your changes."
 
 def renameFile(*args):
     """ Renames the currently selected file """
@@ -49,7 +51,7 @@ def renameFile(*args):
         elif isinstance(object, FolderObj): # A folder 
             type = "Directory"
             setFolder = object.parent.path
-        if __ensureNotModified():
+        if ensureNotModified(msg):
             __createRenameDialog(object, type, setFolder)
     except TypeError,e:
         print >>stderr, "__renameFile:",e
@@ -82,18 +84,6 @@ def __writeRenamedFile(oldFile, newFile):
         print >>stderr, "Rename: ",e
         d = errorDialog("Error Renaming...", str(e))
         d.spawn()
-
-def __ensureNotModified():
-    """ Ensure no files have been modified before proceeding, returns True if
-    nothing is modified """
-    if hasModified():
-        #inform user to save
-        msg = "A file cannot be renamed with unsaved changes. Please save your changes."
-        d = errorDialog("Unsaved Files Found...", msg) 
-        d.spawn()
-        return False
-    else:
-        return True
 
 def __reselectAfterRename(filePath, type):
     """ Reselects the parent folder of the deleted object """

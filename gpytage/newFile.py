@@ -25,16 +25,18 @@ import pygtk; pygtk.require("2.0")
 import gtk
 
 from config import get_config_path
-from fileOperations import hasModified
 from datastore import reinitializeDatabase 
 from PackageFileObj import PackageFileObj
 from FolderObj import FolderObj
 from sys import stderr
 from errorDialog import errorDialog
+from fileOperations import ensureNotModified 
+
+msg = "A new file cannot be created with unsaved changes. Please save your changes."
 
 def newFile(*args):
     """ Create a new file """
-    if __ensureNotModified():
+    if ensureNotModified(msg):
         nFile = __getNewFileChoice()
         if nFile is not None:
             __saveToDisk(nFile)
@@ -52,16 +54,6 @@ def __saveToDisk(nFile):
         print >>stderr, e
         d = errorDialog("Error Creating File...", str(e))
         d.spawn()
-
-def __ensureNotModified():
-    if hasModified():
-        #inform user to save
-        msg = "A new file cannot be created with unsaved changes. Please save your changes."
-        d = errorDialog("Unsaved Files Found...", msg)
-        d.spawn()
-        return False
-    else:
-        return True
 
 def __getNewFileChoice():
     dialog = gtk.FileChooserDialog("New file...", None,
