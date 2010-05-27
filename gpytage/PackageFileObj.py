@@ -22,6 +22,7 @@
 ############################################################################
 
 import gtk
+from sys import stderr
 
 L_NAME = 0
 L_FLAGS = 1
@@ -94,15 +95,19 @@ class PackageFileObj(object):
 
     def __scanFileContents(self, filepath):
         """ Return data in specified file in a list of a list [[col1, col2]]"""
+        data = [] #list of list: eg [['python','x86']]
         try:
             f = open(filepath, 'r')
             contents = f.readlines()
             f.close()
-        except IOError: #needed or everything breaks
+        except IOError, e: #needed or everything breaks
             contents = None
-            print 'HELPER: scan_contents(); Warning: Critical file %s not found' % (filepath)
+            print >>stderr, e
+            from errorDialog import errorDialog
+            d = errorDialog("Error Reading File...", str(e))
+            d.spawn()
+            return data
     
-        data = [] #list of list: eg [['python','x86']]
         for i in contents:
             if i.startswith('#'): #don't split if its a comment
                 new = [i, None]
