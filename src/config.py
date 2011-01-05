@@ -3,7 +3,7 @@
 # GPytage config.py module
 #
 ############################################################################
-#    Copyright (C) 2008-2010 by Kenneth Prugh, Brian Dolbec                #
+#    Copyright (C) 2008-2011 by Kenneth Prugh, Brian Dolbec                #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -21,35 +21,24 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-from sys import exit, stderr
+import portage
 
-config_files = ['bashrc', 'categories', 'color.map', 'mirrors', 'modules', \
-        'package.keywords', 'package.license', 'package.mask',\
-        'package.properties', 'package.unmask', 'package.use', 'repos.conf',\
-        'profile', 'sets']
+class Config(object):
+    def __init__(self):
+        # eg: /usr/portage/
+        self.portdir = portage.config(clone=portage.settings).environ()['PORTDIR'] + "/"
+        # eg: /etc/portage/
+        self.portconf = "/" + portage.const.USER_CONFIG_PATH + "/"
+        self.iconlist = ["gpytage-16x16.png", "gpytage-24x24.png",
+                "gpytage-32x32.png", "gpytage-48x48.png", "gpytage-64x64.png",
+                "gpytage-128x128.png"]
 
-test_path = '/etc/testportage/'
+        self.pixpath = "usr/share/pixmaps/gpytage/"
 
-try: # >=portage 2.1 modules
-    import portage
-    import portage.const
-except ImportError, e:
-    print >>stderr, "Portage Import Error: ", e
-    exit('Could not find portage module.\n'
-         'Are you sure this is a Gentoo system?')
+        self.portconfFiles = ['bashrc', 'categories', 'color.map', 'mirrors', \
+                'modules', 'package.keywords', 'package.license', 'package.mask', \
+                'package.properties', 'package.unmask', 'package.use', 'repos.conf', \
+                'profile', 'sets']
 
-print >>stderr, ("Config: portage version = " + portage.VERSION)
+        print("Config: portage version = " + portage.VERSION)
 
-config_path = "/" + portage.const.USER_CONFIG_PATH + "/"
-PORTDIR=portage.config(clone=portage.settings).environ()['PORTDIR']
-
-# house cleaning no longer needed imports
-del portage
-
-def set_test_path():
-    global config_path, test_path
-    config_path = test_path
-    print "CONFIG: new config_path = " + config_path
-
-def get_config_path():
-    return config_path
