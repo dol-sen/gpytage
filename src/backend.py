@@ -24,7 +24,7 @@ from kfile import kfile
 import os
 from sys import stderr
 
-class backend(object):
+class Backend(object):
     def __init__(self, config):
         self.config = config
         self.dataModel = gtk.TreeStore(
@@ -67,8 +67,11 @@ class backend(object):
                 except IOError, e:
                     print >> stderr, e
                     continue
-                parent = self.getIterbyRef(folderRefMap[rootDir])
-                self.dataModel.append(parent, data)
+                if (root):
+                    self.dataModel.append(None, data)
+                else:
+                    parent = self.getIterbyRef(folderRefMap[rootDir])
+                    self.dataModel.append(parent, data)
 
     def getTreeRef(self, giter):
         path = self.dataModel.get_path(giter)
