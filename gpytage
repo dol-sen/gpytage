@@ -4,7 +4,7 @@
 # GTK Utility to help manage Portage's user config files
 #
 ############################################################################
-#   Copyright (C) 2008-2009 by Kenneth Prugh                               #
+#   Copyright (C) 2008-2011 by Kenneth Prugh                               #
 #   ken69267@gmail.com                                                     #
 #                                                                          #
 #   This program is free software; you can redistribute it and#or modify   #
@@ -56,21 +56,20 @@ if __name__ == "__main__":
             sys.exit()
         if opt in ("-l", "--local"):
             # running a local version (i.e. not installed in /usr/*)
-            import os, os.path
             DATA_PATH =(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
             print "DATA_PATH =", DATA_PATH
             sys.path.insert(0, DATA_PATH)
             print sys.path
             RUN_LOCAL = True
-            from gpytage.version import version
-            from gpytage.startup import *
+            from src.version import version
+            from src.startup import *
             #local()
             print "GPytage: starting gpytage()"
 
     if not RUN_LOCAL: # then run the installed modules
         try:
-            from gpytage.version import version
-            from gpytage.startup import *
+            from src.version import version
+            from src.startup import *
             print "GPytage: starting gpytage()"
         except ImportError, e:
             print "*** Error loading gpytage modules!\n*** If you are running a", \
