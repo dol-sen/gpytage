@@ -29,11 +29,14 @@ class Config(object):
         self.portdir = portage.config(clone=portage.settings).environ()['PORTDIR'] + "/"
         # eg: /etc/portage/
         self.portconf = "/" + portage.const.USER_CONFIG_PATH + "/"
-        self.iconlist = ["gpytage-16x16.png", "gpytage-24x24.png",
+
+        self.pixpath = "share/pixmaps/gpytage/"
+
+        self.__icons = ["gpytage-16x16.png", "gpytage-24x24.png",
                 "gpytage-32x32.png", "gpytage-48x48.png", "gpytage-64x64.png",
                 "gpytage-128x128.png"]
 
-        self.pixpath = "usr/share/pixmaps/gpytage/"
+        self.iconlist = [self.pixpath+icon for icon in self.__icons]
 
         self.portconfFiles = ['bashrc', 'categories', 'color.map', 'mirrors', \
                 'modules', 'package.keywords', 'package.license', 'package.mask', \
