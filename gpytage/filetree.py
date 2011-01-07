@@ -44,8 +44,8 @@ class FileTree(object):
         cname = gtk.CellRendererText()
         cbuf = gtk.CellRendererPixbuf()
 
-        name.pack_start(cname, False)
-        name.pack_start(cbuf, True)
+        name.pack_start(cbuf, False)
+        name.pack_start(cname, True)
 
         name.add_attribute(cname, "markup", 0)
         name.add_attribute(cbuf, "pixbuf", 1)

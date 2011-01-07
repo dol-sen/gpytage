@@ -87,10 +87,10 @@ class Backend(object):
 
         theme = gtk.icon_theme_get_default()
         if bFolder:
-            icon = theme.load_icon(gtk.STOCK_DIRECTORY, gtk.ICON_SIZE_MENU, 0)
+            icon = theme.load_icon(gtk.STOCK_DIRECTORY, 16, 0)
             kobj = None
         else:
-            icon = theme.load_icon(gtk.STOCK_FILE, gtk.ICON_SIZE_MENU, 0)
+            icon = theme.load_icon(gtk.STOCK_FILE, 16, 0)
             kobj = kfile(name, path)
 
         return [name, icon, kobj]
