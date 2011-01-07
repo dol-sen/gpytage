@@ -21,6 +21,7 @@
 
 from backend import Backend
 from UIbar import UIbar
+from filetree import FileTree
 import gtk
 
 class GPytage(object):
@@ -37,9 +38,12 @@ class GPytage(object):
         self.window.set_default_size(800, 500)
         self.window.connect("destroy", self.quit)
         self.window.connect("delete_event", self.quit)
+
         self.UI = UIbar()
 
-        #self.window.add(self.UI.getMenuBar())
+        self.ftree = FileTree(self)
+
+        self.window.add(self.ftree.treeContainer)
         self.window.show_all()
         gtk.main()
 
