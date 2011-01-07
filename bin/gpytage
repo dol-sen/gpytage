@@ -84,7 +84,7 @@ if __name__ == "__main__":
     c = Config()
     if (RUN_LOCAL):
         c.setPixPath(DATA_PATH + "/share/pixmaps/gpytage/")
-    if (TEST_PATH):
+    if (TEST):
         c.portconf = TEST_PATH
         print "PORTCONF: " + c.portconf
     launch = GPytage(c)

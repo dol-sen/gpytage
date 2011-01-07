@@ -3,7 +3,7 @@
 # GPytage startup.py module
 #
 ############################################################################
-#    Copyright (C) 2008-20010 by Kenneth Prugh                             #
+#    Copyright (C) 2008-2011 by Kenneth Prugh                              #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -199,7 +199,7 @@ class gpytagemain:
     def about(self, *args):
         aboutw = gtk.AboutDialog()
         aboutw.set_name('GPytage')
-        aboutw.set_copyright('Copyright 2008-2009, GPL2')
+        aboutw.set_copyright('Copyright 2008-2011, GPL2')
         aboutw.set_authors(["Kenneth 'ken69267' Prugh", 
             "\nWith patches contributed by Brian Dolbec <dol-sen>\nand Josh 'nightmorph' Saddler. \n" +
             "\nWith special thanks to the Gentoo \ndevelopers and community. \n\n" +
