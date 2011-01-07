@@ -23,6 +23,8 @@
 
 import portage
 
+VERSION = "3.1-dev"
+
 class Config(object):
     def __init__(self):
         # eg: /usr/portage/
@@ -30,7 +32,7 @@ class Config(object):
         # eg: /etc/portage/
         self.portconf = "/" + portage.const.USER_CONFIG_PATH + "/"
 
-        self.pixpath = "share/pixmaps/gpytage/"
+        self.pixpath = "/usr/share/pixmaps/gpytage/"
 
         self.__icons = ["gpytage-16x16.png", "gpytage-24x24.png",
                 "gpytage-32x32.png", "gpytage-48x48.png", "gpytage-64x64.png",
@@ -44,4 +46,8 @@ class Config(object):
                 'profile', 'sets']
 
         print("Config: portage version = " + portage.VERSION)
+
+    def setPixPath(self, path):
+        self.pixpath = path
+        self.iconlist = [self.pixpath+icon for icon in self.__icons]
 
