@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 ############################################################################
-#    Copyright (C) 2011 by Kenneth Prugh                                   #
+#    Copyright (C) 2008-2011 by Kenneth Prugh                              #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -20,7 +20,29 @@
 ############################################################################
 
 from backend import Backend
+from UIbar import UIbar
+import gtk
 
 class GPytage(object):
     def __init__(self, config):
         self.backend = Backend(config)
+
+        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        self.window.set_title("GPytage")
+        # The *[] syntax is required for this function. It wants a Glist.
+        gtk.window_set_default_icon_list(
+                *[gtk.gdk.pixbuf_new_from_file(f) for f in
+                    self.backend.config.iconlist]
+                )
+        self.window.set_default_size(800, 500)
+        self.window.connect("destroy", self.quit)
+        self.window.connect("delete_event", self.quit)
+        self.UI = UIbar()
+
+        #self.window.add(self.UI.getMenuBar())
+        self.window.show_all()
+        gtk.main()
+
+    def quit(self, *args):
+        #todo: check for unsaved changes etc.
+        gtk.main_quit()
