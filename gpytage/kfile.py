@@ -27,71 +27,44 @@ L_REF = 2
 
 class kfile(object):
     def __init__(self, name, path):
-        self.data = gtk.ListStore(
-                str,    # Name
-                str,    # Use flags
-                object) # Reference to kfile
+        self.data = gtk.TextBuffer()
 
         self.bEdited = False
         self.name = name
         self.path = path
 
+        self.loadData()
+
     def loadData(self):
-        """ Read contents of File into ListStore """
-        self.data.clear()
+        """ Read contents of File into self.data Buffer """
         rawData = self.__scanFileContents(self.path)
         for line in rawData:
-            c1 = line[L_NAME].rstrip()
-            c2 = line[L_FLAGS].rstrip()
-            row = [c1, c2, self]
-            self.data.append(row)
+            iter = self.data.get_end_iter()
+            self.data.insert(iter, line)
 
     #throws ioerror
     def savedata(self):
         """ Private method to write file to desk """
         # Save the file
         print "Attempting to save " + self.path
+        #sync buffer to disk
+        return
         try:
             f = open(self.path, 'w')
             for row in self.data:
-                if row[0] is not None:
-                    c1 = row[0]
-                else:
-                    c1 = ""
-                if row[1] is not None:
-                    c2 = row[1]
-                else:
-                    c2 = ""
-                if row[0].strip().startswith("#"):
-                    f.write(c1 + c2 + "\n")
-                else:
-                    f.write(c1 + " " + c2 + "\n")
+                pass
         finally:
             f.close()
 
 
     #throws ioerror
     def __scanFileContents(self, filepath):
-        """ Return data in specified file in a list of a list [[col1, col2]]"""
-        data = [] #list of list: eg [['python','x86']]
+        """ Return data in specified file in a list """
+        data = []
         try:
             f = open(filepath, 'r')
-            contents = f.readlines()
+            data = f.readlines()
         finally:
             f.close()
-    
-        for i in contents:
-            if i.startswith('#'): #don't split if its a comment
-                new = [i, None]
-            else:
-                new = i.split(None, 1)
-            # NoneType's are annoying...lets replace them with an empty string
-            # Occurs when no flags present
-            if len(new) == 1:
-                new.append("")
-            # Blank line
-            if len(new) == 0:
-                new = ["", ""]
-            data.append(new)
         return data
 

@@ -35,6 +35,9 @@ class FileTree(object):
         self.treeContainer.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         self.treeContainer.add_with_viewport(self.fileTree)
 
+        #The last file in the tree selected
+        self.last = None
+
     def __initSettings(self):
         self.fileTree.set_search_column(0)
 
@@ -51,6 +54,29 @@ class FileTree(object):
         name.add_attribute(cbuf, "pixbuf", 1)
 
         name.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+
+        self.fileTree.connect("cursor-changed", self.__clicked)
+
+    def __clicked(self, treev, *args):
+        """ Change the editor to focus on the file selected """
+        selectedkfile = self.getSelectedFile()
+        if not selectedkfile:
+            return
+        if selectedkfile == self.last:
+            return
+        else:
+            self.last = selectedkfile
+            self.gp.loadBuffer(selectedkfile)
+
+    def getSelectedFile(self):
+        model, iter = self.fileTree.get_selection().get_selected()
+        if iter: # None if no row is selected 
+            kfile = model.get_value(iter, 2)
+            return kfile
+        else:
+            return None
+
+
 
 #def expandRows(*args):
 #    """ Expand all columns in the left panel """
