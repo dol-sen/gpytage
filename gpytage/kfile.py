@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 ############################################################################
-#    Copyright (C) 2011 by Kenneth Prugh                                   #
+#    Copyright (C) 2011-2012 by Kenneth Prugh                              #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -25,22 +25,47 @@ L_NAME = 0
 L_FLAGS = 1
 L_REF = 2
 
+T_EDIT = 0
+T_COL = 1
+
 class kfile(object):
     def __init__(self, name, path):
-        self.data = gtk.TextBuffer()
+        self._data = None
 
         self.bEdited = False
         self.name = name
         self.path = path
 
-        self.loadData()
+        #Files which need the 2col layout have package in their names
+        if "package" in name+path: 
+            self.ftype = T_COL 
+        else: 
+            self.ftype = T_EDIT 
 
-    def loadData(self):
+        # Depending on the file type, we will either need to set the data as a
+        # textbuffer for an editor view, or as a 2 col liststore for the other
+        # view
+        #
+        # Move this to getData() domain for a type of lazy loading. 
+        #self.loadData()
+
+    def getData(self):
+        if self._data != None:
+            return self._data
+        else:
+            if (self.ftype == T_EDIT):
+                self._data = gtk.TextBuffer()
+                self.__loadData()
+            else:
+                self._data = gtk.ListStore(str, str, object)
+            return self._data
+
+    def __loadData(self):
         """ Read contents of File into self.data Buffer """
         rawData = self.__scanFileContents(self.path)
         for line in rawData:
-            iter = self.data.get_end_iter()
-            self.data.insert(iter, line)
+            iter = self._data.get_end_iter()
+            self._data.insert(iter, line)
 
     #throws ioerror
     def savedata(self):
@@ -51,7 +76,7 @@ class kfile(object):
         return
         try:
             f = open(self.path, 'w')
-            for row in self.data:
+            for row in self._data:
                 pass
         finally:
             f.close()

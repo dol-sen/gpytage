@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 ############################################################################
-#    Copyright (C) 2008-2011 by Kenneth Prugh                              #
+#    Copyright (C) 2008-2012 by Kenneth Prugh                              #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -55,8 +55,10 @@ class GPytage(object):
         self.window.show_all()
         gtk.main()
 
+    #This will need to probably swap the entire window type and set the
+    #appropriate buffer
     def loadBuffer(self, kfile):
-        self.keditor.setBuffer(kfile.data)
+        self.keditor.setBuffer(kfile.getData())
 
     def quit(self, *args):
         #todo: check for unsaved changes etc.
