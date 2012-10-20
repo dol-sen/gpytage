@@ -21,7 +21,7 @@
 
 import gtk
 
-class UIbar(object):
+class UIBar(object):
     def __init__(self):
         self.uimanager = gtk.UIManager()
         self.accelgroup = self.uimanager.get_accel_group()
