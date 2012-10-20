@@ -25,10 +25,10 @@ L_NAME = 0
 L_FLAGS = 1
 L_REF = 2
 
-T_EDIT = 0
-T_COL = 1
-
 class kfile(object):
+    T_EDIT = 0
+    T_COL = 1
+
     def __init__(self, name, path):
         self._data = None
 
@@ -38,9 +38,9 @@ class kfile(object):
 
         #Files which need the 2col layout have package in their names
         if "package" in name+path: 
-            self.ftype = T_COL 
+            self.ftype = kfile.T_COL 
         else: 
-            self.ftype = T_EDIT 
+            self.ftype = kfile.T_EDIT 
 
         # Depending on the file type, we will either need to set the data as a
         # textbuffer for an editor view, or as a 2 col liststore for the other
@@ -53,7 +53,7 @@ class kfile(object):
         if self._data != None:
             return self._data
         else:
-            if (self.ftype == T_EDIT):
+            if (self.ftype == kfile.T_EDIT):
                 self._data = gtk.TextBuffer()
                 self.__loadData()
             else:
