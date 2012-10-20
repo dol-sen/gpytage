@@ -19,15 +19,18 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-from backend import Backend
-from UIbar import UIbar
-from filetree import FileTree
-from editor import KEditor
+import backend
+import filetree
+import editor
+import UIbar
 import gtk
 
 class GPytage(object):
+    T_EDIT = 0
+    T_COL = 1
+
     def __init__(self, config):
-        self.backend = Backend(config)
+        self.backend = backend.Backend(config)
 
         self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
         self.window.set_title("GPytage")
@@ -40,25 +43,36 @@ class GPytage(object):
         self.window.connect("destroy", self.quit)
         self.window.connect("delete_event", self.quit)
 
-        self.UI = UIbar()
+        self.UI = UIbar.UIBar()
 
-        self.ftree = FileTree(self)
+        self.ftree = filetree.FileTree(self)
 
-        self.keditor = KEditor(self)
+        self.keditor = editor.KEditor(self)
 
-        hbox = gtk.HBox()
+        # Keep track of the active window type for the right side, either the
+        # flat editor or the 2col editor
+        self.activeType = GPytage.T_EDIT
+        self.hbox = gtk.HBox()
 
-        hbox.pack_start(self.ftree.treeContainer, True, True)
-        hbox.pack_start(self.keditor.Container, True, True)
+        self.hbox.pack_start(self.ftree.treeContainer, True, True)
+        self.hbox.pack_start(self.keditor.Container, True, True)
 
-        self.window.add(hbox)
+        self.window.add(self.hbox)
         self.window.show_all()
         gtk.main()
 
     #This will need to probably swap the entire window type and set the
     #appropriate buffer
     def loadBuffer(self, kfile):
-        self.keditor.setBuffer(kfile.getData())
+        # EDIT file type
+        if (kfile.ftype == kfile.T_EDIT):
+            if (self.activeType != GPytage.T_EDIT):
+                #self.hbox.remove(kcoleditor)
+                self.hbox.pack_start(self.keditor.container, True, True)
+            self.keditor.setBuffer(kfile.getData())
+        else:
+            # COL file type
+            pass
 
     def quit(self, *args):
         #todo: check for unsaved changes etc.
