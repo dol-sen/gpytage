@@ -109,3 +109,5 @@ class kfile(object):
             f.close()
         return data
 
+    def setEdited(self, b_edited):
+        self.bEdited = b_edited
