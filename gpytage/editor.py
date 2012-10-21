@@ -52,4 +52,4 @@ class KEditor(object):
             self.editor.get_buffer().disconnect(self.signal_id)
         self.editor.set_buffer(buffer)
         self.editor.set_editable(True)
-        self.editor.get_buffer().connect("changed", self.__changed_cb)
+        self.signal_id = self.editor.get_buffer().connect("changed", self.__changed_cb)
