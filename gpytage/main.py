@@ -55,8 +55,13 @@ class GPytage(object):
         # flat editor or the 2col editor
         self.activeType = GPytage.T_EDIT
         self.hbox = gtk.HBox()
+        self.hbox.set_homogenous = False
 
-        self.hbox.pack_start(self.ftree.treeContainer, True, True)
+        self.hbox.pack_start(self.ftree.treeContainer, False, True)
+        # Size hack for now, perhaps calculate longest file name or similar?
+        # Without this its too small if the above expand is set to False. If its
+        # set to true they are the same width which is silly
+        self.ftree.treeContainer.set_size_request(250, -1)
         self.hbox.pack_start(self.keditor.container, True, True)
 
         self.window.add(self.hbox)
