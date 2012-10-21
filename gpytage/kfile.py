@@ -58,6 +58,7 @@ class kfile(object):
                 self.__loadData()
             else:
                 self._data = gtk.ListStore(str, str, object)
+                self.__loadColData()
             return self._data
 
     def __loadData(self):
@@ -66,6 +67,25 @@ class kfile(object):
         for line in rawData:
             iter = self._data.get_end_iter()
             self._data.insert(iter, line)
+
+    def __loadColData(self):
+        rawData = self.__scanFileContents(self.path)
+        for line in rawData:
+            if (line.startswith("#")):
+                name = line
+                flags = ""
+            else:
+                try:
+                    name = line.split(" ", 1)[0]
+                except:
+                    name = ""
+
+                try:
+                    flags = line.split(" ",1)[1]
+                except:
+                    flags = ""
+            
+            self._data.append([name, flags, self])
 
     #throws ioerror
     def savedata(self):
