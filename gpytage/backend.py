@@ -25,6 +25,10 @@ import os
 from sys import stderr
 
 class Backend(object):
+    B_NAME = 0
+    B_ICON = 1
+    B_KFILE = 2
+
     def __init__(self, config):
         self.config = config
         self.dataModel = gtk.TreeStore(
