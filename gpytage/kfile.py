@@ -76,12 +76,12 @@ class kfile(object):
                 flags = ""
             else:
                 try:
-                    name = line.split(" ", 1)[0]
+                    name = line.split(" ", 1)[0].strip()
                 except:
                     name = ""
 
                 try:
-                    flags = line.split(" ",1)[1]
+                    flags = line.split(" ",1)[1].strip()
                 except:
                     flags = ""
             
