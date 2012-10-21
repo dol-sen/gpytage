@@ -21,10 +21,6 @@
 
 import gtk
 
-L_NAME = 0
-L_FLAGS = 1
-L_REF = 2
-
 class kfile(object):
     T_EDIT = 0
     T_COL = 1
