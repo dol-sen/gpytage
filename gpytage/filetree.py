@@ -95,29 +95,6 @@ class FileTree(object):
 #    leftview.collapse_all()
 #    
 #
-## Allows us to check if the user simply clicked on the same file or on another one
-#__lastSelected = None
-#
-#def __clicked(treeview, *args):
-#    """ Handle TreeView clicks """
-#    global __lastSelected
-#    model, iter = treeview.get_selection().get_selected()
-#    if iter: # None if no row is selected 
-#        target = model.get_value(iter, F_REF)
-#        targetName = target.path
-#    else: 
-#        targetName = __lastSelected
-#    # Has the selection changed
-#    if targetName != __lastSelected:
-#        print("LEFTPANEL: parent change detected")
-#        if isinstance(target, PackageFileObj.PackageFileObj): # A file
-#            print "attempting to change to:", target.path
-#            setListModel(target.data)
-#        elif isinstance(target, FolderObj.FolderObj): # A folder
-#            setListModel(None)
-#    # save current selection as last selected
-#    __lastSelected = targetName
-#
 #def __rightClicked(view, event):
 #    """ Right click menu for file options """
 #    if event.button == 3:
