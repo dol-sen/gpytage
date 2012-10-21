@@ -22,6 +22,7 @@
 import backend
 import filetree
 import editor
+import kcoleditor
 import UIbar
 import gtk
 
@@ -48,6 +49,7 @@ class GPytage(object):
         self.ftree = filetree.FileTree(self)
 
         self.keditor = editor.KEditor(self)
+        self.kcoleditor = kcoleditor.KColEditor(self)
 
         # Keep track of the active window type for the right side, either the
         # flat editor or the 2col editor
@@ -55,7 +57,7 @@ class GPytage(object):
         self.hbox = gtk.HBox()
 
         self.hbox.pack_start(self.ftree.treeContainer, True, True)
-        self.hbox.pack_start(self.keditor.Container, True, True)
+        self.hbox.pack_start(self.keditor.container, True, True)
 
         self.window.add(self.hbox)
         self.window.show_all()
@@ -67,12 +69,20 @@ class GPytage(object):
         # EDIT file type
         if (kfile.ftype == kfile.T_EDIT):
             if (self.activeType != GPytage.T_EDIT):
-                #self.hbox.remove(kcoleditor)
+                self.hbox.remove(self.kcoleditor.container)
                 self.hbox.pack_start(self.keditor.container, True, True)
+                self.window.show_all()
             self.keditor.setBuffer(kfile.getData())
+            self.activeType = GPytage.T_EDIT
         else:
             # COL file type
-            pass
+            if (self.activeType != GPytage.T_COL):
+                self.hbox.remove(self.keditor.container)
+                self.hbox.pack_start(self.kcoleditor.container, True, True)
+                self.window.show_all()
+            self.kcoleditor.setBuffer(kfile.getData())
+            self.activeType = GPytage.T_COL
+
 
     def quit(self, *args):
         #todo: check for unsaved changes etc.
