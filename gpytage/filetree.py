@@ -3,7 +3,7 @@
 # GPytage leftpanel.py module
 #
 ############################################################################
-#    Copyright (C) 2008-2011 by Kenneth Prugh                              #
+#    Copyright (C) 2008-2012 by Kenneth Prugh                              #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
