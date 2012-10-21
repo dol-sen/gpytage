@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 ############################################################################
-#    Copyright (C) 2011 by Kenneth Prugh                                   #
+#    Copyright (C) 2011-2012 by Kenneth Prugh                              #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -39,9 +39,17 @@ class KEditor(object):
         self.container = gtk.ScrolledWindow()
         self.container.add_with_viewport(self.editor)
 
+        self.signal_id = None
+
     def __initMarkupTable(self):
         pass
 
+    def __changed_cb(self, textbuf):
+        self.gp.ftree.setEdited(self.gp.ftree.getSelectedFile())
+
     def setBuffer(self, buffer):
+        if (self.signal_id):
+            self.editor.get_buffer().disconnect(self.signal_id)
         self.editor.set_buffer(buffer)
         self.editor.set_editable(True)
+        self.editor.get_buffer().connect("changed", self.__changed_cb)
