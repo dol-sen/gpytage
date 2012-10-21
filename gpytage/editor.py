@@ -36,8 +36,8 @@ class KEditor(object):
 
         self.__initMarkupTable()
 
-        self.Container = gtk.ScrolledWindow()
-        self.Container.add_with_viewport(self.editor)
+        self.container = gtk.ScrolledWindow()
+        self.container.add_with_viewport(self.editor)
 
     def __initMarkupTable(self):
         pass
