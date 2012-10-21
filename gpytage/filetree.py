@@ -71,12 +71,20 @@ class FileTree(object):
     def getSelectedFile(self):
         model, iter = self.fileTree.get_selection().get_selected()
         if iter: # None if no row is selected 
-            kfile = model.get_value(iter, 2)
+            kfile = model.get_value(iter, self.gp.backend.B_KFILE)
             return kfile
         else:
             return None
 
-
+    #kfile has been edited by one of the editors, we need to reflect this
+    #change in the filetree
+    def setEdited(self, kfile):
+        if (kfile.bEdited):
+            return
+        kfile.bEdited = True
+        model, iter = self.fileTree.get_selection().get_selected()
+        editedName = model.get_value(iter, self.gp.backend.B_NAME) + "*"
+        model.set_value(iter, self.gp.backend.B_NAME, editedName)
 
 #def expandRows(*args):
 #    """ Expand all columns in the left panel """

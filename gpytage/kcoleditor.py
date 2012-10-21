@@ -24,6 +24,7 @@ import gtk
 class KColEditor(object):
     C_NAME = 0
     C_FLAGS = 1
+    C_REF = 2 #the kfile reference
 
     def __init__(self, gp):
         self.gp = gp
@@ -39,6 +40,9 @@ class KColEditor(object):
         self.nameCell.set_property('editable', True)
         self.flagCell = gtk.CellRendererText()
         self.flagCell.set_property('editable', True)
+
+        self.nameCell.connect("edited", self.__edited_cb, self.C_NAME)
+        self.flagCell.connect("edited", self.__edited_cb, self.C_FLAGS)
 
         self.nameCol.pack_start(self.nameCell, True)
         self.nameCol.add_attribute(self.nameCell, 'text', self.C_NAME)
@@ -56,3 +60,11 @@ class KColEditor(object):
         self.view.set_model()
         self.view.set_model(kstore)
         self.nameCol.queue_resize()
+
+    def __edited_cb(self, cell, path, new_text, col):
+        """ Indicate file has been edited """
+        model = self.view.get_model()
+        model[path][col] = new_text
+        kfile = model[path][self.C_REF]
+        # Indicate file status in TreeView
+        self.gp.ftree.setEdited(kfile)
