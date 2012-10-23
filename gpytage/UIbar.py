@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 ############################################################################
-#    Copyright (C) 2011 by Kenneth Prugh                                   #
+#    Copyright (C) 2011-2012 by Kenneth Prugh                              #
 #    ken69267@gmail.com                                                    #
 #                                                                          #
 #    This program is free software; you can redistribute it and#or modify  #
@@ -22,7 +22,8 @@
 import gtk
 
 class UIBar(object):
-    def __init__(self):
+    def __init__(self, gp):
+        self.gp = gp
         self.uimanager = gtk.UIManager()
         self.accelgroup = self.uimanager.get_accel_group()
         self.actiongroup = gtk.ActionGroup('GPytage')
@@ -76,8 +77,7 @@ class UIBar(object):
             ('Revert', gtk.STOCK_REVERT_TO_SAVED, '_Revert', None, 'Revert changes', todo),
             ('Revert All', gtk.STOCK_REVERT_TO_SAVED, 'Re_vert All', None,
                 'Revert all changes', todo),
-            ('Quit', gtk.STOCK_QUIT, '_Quit', None, 'Quit GPytage', todo),
-            
+            ('Quit', gtk.STOCK_QUIT, '_Quit', '<Control>q', 'Quit GPytage', self.gp.quit),
             ('Edit', None, '_Edit'),
             ('Add Package', gtk.STOCK_ADD, '_Add Package', '<Control>e', 'Add a package', todo),
             ('Remove Package', gtk.STOCK_REMOVE, '_Remove Package',
@@ -115,4 +115,4 @@ class UIBar(object):
         return self.toolbar
 
 def todo(*args):
-    pass
+    print "todo called"
