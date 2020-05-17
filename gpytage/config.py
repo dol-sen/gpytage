@@ -45,7 +45,7 @@ class Config(object):
                 'package.properties', 'package.unmask', 'package.use', 'repos.conf', \
                 'profile', 'sets']
 
-        print("Config: portage version = " + portage.VERSION)
+        print(("Config: portage version = " + portage.VERSION))
 
     def setPixPath(self, path):
         self.pixpath = path

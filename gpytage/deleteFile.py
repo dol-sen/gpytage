@@ -30,8 +30,8 @@ from os import remove
 from PackageFileObj import PackageFileObj
 from FolderObj import FolderObj
 from datastore import reinitializeDatabase 
-from errorDialog import errorDialog
-from fileOperations import ensureNotModified 
+from .errorDialog import errorDialog
+from .fileOperations import ensureNotModified 
 
 msg = "A file cannot be deleted with unsaved changes. Please save your changes."
 
@@ -53,7 +53,7 @@ def deleteFile(*args):
                 dialog.set_title("File removal...")
                 response = dialog.run()
                 if response == gtk.RESPONSE_YES:
-                    print "Test delete file: " + file.path
+                    print("Test delete file: " + file.path)
                     __removeFile(file.path)
                     dialog.destroy()
                     reinitializeDatabase()
@@ -70,7 +70,7 @@ def deleteFile(*args):
                 dialog.set_title("Directory removal...")
                 response = dialog.run()
                 if response == gtk.RESPONSE_YES:
-                    print "Test delete dir: " + folder.path
+                    print("Test delete dir: " + folder.path)
                     __removeDirectory(folder.path)
                     dialog.destroy()
                     reinitializeDatabase()
@@ -78,23 +78,23 @@ def deleteFile(*args):
                         __reselectAfterDelete(folder.parent.path)
                 else:
                     dialog.destroy()
-        except TypeError,e:
-            print >>stderr, "deleteFile: ",e
+        except TypeError as e:
+            print("deleteFile: ",e, file=stderr)
 
 
 def __removeFile(path):
     try:
         remove(path)
-    except OSError,e:
-        print >>stderr,e
+    except OSError as e:
+        print(e, file=stderr)
         d = errorDialog("Error Deleting File...", str(e))
         d.spawn()
 
 def __removeDirectory(path):
     try:
         rmtree(path)
-    except OSError, e:
-        print >>stderr, e
+    except OSError as e:
+        print(e, file=stderr)
         d = errorDialog("Error Deleting Directory...", str(e))
         d.spawn()
 

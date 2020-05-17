@@ -24,10 +24,10 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 
-from helper import getMultiSelection, getCurrentFile
+from .helper import getMultiSelection, getCurrentFile
 from PackageFileObj import L_NAME, L_FLAGS, L_REF
-from fileOperations import fileEdited
-from window import clipboard
+from .fileOperations import fileEdited
+from .window import clipboard
 from sys import stderr
 
 rightview = gtk.TreeView()
@@ -45,7 +45,7 @@ def setListModel(ListStore): #we need to switch the model on click
         del cFormatter
         namecol.queue_resize()
     except: 
-        print >>stderr, 'RIGHTPANEL: setListModel(); failed'
+        print('RIGHTPANEL: setListModel(); failed', file=stderr)
 
 class __splitComments():
     """ Used to properly format long comment strings inside portage config

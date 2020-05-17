@@ -21,10 +21,10 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-from window import setTitleEdited
+from .window import setTitleEdited
 from PackageFileObj import L_NAME
 from sys import stderr
-from errorDialog import errorDialog
+from .errorDialog import errorDialog
 
 # List of files that have been edited and need saving or reverting
 modifiedFiles = []
@@ -61,7 +61,7 @@ def saveModifiedFiles(*args):
 def saveModifiedFile(*args):
     """ Saves the file currently selected """
     # Discover file currently selected
-    from helper import getCurrentFile
+    from .helper import getCurrentFile
     file, model = getCurrentFile()
     # save it
     if file in modifiedFiles:
@@ -70,7 +70,7 @@ def saveModifiedFile(*args):
 def __saveFile(file):
     """ Private method to write file to desk """
     # Save the file
-    print "Attempting to save " + file.path
+    print("Attempting to save " + file.path)
     try:
         f=open(file.path, 'w')
         datalist = file.data
@@ -89,8 +89,8 @@ def __saveFile(file):
                 f.write(c1 + " " + c2 + "\n")
         f.close()
         __fileSaved(file)
-    except IOError, e:
-        print >>stderr, "Error saving: ", e
+    except IOError as e:
+        print("Error saving: ", e, file=stderr)
         d = errorDialog("Error Saving...", str(e))
         d.spawn()
 
@@ -117,23 +117,23 @@ def hasModified():
 def revertSelected(*args):
     """ Reverts the currently selected file """
     # Discover file currently selected
-    from helper import getCurrentFile
+    from .helper import getCurrentFile
     file, model = getCurrentFile()
     if file in modifiedFiles:
         file.initData()
         __fileSaved(file) # Well, it is unedited...
-        from rightpanel import setListModel
+        from .rightpanel import setListModel
         setListModel(file.data)
 
 def revertAllModified(*args):
     """ Reverts all files that have been modified """
-    from helper import getCurrentFile
+    from .helper import getCurrentFile
     cfile, model = getCurrentFile()
     for file in modifiedFiles[:]:
         file.initData()
         __fileSaved(file)
         if file == cfile:
-            from rightpanel import setListModel
+            from .rightpanel import setListModel
             setListModel(file.data)
 
 def ensureNotModified(msg):

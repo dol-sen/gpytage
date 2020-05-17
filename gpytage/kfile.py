@@ -87,7 +87,7 @@ class kfile(object):
     def savedata(self):
         """ Private method to write file to desk """
         # Save the file
-        print "Attempting to save " + self.path
+        print("Attempting to save " + self.path)
         #sync buffer to disk
         return
         try:

@@ -29,21 +29,21 @@ from getopt import getopt, GetoptError
 
 def usage():
     tabs = "\t\t"
-    print "Usage: gpytage [OPTION...]\n"
-    print "  -h, --help" + tabs + "Show this help message"
-    print "  -l, --local" + tabs + \
-          "Run a local version (use modules in current directory)"
-    print "  -v, --version" + tabs + "Output version information and exit"
-    print "  -t, --test" + tabs + \
-          "Specify a portage test configuration's location"
+    print("Usage: gpytage [OPTION...]\n")
+    print("  -h, --help" + tabs + "Show this help message")
+    print("  -l, --local" + tabs + \
+          "Run a local version (use modules in current directory)")
+    print("  -v, --version" + tabs + "Output version information and exit")
+    print("  -t, --test" + tabs + \
+          "Specify a portage test configuration's location")
 
 
 if __name__ == "__main__":
     try:
         opts, args = getopt(sys.argv[1:], 'lvht:', ["local", "version", 
                         "help", "test="])
-    except GetoptError, e:
-        print >> sys.stderr, e.msg
+    except GetoptError as e:
+        print(e.msg, file=sys.stderr)
         usage()
         sys.exit(1)
 
@@ -59,12 +59,12 @@ if __name__ == "__main__":
             # running a local version (i.e. not installed in /usr/*)
             DATA_PATH = (os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-            print "DATA_PATH =", DATA_PATH
+            print("DATA_PATH =", DATA_PATH)
             sys.path.insert(0, DATA_PATH)
 
             RUN_LOCAL = True
 
-            print "GPytage: starting local gpytage()"
+            print("GPytage: starting local gpytage()")
 
     for opt, arg in opts: 
         if opt in ("-t", "--test"):
@@ -76,7 +76,7 @@ if __name__ == "__main__":
         if opt in ("-v", "--version"):
             # print version info
             from gpytage.config import VERSION
-            print "GPytage " + VERSION
+            print("GPytage " + VERSION)
             sys.exit(0)
     
     from gpytage.main import GPytage
@@ -86,5 +86,5 @@ if __name__ == "__main__":
         c.setPixPath(DATA_PATH + "/share/pixmaps/gpytage/")
     if (TEST):
         c.portconf = TEST_PATH
-        print "PORTCONF: " + c.portconf
+        print("PORTCONF: " + c.portconf)
     launch = GPytage(c)

@@ -24,14 +24,14 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 
-from config import get_config_path
+from .config import get_config_path
 from datastore import reinitializeDatabase 
 from PackageFileObj import PackageFileObj
 from FolderObj import FolderObj
 from sys import stderr
 from os import rename
-from errorDialog import errorDialog
-from fileOperations import ensureNotModified 
+from .errorDialog import errorDialog
+from .fileOperations import ensureNotModified 
 
 msg = "A file cannot be renamed with unsaved changes. Please save your changes."
 
@@ -53,8 +53,8 @@ def renameFile(*args):
             setFolder = object.parent.path
         if ensureNotModified(msg):
             __createRenameDialog(object, type, setFolder)
-    except TypeError,e:
-        print >>stderr, "__renameFile:",e
+    except TypeError as e:
+        print("__renameFile:",e, file=stderr)
 
 def __createRenameDialog(object, type, setFolder):
     """ Spawms the Rename Dialog where a user can choose what the file should
@@ -72,16 +72,16 @@ def __createRenameDialog(object, type, setFolder):
             reinitializeDatabase()
             __reselectAfterRename(fc.get_filename(), type)
         else:
-            print >>stderr, "Invalid rename request"
+            print("Invalid rename request", file=stderr)
     fc.destroy()
             
 def __writeRenamedFile(oldFile, newFile):
     """ Performs the actual renaming of the file """
     try:
         rename(oldFile, newFile)
-        print oldFile + " renamed to " + newFile
-    except OSError,e:
-        print >>stderr, "Rename: ",e
+        print(oldFile + " renamed to " + newFile)
+    except OSError as e:
+        print("Rename: ",e, file=stderr)
         d = errorDialog("Error Renaming...", str(e))
         d.spawn()
 

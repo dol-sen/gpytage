@@ -20,7 +20,7 @@
 ############################################################################
 
 import gtk
-from kfile import kfile
+from .kfile import kfile
 import os
 from sys import stderr
 
@@ -68,8 +68,8 @@ class Backend(object):
             for f in files:
                 try:
                     data = self.__getDataForModel(f, rootDir, False)
-                except IOError, e:
-                    print >> stderr, e
+                except IOError as e:
+                    print(e, file=stderr)
                     continue
                 if (root):
                     self.dataModel.append(None, data)
