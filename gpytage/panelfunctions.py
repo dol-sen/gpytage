@@ -22,8 +22,10 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import pygtk; pygtk.require("2.0")
-import gtk
+import gi
+gi.require_version("Gtk", "3.0") # make sure we have the right version
+from gi.repository import Gtk
+
 import datastore
 from datastore import E_NAME, E_DATA, E_EDITABLE, E_PARENT, E_MODIFIED
 
@@ -39,7 +41,7 @@ def get_dragdestdata(treeview, context, x, y, selection, info, etime):
             path, position = drop_info
             iteri = model.get_iter(path)
             if model.get_value(iteri, E_PARENT):
-                if (position == gtk.TREE_VIEW_DROP_BEFORE or position == gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
+                if (position == Gtk.TREE_VIEW_DROP_BEFORE or position == Gtk.TREE_VIEW_DROP_INTO_OR_BEFORE):
                     for row in ldata:
                         model.insert_before(iteri, row[:-1]) #0:4])
                 else:
@@ -47,7 +49,7 @@ def get_dragdestdata(treeview, context, x, y, selection, info, etime):
                         model.insert_after(iteri, row[:-1]) #0:4])
             else:
                 return
-            
+
         else:
             for row in ldata:
                 model.append(row[:-1]) # 0:4])
@@ -110,7 +112,7 @@ def drag_begin_signal(treeview, dragcontext, *args):
         cdata.append(model.get_value(iter, E_EDITABLE))
         cdata.append(model.get_value(iter, E_PARENT))
         cdata.append(model.get_value(iter,E_MODIFIED))
-        cdata.append(gtk.TreeRowReference(model, path))
+        cdata.append(Gtk.TreeRowReference(model, path))
         data.append(cdata)
     print("MASTER DATA CONTAINER:")
     print(data)
@@ -118,7 +120,7 @@ def drag_begin_signal(treeview, dragcontext, *args):
 def drag_data_delete_signal(*args):
     """ Delete begin signals data """
     print("drag data delete signal")
-    
+
 
 def cselected(treeview, x, y):
     """ Return iter:value from current coordinates """

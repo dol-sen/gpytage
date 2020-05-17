@@ -19,14 +19,15 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import gtk
+import gi
+from gi.repository import Gtk
 
 class UIBar(object):
     def __init__(self, gp):
         self.gp = gp
-        self.uimanager = gtk.UIManager()
+        self.uimanager = Gtk.UIManager()
         self.accelgroup = self.uimanager.get_accel_group()
-        self.actiongroup = gtk.ActionGroup('GPytage')
+        self.actiongroup = Gtk.ActionGroup('GPytage')
         self.ui = '''
         <ui>
             <menubar name="MenuBar">
@@ -70,34 +71,34 @@ class UIBar(object):
         #This controls the MenuBar and the ToolBar
         self.actiongroup.add_actions([
             ('File', None, '_File'),
-            ('New', gtk.STOCK_NEW, '_New File', '<Control>n', 'New file', todo),
-            ('Save', gtk.STOCK_SAVE, '_Save', '<Control>s', 'Save changes',
+            ('New', Gtk.STOCK_NEW, '_New File', '<Control>n', 'New file', todo),
+            ('Save', Gtk.STOCK_SAVE, '_Save', '<Control>s', 'Save changes',
                 todo),
-            ('Save All', gtk.STOCK_SAVE_AS, 'Save _All', None, 'Save all changes', todo),
-            ('Revert', gtk.STOCK_REVERT_TO_SAVED, '_Revert', None, 'Revert changes', todo),
-            ('Revert All', gtk.STOCK_REVERT_TO_SAVED, 'Re_vert All', None,
+            ('Save All', Gtk.STOCK_SAVE_AS, 'Save _All', None, 'Save all changes', todo),
+            ('Revert', Gtk.STOCK_REVERT_TO_SAVED, '_Revert', None, 'Revert changes', todo),
+            ('Revert All', Gtk.STOCK_REVERT_TO_SAVED, 'Re_vert All', None,
                 'Revert all changes', todo),
-            ('Quit', gtk.STOCK_QUIT, '_Quit', '<Control>q', 'Quit GPytage', self.gp.quit),
+            ('Quit', Gtk.STOCK_QUIT, '_Quit', '<Control>q', 'Quit GPytage', self.gp.quit),
             ('Edit', None, '_Edit'),
-            ('Add Package', gtk.STOCK_ADD, '_Add Package', '<Control>e', 'Add a package', todo),
-            ('Remove Package', gtk.STOCK_REMOVE, '_Remove Package',
+            ('Add Package', Gtk.STOCK_ADD, '_Add Package', '<Control>e', 'Add a package', todo),
+            ('Remove Package', Gtk.STOCK_REMOVE, '_Remove Package',
                 '<Control>d', "Remove a package", todo),
-            ('Delete File/Folder', gtk.STOCK_DELETE, '_Delete File/Folder',
+            ('Delete File/Folder', Gtk.STOCK_DELETE, '_Delete File/Folder',
                 None, 'Delete currently selected file or folder', todo),
-            ('Rename', gtk.STOCK_SAVE_AS, '_Rename', None, 'Rename file', todo),
-            ('Comment', gtk.STOCK_INDENT, '_Comment', None, "Comment a package",
+            ('Rename', Gtk.STOCK_SAVE_AS, '_Rename', None, 'Rename file', todo),
+            ('Comment', Gtk.STOCK_INDENT, '_Comment', None, "Comment a package",
                 todo),
-            ('Uncomment', gtk.STOCK_UNINDENT, '_Uncomment', None, "Uncomment a package", todo),
-            ('Toggle Comment', gtk.STOCK_CONVERT, '_Toggle Comment',
+            ('Uncomment', Gtk.STOCK_UNINDENT, '_Uncomment', None, "Uncomment a package", todo),
+            ('Toggle Comment', Gtk.STOCK_CONVERT, '_Toggle Comment',
                 '<Control><Shift>c', "Toggle comment packages", todo),
 
             ('View', None, '_View'),
             ('Expand All', None, '_Expand All', '<Control>slash', 'Expand Rows',
                 todo),
             ('Collapse All', None, '_Collapse All', '<Control>backslash',
-                'Collapse Rows', todo), 
+                'Collapse Rows', todo),
             ('Help',None,'_Help'),
-            ('About', gtk.STOCK_ABOUT, '_About', None, 'About GPytage', todo)
+            ('About', Gtk.STOCK_ABOUT, '_About', None, 'About GPytage', todo)
         ])
 
         #Add the UI XML

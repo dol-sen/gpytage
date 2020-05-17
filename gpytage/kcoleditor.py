@@ -19,7 +19,8 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import gtk
+import gi
+from gi.repository import Gtk
 
 class KColEditor(object):
     C_NAME = 0
@@ -29,16 +30,16 @@ class KColEditor(object):
     def __init__(self, gp):
         self.gp = gp
 
-        self.view = gtk.TreeView()
-        self.nameCol = gtk.TreeViewColumn('Package')
-        self.flagCol = gtk.TreeViewColumn('Flags')
+        self.view = Gtk.TreeView()
+        self.nameCol = Gtk.TreeViewColumn('Package')
+        self.flagCol = Gtk.TreeViewColumn('Flags')
 
         self.view.append_column(self.nameCol)
         self.view.append_column(self.flagCol)
 
-        self.nameCell = gtk.CellRendererText()
+        self.nameCell = Gtk.CellRendererText()
         self.nameCell.set_property('editable', True)
-        self.flagCell = gtk.CellRendererText()
+        self.flagCell = Gtk.CellRendererText()
         self.flagCell.set_property('editable', True)
 
         self.nameCell.connect("edited", self.__edited_cb, self.C_NAME)
@@ -46,14 +47,14 @@ class KColEditor(object):
 
         self.nameCol.pack_start(self.nameCell, True)
         self.nameCol.add_attribute(self.nameCell, 'text', self.C_NAME)
-        self.nameCol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+        self.nameCol.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
         self.flagCol.pack_start(self.flagCell, True)
         self.flagCol.add_attribute(self.flagCell, 'text', self.C_FLAGS)
         self.flagCol.set_expand(True)
-        self.flagCol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+        self.flagCol.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
-        self.container = gtk.ScrolledWindow()
+        self.container = Gtk.ScrolledWindow()
         self.container.add_with_viewport(self.view)
 
     def setBuffer(self, kstore):

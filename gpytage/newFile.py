@@ -21,16 +21,17 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import pygtk; pygtk.require("2.0")
-import gtk
+import gi
+gi.require_version("Gtk", "3.0") # make sure we have the right version
+from gi.repository import Gtk
 
 from .config import get_config_path
-from datastore import reinitializeDatabase 
+from datastore import reinitializeDatabase
 from PackageFileObj import PackageFileObj
 from FolderObj import FolderObj
 from sys import stderr
 from .errorDialog import errorDialog
-from .fileOperations import ensureNotModified 
+from .fileOperations import ensureNotModified
 
 msg = "A new file cannot be created with unsaved changes. Please save your changes."
 
@@ -56,10 +57,10 @@ def __saveToDisk(nFile):
         d.spawn()
 
 def __getNewFileChoice():
-    dialog = gtk.FileChooserDialog("New file...", None,
-            gtk.FILE_CHOOSER_ACTION_SAVE, (gtk.STOCK_CANCEL,
-                gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
-    filter = gtk.FileFilter()
+    dialog = Gtk.FileChooserDialog("New file...", None,
+            Gtk.FILE_CHOOSER_ACTION_SAVE, (Gtk.STOCK_CANCEL,
+                Gtk.RESPONSE_CANCEL, Gtk.STOCK_OPEN, Gtk.RESPONSE_OK))
+    filter = Gtk.FileFilter()
     filter.set_name("All files")
     filter.add_pattern("*")
     dialog.add_filter(filter)
@@ -72,7 +73,7 @@ def __getNewFileChoice():
         object = model.get_value(iter, F_REF)
         if isinstance(object, PackageFileObj): # A file
             folder = object.parent
-        elif isinstance(object, FolderObj): # A folder 
+        elif isinstance(object, FolderObj): # A folder
             folder = object
         if folder == None:
             folderPath = get_config_path()
@@ -85,12 +86,12 @@ def __getNewFileChoice():
 
     dialog.set_current_folder(folderPath)
     ## end logic
-    
+
     dialog.set_do_overwrite_confirmation(True)
 
     response = dialog.run()
     name = None
-    if response == gtk.RESPONSE_OK:
+    if response == Gtk.RESPONSE_OK:
         name = dialog.get_filename()
     dialog.destroy()
     return name

@@ -21,17 +21,18 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import pygtk; pygtk.require("2.0")
-import gtk
+import gi
+gi.require_version("Gtk", "3.0") # make sure we have the right version
+from gi.repository import Gtk
 
 from sys import stderr
 from shutil import rmtree
 from os import remove
 from PackageFileObj import PackageFileObj
 from FolderObj import FolderObj
-from datastore import reinitializeDatabase 
+from datastore import reinitializeDatabase
 from .errorDialog import errorDialog
-from .fileOperations import ensureNotModified 
+from .fileOperations import ensureNotModified
 
 msg = "A file cannot be deleted with unsaved changes. Please save your changes."
 
@@ -47,12 +48,12 @@ def deleteFile(*args):
             object = model.get_value(iter, F_REF)
             if isinstance(object, PackageFileObj): # A file
                 file = object
-                dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_WARNING, gtk.BUTTONS_YES_NO,\
+                dialog = Gtk.MessageDialog(None, Gtk.DIALOG_MODAL, Gtk.MESSAGE_WARNING, Gtk.BUTTONS_YES_NO,\
                         "This operation is irreversible, are you sure you want to delete " + str(file) + "?")
-                dialog.set_default_response(gtk.RESPONSE_NO)
+                dialog.set_default_response(Gtk.RESPONSE_NO)
                 dialog.set_title("File removal...")
                 response = dialog.run()
-                if response == gtk.RESPONSE_YES:
+                if response == Gtk.RESPONSE_YES:
                     print("Test delete file: " + file.path)
                     __removeFile(file.path)
                     dialog.destroy()
@@ -61,15 +62,15 @@ def deleteFile(*args):
                         __reselectAfterDelete(file.parent.path)
                 else:
                     dialog.destroy()
-            elif isinstance(object, FolderObj): # A folder 
+            elif isinstance(object, FolderObj): # A folder
                 folder = object
-                dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_WARNING, gtk.BUTTONS_YES_NO,\
+                dialog = Gtk.MessageDialog(None, Gtk.DIALOG_MODAL, Gtk.MESSAGE_WARNING, Gtk.BUTTONS_YES_NO,\
                         "This operation is irreversible, are you sure you want to delete directory " + \
                                 str(folder) + " and its contents?")
-                dialog.set_default_response(gtk.RESPONSE_NO)
+                dialog.set_default_response(Gtk.RESPONSE_NO)
                 dialog.set_title("Directory removal...")
                 response = dialog.run()
-                if response == gtk.RESPONSE_YES:
+                if response == Gtk.RESPONSE_YES:
                     print("Test delete dir: " + folder.path)
                     __removeDirectory(folder.path)
                     dialog.destroy()

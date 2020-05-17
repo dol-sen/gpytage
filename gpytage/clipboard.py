@@ -21,15 +21,16 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import pygtk; pygtk.require("2.0")
-import gtk
+import gi
+gi.require_version("Gtk", "3.0") # make sure we have the right version
+from gi.repository import Gtk
 
 from .helper import getMultiSelection, getCurrentFile
 from PackageFileObj import L_NAME, L_FLAGS, L_REF
 
 class clipboard():
     def __init__(self):
-        self.clipboard = gtk.Clipboard() 
+        self.clipboard = Gtk.Clipboard()
 
     def copyToClipboard(self, rightview):
         """ Copies selected rows into the clipboard """
@@ -68,7 +69,7 @@ class clipboard():
         try:
             # A row has been selected and we should paste below it
             lastRowSelectedPath = rowReferences[-1].get_path()
-            
+
             lastRowIter = model.get_iter(lastRowSelectedPath)
             # We need to link this new row with its PackageFile Object
             PackageFile = model.get_value(lastRowIter, L_REF)

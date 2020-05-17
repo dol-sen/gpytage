@@ -19,7 +19,8 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import gtk
+import gi
+from gi.repository import Gtk
 
 class kfile(object):
     T_EDIT = 0
@@ -33,16 +34,16 @@ class kfile(object):
         self.path = path
 
         #Files which need the 2col layout have package in their names
-        if "package" in name+path: 
-            self.ftype = kfile.T_COL 
-        else: 
-            self.ftype = kfile.T_EDIT 
+        if "package" in name+path:
+            self.ftype = kfile.T_COL
+        else:
+            self.ftype = kfile.T_EDIT
 
         # Depending on the file type, we will either need to set the data as a
         # textbuffer for an editor view, or as a 2 col liststore for the other
         # view
         #
-        # Move this to getData() domain for a type of lazy loading. 
+        # Move this to getData() domain for a type of lazy loading.
         #self.loadData()
 
     def getData(self):
@@ -50,10 +51,10 @@ class kfile(object):
             return self._data
         else:
             if (self.ftype == kfile.T_EDIT):
-                self._data = gtk.TextBuffer()
+                self._data = Gtk.TextBuffer()
                 self.__loadData()
             else:
-                self._data = gtk.ListStore(str, str, object)
+                self._data = Gtk.ListStore(str, str, object)
                 self.__loadColData()
             return self._data
 
@@ -80,7 +81,7 @@ class kfile(object):
                     flags = line.split(" ",1)[1].strip()
                 except:
                     flags = ""
-            
+
             self._data.append([name, flags, self])
 
     #throws ioerror

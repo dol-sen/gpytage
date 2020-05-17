@@ -21,18 +21,19 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import gtk
+import gi
+from gi.repository import Gtk
 
 class FileTree(object):
     def __init__(self, gp):
         self.gp = gp
 
-        self.treeContainer = gtk.ScrolledWindow()
-        self.fileTree = gtk.TreeView(gp.backend.dataModel)
+        self.treeContainer = Gtk.ScrolledWindow()
+        self.fileTree = Gtk.TreeView(gp.backend.dataModel)
 
         self.__initSettings()
 
-        self.treeContainer.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.treeContainer.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.treeContainer.add_with_viewport(self.fileTree)
 
         #The last file in the tree selected
@@ -41,11 +42,11 @@ class FileTree(object):
     def __initSettings(self):
         self.fileTree.set_search_column(0)
 
-        name = gtk.TreeViewColumn("Package File")
+        name = Gtk.TreeViewColumn("Package File")
         self.fileTree.append_column(name)
 
-        cname = gtk.CellRendererText()
-        cbuf = gtk.CellRendererPixbuf()
+        cname = Gtk.CellRendererText()
+        cbuf = Gtk.CellRendererPixbuf()
 
         name.pack_start(cbuf, False)
         name.pack_start(cname, True)
@@ -53,7 +54,7 @@ class FileTree(object):
         name.add_attribute(cname, "markup", 0)
         name.add_attribute(cbuf, "pixbuf", 1)
 
-        name.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+        name.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
         self.fileTree.connect("cursor-changed", self.__clicked)
 
@@ -70,7 +71,7 @@ class FileTree(object):
 
     def getSelectedFile(self):
         model, iter = self.fileTree.get_selection().get_selected()
-        if iter: # None if no row is selected 
+        if iter: # None if no row is selected
             kfile = model.get_value(iter, self.gp.backend.B_KFILE)
             return kfile
         else:
@@ -89,23 +90,23 @@ class FileTree(object):
 #def expandRows(*args):
 #    """ Expand all columns in the left panel """
 #    leftview.expand_all()
-#    
+#
 #def collapseRows(*args):
 #    """ Collapse all columns in the left panel """
 #    leftview.collapse_all()
-#    
+#
 #
 #def __rightClicked(view, event):
 #    """ Right click menu for file options """
 #    if event.button == 3:
-#        menu = gtk.Menu()
-#        new = gtk.MenuItem("New File")
+#        menu = Gtk.Menu()
+#        new = Gtk.MenuItem("New File")
 #        new.connect("activate", newFile)
 #        menu.append(new)
-#        rename = gtk.MenuItem("Rename File")
+#        rename = Gtk.MenuItem("Rename File")
 #        rename.connect("activate", renameFile)
 #        menu.append(rename)
-#        delete = gtk.MenuItem("Delete File")
+#        delete = Gtk.MenuItem("Delete File")
 #        delete.connect("activate", deleteFile)
 #        menu.append(delete)
 #        menu.show_all()

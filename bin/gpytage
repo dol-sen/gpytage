@@ -22,7 +22,8 @@
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.              #
 ############################################################################
 
-import pygtk; pygtk.require("2.0")
+import gi
+gi.require_version("Gtk", "3.0") # make sure we have the right version
 import os.path
 import sys
 from getopt import getopt, GetoptError
@@ -40,7 +41,7 @@ def usage():
 
 if __name__ == "__main__":
     try:
-        opts, args = getopt(sys.argv[1:], 'lvht:', ["local", "version", 
+        opts, args = getopt(sys.argv[1:], 'lvht:', ["local", "version",
                         "help", "test="])
     except GetoptError as e:
         print(e.msg, file=sys.stderr)
@@ -66,11 +67,11 @@ if __name__ == "__main__":
 
             print("GPytage: starting local gpytage()")
 
-    for opt, arg in opts: 
+    for opt, arg in opts:
         if opt in ("-t", "--test"):
             TEST = True
             TEST_PATH = arg
-    
+
     for opt, arg in opts:
         #print "opt, arg ", opt, arg, type(arg)
         if opt in ("-v", "--version"):
@@ -78,7 +79,7 @@ if __name__ == "__main__":
             from gpytage.config import VERSION
             print("GPytage " + VERSION)
             sys.exit(0)
-    
+
     from gpytage.main import GPytage
     from gpytage.config import Config
     c = Config()

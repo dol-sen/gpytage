@@ -19,12 +19,17 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
+import gi
+gi.require_version("Gtk", "3.0") # make sure we have the right version
+gi.require_version('GdkPixbuf', '2.0')
+from gi.repository import GdkPixbuf
+from gi.repository import Gtk
+
 from . import backend
 from . import filetree
 from . import editor
 from . import kcoleditor
 from . import UIbar
-import gtk
 
 class GPytage(object):
     T_EDIT = 0
@@ -33,13 +38,12 @@ class GPytage(object):
     def __init__(self, config):
         self.backend = backend.Backend(config)
 
-        self.window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+        self.window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
         self.window.set_title("GPytage")
-        # The *[] syntax is required for this function. It wants a Glist.
-        gtk.window_set_default_icon_list(
-                *[gtk.gdk.pixbuf_new_from_file(f) for f in
-                    self.backend.config.iconlist]
-                )
+        self.window.set_default_icon_list(
+                [GdkPixbuf.Pixbuf.new_from_file(f) for f in
+                 self.backend.config.iconlist]
+        )
         self.window.set_default_size(800, 500)
         self.window.connect("destroy", self.quit)
         self.window.connect("delete_event", self.quit)
@@ -56,24 +60,24 @@ class GPytage(object):
         # flat editor or the 2col editor
         self.activeType = GPytage.T_EDIT
 
-        self.vbox = gtk.VBox()
+        self.vbox = Gtk.VBox()
 
-        self.hbox = gtk.HBox()
+        self.hbox = Gtk.HBox()
         self.hbox.set_homogenous = False
 
-        self.hbox.pack_start(self.ftree.treeContainer, False, True)
+        self.hbox.pack_start(self.ftree.treeContainer, False, True, 5)
         # Size hack for now, perhaps calculate longest file name or similar?
         # Without this its too small if the above expand is set to False. If its
         # set to true they are the same width which is silly
         self.ftree.treeContainer.set_size_request(250, -1)
-        self.hbox.pack_start(self.keditor.container, True, True)
+        self.hbox.pack_start(self.keditor.container, True, True, 5)
 
-        
-        self.vbox.pack_start(self.UI.getMenuBar(), False, True)
+
+        self.vbox.pack_start(self.UI.getMenuBar(), False, True, 5)
         self.vbox.add(self.hbox)
         self.window.add(self.vbox)
         self.window.show_all()
-        gtk.main()
+        Gtk.main()
 
     #This will need to probably swap the entire window type and set the
     #appropriate buffer
@@ -82,7 +86,7 @@ class GPytage(object):
         if (kfile.ftype == kfile.T_EDIT):
             if (self.activeType != GPytage.T_EDIT):
                 self.hbox.remove(self.kcoleditor.container)
-                self.hbox.pack_start(self.keditor.container, True, True)
+                self.hbox.pack_start(self.keditor.container, True, True, 5)
                 self.window.show_all()
             self.keditor.setBuffer(kfile.getData())
             self.activeType = GPytage.T_EDIT
@@ -90,7 +94,7 @@ class GPytage(object):
             # COL file type
             if (self.activeType != GPytage.T_COL):
                 self.hbox.remove(self.keditor.container)
-                self.hbox.pack_start(self.kcoleditor.container, True, True)
+                self.hbox.pack_start(self.kcoleditor.container, True, True, 5)
                 self.window.show_all()
             self.kcoleditor.setBuffer(kfile.getData())
             self.activeType = GPytage.T_COL
@@ -98,4 +102,4 @@ class GPytage(object):
 
     def quit(self, *args):
         #todo: check for unsaved changes etc.
-        gtk.main_quit()
+        Gtk.main_quit()

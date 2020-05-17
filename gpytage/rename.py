@@ -21,17 +21,18 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import pygtk; pygtk.require("2.0")
-import gtk
+import gi
+gi.require_version("Gtk", "3.0") # make sure we have the right version
+from gi.repository import Gtk
 
 from .config import get_config_path
-from datastore import reinitializeDatabase 
+from datastore import reinitializeDatabase
 from PackageFileObj import PackageFileObj
 from FolderObj import FolderObj
 from sys import stderr
 from os import rename
 from .errorDialog import errorDialog
-from .fileOperations import ensureNotModified 
+from .fileOperations import ensureNotModified
 
 msg = "A file cannot be renamed with unsaved changes. Please save your changes."
 
@@ -48,7 +49,7 @@ def renameFile(*args):
                 setFolder = get_config_path()
             else:
                 setFolder = object.parent.path
-        elif isinstance(object, FolderObj): # A folder 
+        elif isinstance(object, FolderObj): # A folder
             type = "Directory"
             setFolder = object.parent.path
         if ensureNotModified(msg):
@@ -59,14 +60,14 @@ def renameFile(*args):
 def __createRenameDialog(object, type, setFolder):
     """ Spawms the Rename Dialog where a user can choose what the file should
     be renamed to """
-    fc = gtk.FileChooserDialog("Rename file...", None,
-            gtk.FILE_CHOOSER_ACTION_SAVE, (gtk.STOCK_CANCEL,
-                gtk.RESPONSE_CANCEL, gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+    fc = Gtk.FileChooserDialog("Rename file...", None,
+            Gtk.FILE_CHOOSER_ACTION_SAVE, (Gtk.STOCK_CANCEL,
+                Gtk.RESPONSE_CANCEL, Gtk.STOCK_OK, Gtk.RESPONSE_ACCEPT))
     fc.set_do_overwrite_confirmation(True)
     fc.set_filename(object.path) #Set the fc to the object to be renamed
-    fc.set_extra_widget(gtk.Label("Renaming " + object.path))
+    fc.set_extra_widget(Gtk.Label("Renaming " + object.path))
     response = fc.run()
-    if response == gtk.RESPONSE_ACCEPT:
+    if response == Gtk.RESPONSE_ACCEPT:
         if fc.get_filename() != None:
             __writeRenamedFile(object.path, fc.get_filename())
             reinitializeDatabase()
@@ -74,7 +75,7 @@ def __createRenameDialog(object, type, setFolder):
         else:
             print("Invalid rename request", file=stderr)
     fc.destroy()
-            
+
 def __writeRenamedFile(oldFile, newFile):
     """ Performs the actual renaming of the file """
     try:

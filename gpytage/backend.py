@@ -19,7 +19,10 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import gtk
+import gi
+from gi.repository import GdkPixbuf
+from gi.repository import Gtk
+
 from .kfile import kfile
 import os
 from sys import stderr
@@ -31,9 +34,9 @@ class Backend(object):
 
     def __init__(self, config):
         self.config = config
-        self.dataModel = gtk.TreeStore(
+        self.dataModel = Gtk.TreeStore(
                 str,            # 0 entry name
-                gtk.gdk.Pixbuf, # 1 icon via name type [d/f]
+                GdkPixbuf.Pixbuf, # 1 icon via name type [d/f]
                 object,         # 2 kfile reference
                 )
 
@@ -43,7 +46,7 @@ class Backend(object):
         folderRefMap = {}
         for rootDir, folders, files in os.walk(self.config.portconf, topdown=True):
             root = False
-            #rootDir is the current level 
+            #rootDir is the current level
             if (rootDir == self.config.portconf):
                 #sanitize top level descent
                 root = True
@@ -54,7 +57,7 @@ class Backend(object):
                 for f in files[:]:
                     if f not in self.config.portconfFiles:
                         files.remove(f) #ignore unrelated files
-            
+
             for f in folders:
                 data = self.__getDataForModel(f, rootDir, True)
                 path = os.path.join(rootDir, f)
@@ -79,7 +82,7 @@ class Backend(object):
 
     def getTreeRef(self, giter):
         path = self.dataModel.get_path(giter)
-        return gtk.TreeRowReference(self.dataModel, path)
+        return Gtk.TreeRowReference(self.dataModel, path)
 
     def getIterbyRef(self, ref):
         path = ref.get_path()
@@ -89,12 +92,12 @@ class Backend(object):
         name = f
         path = os.path.join(rpath, f)
 
-        theme = gtk.icon_theme_get_default()
+        theme = Gtk.IconTheme.get_default()
         if bFolder:
-            icon = theme.load_icon(gtk.STOCK_DIRECTORY, 16, 0)
+            icon = theme.load_icon(Gtk.STOCK_DIRECTORY, 16, 0)
             kobj = None
         else:
-            icon = theme.load_icon(gtk.STOCK_FILE, 16, 0)
+            icon = theme.load_icon(Gtk.STOCK_FILE, 16, 0)
             kobj = kfile(name, path)
 
         return [name, icon, kobj]

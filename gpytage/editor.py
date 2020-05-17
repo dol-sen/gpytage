@@ -19,24 +19,25 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import gtk
+import gi
+from gi.repository import Gtk
 
 class KEditor(object):
     def __init__(self, gp):
         self.gp = gp
 
-        self.defaultbuf = gtk.TextBuffer()
+        self.defaultbuf = Gtk.TextBuffer()
         self.defaultbuf.set_text("<i>Welcome to GPytage</i>");
 
-        self.editor = gtk.TextView()
+        self.editor = Gtk.TextView()
         self.editor.set_editable(True)
         self.editor.set_buffer(self.defaultbuf)
 
-        self.markupTable = gtk.TextTagTable()
+        self.markupTable = Gtk.TextTagTable()
 
         self.__initMarkupTable()
 
-        self.container = gtk.ScrolledWindow()
+        self.container = Gtk.ScrolledWindow()
         self.container.add_with_viewport(self.editor)
 
         self.signal_id = None

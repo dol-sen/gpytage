@@ -21,8 +21,10 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import pygtk; pygtk.require("2.0")
-import gtk
+import gi
+gi.require_version("Gtk", "3.0") # make sure we have the right version
+from gi.repository import Gdk
+from gi.repository import Gtk
 
 from .helper import getMultiSelection, getCurrentFile
 from PackageFileObj import L_NAME, L_FLAGS, L_REF
@@ -30,11 +32,11 @@ from .fileOperations import fileEdited
 from .window import clipboard
 from sys import stderr
 
-rightview = gtk.TreeView()
+rightview = Gtk.TreeView()
 rightselection = rightview.get_selection()
 
 #set MULTIPLE selection mode
-rightselection.set_mode(gtk.SELECTION_MULTIPLE)
+rightselection.set_mode(Gtk.SELECTION_MULTIPLE)
 
 def setListModel(ListStore): #we need to switch the model on click
     try:
@@ -44,7 +46,7 @@ def setListModel(ListStore): #we need to switch the model on click
         cFormatter.format()
         del cFormatter
         namecol.queue_resize()
-    except: 
+    except:
         print('RIGHTPANEL: setListModel(); failed', file=stderr)
 
 class __splitComments():
@@ -99,17 +101,17 @@ class __splitComments():
 rightview.set_enable_search(False)
 
 # TreeViewColumns
-namecol = gtk.TreeViewColumn('Package')
-useFlagCol = gtk.TreeViewColumn('Flags')
+namecol = Gtk.TreeViewColumn('Package')
+useFlagCol = Gtk.TreeViewColumn('Flags')
 
 # Add TreeViewColumns to TreeView
 rightview.append_column(namecol)
 rightview.append_column(useFlagCol)
 
-class myCellRendererText(gtk.CellRendererText):
+class myCellRendererText(Gtk.CellRendererText):
     """ class to have tab behave when editing """
     def __init__(self, colNum):
-        gtk.CellRendererText.__init__(self)
+        Gtk.CellRendererText.__init__(self)
         self.connect("editing-started", self.editing)
         self.col = colNum
 
@@ -118,7 +120,7 @@ class myCellRendererText(gtk.CellRendererText):
         return False
 
     def key(self, widget, event):
-        if event.keyval == gtk.gdk.keyval_from_name("Tab"): 
+        if event.keyval == Gdk.keyval_from_name("Tab"):
             # Save any current editing changes to the cell
             widget.editing_done()
             # Now it's time to move our edit to the next appropriate cell
@@ -145,23 +147,23 @@ flagCell.set_property('editable', True)
 # Add CellRenderer to TreeViewColumns
 namecol.pack_start(nameCell, True)
 namecol.add_attribute(nameCell, 'text', L_NAME)
-namecol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+namecol.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
 useFlagCol.pack_start(flagCell, True)
 useFlagCol.add_attribute(flagCell, 'text', L_FLAGS)
 useFlagCol.set_expand(True)
-useFlagCol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+useFlagCol.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
 # ScrolledWindow
-scroll = gtk.ScrolledWindow()
-scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+scroll = Gtk.ScrolledWindow()
+scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 scroll.add_with_viewport(rightview)
 
 ###########Drag and Drop####################
 #===============================================================================
 # rightview.set_reorderable(True) # allow inline drag and drop
-# rightview.enable_model_drag_source(gtk.gdk.BUTTON1_MASK, [('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT | gtk.gdk.ACTION_MOVE)
-# rightview.enable_model_drag_dest([('text/plain', 0, 0)], gtk.gdk.ACTION_DEFAULT)
+# rightview.enable_model_drag_source(Gdk.BUTTON1_MASK, [('text/plain', 0, 0)], Gdk.DragAction.DEFAULT | Gdk.ACTION_MOVE)
+# rightview.enable_model_drag_dest([('text/plain', 0, 0)], Gdk.DragAction.DEFAULT)
 # import panelfunctions
 # rightview.connect("drag_begin", panelfunctions.drag_begin_signal)
 # rightview.connect("drag_data_delete", panelfunctions.drag_data_delete_signal)
@@ -198,7 +200,7 @@ def insertRow(arg):
         # Fire off the edited methods
         fileEdited(PackageFile)
         return
-    
+
     lastRowIter = model.get_iter(lastRowSelectedPath)
     # We need to link this new row with its PackageFile Object
     PackageFile = model.get_value(lastRowIter, L_REF)
@@ -218,7 +220,7 @@ def deleteRow(arg):
     for ref in rowReferences:
         iter = model.get_iter(ref.get_path())
         model.remove(iter)
-    # If nothing is deleted we shouldn't show 
+    # If nothing is deleted we shouldn't show
     if len(rowReferences) > 0:
         fileEdited(PackageFile)
 
@@ -285,17 +287,17 @@ def toggleComment(*args):
 def __rightClicked(view, event):
     """ Right click menu for package options """
     if event.button == 3:
-        menu = gtk.Menu()
-        irow = gtk.MenuItem("Insert Package")
+        menu = Gtk.Menu()
+        irow = Gtk.MenuItem("Insert Package")
         irow.connect("activate", insertRow)
-        drow = gtk.MenuItem("Delete Package")
+        drow = Gtk.MenuItem("Delete Package")
         drow.connect("activate", deleteRow)
         menu.append(irow)
         menu.append(drow)
-        separator = gtk.MenuItem()
-        sepcutcopypaste = gtk.MenuItem()
-        crow = gtk.MenuItem("Comment Package")
-        urow = gtk.MenuItem("Uncomment Package")
+        separator = Gtk.MenuItem()
+        sepcutcopypaste = Gtk.MenuItem()
+        crow = Gtk.MenuItem("Comment Package")
+        urow = Gtk.MenuItem("Uncomment Package")
         crow.connect("activate", commentRow)
         urow.connect("activate", uncommentRow)
         menu.append(separator)
@@ -303,11 +305,11 @@ def __rightClicked(view, event):
         menu.append(urow)
         menu.append(sepcutcopypaste)
 
-        cut = gtk.MenuItem("Cut")
+        cut = Gtk.MenuItem("Cut")
         cut.connect("activate", __menuCut)
-        copy = gtk.MenuItem("Copy")
+        copy = Gtk.MenuItem("Copy")
         copy.connect("activate", __menuCopy)
-        paste = gtk.MenuItem("Paste")
+        paste = Gtk.MenuItem("Paste")
         paste.connect("activate", __menuPaste)
         menu.append(cut)
         menu.append(copy)
@@ -327,18 +329,18 @@ def __menuPaste(*args):
     clipboard.pasteClipboard(rightview)
 
 def __handleKeyPress(widget, event):
-    modifiers = gtk.accelerator_get_default_mod_mask()  
+    modifiers = Gtk.accelerator_get_default_mod_mask()
     # copy
-    if event.keyval == gtk.gdk.keyval_from_name("c"):
-        if (modifiers & event.state) == gtk.gdk.CONTROL_MASK:
+    if event.keyval == Gdk.keyval_from_name("c"):
+        if (modifiers & event.state) == Gdk.ModifierType.CONTROL_MASK:
             clipboard.copyToClipboard(rightview)
     # paste
-    if event.keyval == gtk.gdk.keyval_from_name("v"):
-        if (modifiers & event.state) == gtk.gdk.CONTROL_MASK:
+    if event.keyval == Gdk.keyval_from_name("v"):
+        if (modifiers & event.state) == Gdk.ModifierType.CONTROL_MASK:
             clipboard.pasteClipboard(rightview)
     # cut
-    if event.keyval == gtk.gdk.keyval_from_name("x"):
-        if (modifiers & event.state) == gtk.gdk.CONTROL_MASK:
+    if event.keyval == Gdk.keyval_from_name("x"):
+        if (modifiers & event.state) == Gdk.ModifierType.CONTROL_MASK:
             clipboard.cutToClipboard(rightview)
 
 #Signals
