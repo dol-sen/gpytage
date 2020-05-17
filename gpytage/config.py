@@ -41,11 +41,12 @@ class Config(object):
         self.iconlist = [self.pixpath+icon for icon in self.__icons]
 
         self.portconfFiles = ['bashrc', 'categories', 'color.map', 'mirrors', \
-                'modules', 'package.keywords', 'package.license', 'package.mask', \
+                'modules', 'package.license', 'package.mask', \
                 'package.properties', 'package.unmask', 'package.use', 'repos.conf', \
-                'profile', 'sets']
+                'profile', 'sets', 'package.accept_keywords', 'make.conf']
+        self.t_edit = ['repos.conf', 'make.conf']
 
-        print(("Config: portage version = " + portage.VERSION))
+        print("Config: portage version = " + portage.VERSION)
 
     def setPixPath(self, path):
         self.pixpath = path
