@@ -21,7 +21,9 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import gtk
+import gi
+gi.require_version("Gtk", "3.0") # make sure we have the right version
+from gi.repository import Gtk
 
 def getMultiSelection(treeview):
     """ Return a list of the currently selected rows in the form of TreeRowReferences """
@@ -29,7 +31,7 @@ def getMultiSelection(treeview):
     model, paths = selection.get_selected_rows()
     rowReferences = []
     for path in paths:
-        rowRef = gtk.TreeRowReference(model, path)
+        rowRef = Gtk.TreeRowReference(model, path)
         rowReferences.append(rowRef)
     return rowReferences
 

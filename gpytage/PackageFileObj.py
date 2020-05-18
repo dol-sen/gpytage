@@ -21,7 +21,10 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import gtk
+import gi
+gi.require_version("Gtk", "3.0") # make sure we have the right version
+from gi.repository import Gtk
+
 from sys import stderr
 
 L_NAME = 0
@@ -37,7 +40,7 @@ class PackageFileObj(object):
         self._name = name
         self._path = path
         self._parent = parent
-        self._data = gtk.ListStore(str, str, object)
+        self._data = Gtk.ListStore(str, str, object)
         self._edited = False
         self._treeRowRef = None
         self.initData()
@@ -70,7 +73,7 @@ class PackageFileObj(object):
 
     @property
     def data(self):
-        """ internal gtk.ListStore """
+        """ internal Gtk.ListStore """
         return self._data
 
     @property
@@ -82,15 +85,15 @@ class PackageFileObj(object):
     def edited(self, boolean):
         """ Sets the PackageFileObj edited state """
         self._edited = boolean
-        
+
     @property
     def treeRowRef(self):
-        """ gtk.TreeRowReference pointing to this PackageFileObj """
+        """ Gtk.TreeRowReference pointing to this PackageFileObj """
         return self._treeRowRef
 
     @treeRowRef.setter
     def treeRowRef(self, boolean):
-        """ Set the gtk.TreeRowReference for this PackageFileObj """
+        """ Set the Gtk.TreeRowReference for this PackageFileObj """
         self._treeRowRef = boolean
 
     def __scanFileContents(self, filepath):

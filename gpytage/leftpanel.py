@@ -21,8 +21,9 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import pygtk; pygtk.require("2.0")
-import gtk
+import gi
+gi.require_version("Gtk", "3.0") # make sure we have the right version
+from gi.repository import Gtk
 
 from .datastore import F_NAME, F_REF, folderModel
 from .rightpanel import setListModel
@@ -32,29 +33,29 @@ from gpytage.newFile import newFile
 from gpytage.deleteFile import deleteFile
 from gpytage.rename import renameFile
 
-leftview = gtk.TreeView(folderModel) #create the container
+leftview = Gtk.TreeView(folderModel) #create the container
 
 leftview.set_search_column(F_NAME)
 
 # TreeViewColumns
-namecol = gtk.TreeViewColumn('Package File')
+namecol = Gtk.TreeViewColumn('Package File')
 
 # add TreeViewColumn to TreeView
 leftview.append_column(namecol)
 
-cell = gtk.CellRendererText()
+cell = Gtk.CellRendererText()
 
 # add CellRenderer to TreeViewColumn
 namecol.pack_start(cell, True)
 # Let us use pango markup
 namecol.add_attribute(cell, 'markup', F_NAME)
-namecol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+namecol.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
 #===============================================================================
 # Scroll Window
 #===============================================================================
-scroll = gtk.ScrolledWindow()
-scroll.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+scroll = Gtk.ScrolledWindow()
+scroll.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 scroll.add_with_viewport(leftview)
 
 def expandRows(*args):
@@ -92,14 +93,14 @@ def __clicked(treeview, *args):
 def __rightClicked(view, event):
     """ Right click menu for file options """
     if event.button == 3:
-        menu = gtk.Menu()
-        new = gtk.MenuItem("New File")
+        menu = Gtk.Menu()
+        new = Gtk.MenuItem("New File")
         new.connect("activate", newFile)
         menu.append(new)
-        rename = gtk.MenuItem("Rename File")
+        rename = Gtk.MenuItem("Rename File")
         rename.connect("activate", renameFile)
         menu.append(rename)
-        delete = gtk.MenuItem("Delete File")
+        delete = Gtk.MenuItem("Delete File")
         delete.connect("activate", deleteFile)
         menu.append(delete)
         menu.show_all()

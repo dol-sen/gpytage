@@ -21,10 +21,12 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import pygtk; pygtk.require("2.0")
-import gtk
+import gi
+gi.require_version("Gtk", "3.0") # make sure we have the right version
+from gi.repository import Gtk
 
-window = gtk.Window(gtk.WINDOW_TOPLEVEL)
+
+window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
 window.set_title("GPytage")
 __editedState = False
 
@@ -57,9 +59,9 @@ def unsavedDialog():
     YES returns -8. NO returns -9. Save returns 1.
 
     """
-    uD = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_YES_NO, message_format="You have unsaved changes, if you proceed these changes will be lost.\n\n Do you wish to Quit?")
+    uD = Gtk.MessageDialog(parent=None, flags=Gtk.DIALOG_MODAL, type=Gtk.MESSAGE_WARNING, buttons=Gtk.BUTTONS_YES_NO, message_format="You have unsaved changes, if you proceed these changes will be lost.\n\n Do you wish to Quit?")
     uD.set_title("You have unsaved changes")
-    uD.set_default_response(gtk.RESPONSE_NO)
+    uD.set_default_response(Gtk.RESPONSE_NO)
     status = uD.run()
     return status, uD
 

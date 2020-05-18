@@ -21,13 +21,14 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import pygtk; pygtk.require("2.0")
-import gtk
+import gi
+gi.require_version("Gtk", "3.0") # make sure we have the right version
+from gi.repository import Gtk
 
-class errorDialog(gtk.MessageDialog):
+class errorDialog(Gtk.MessageDialog):
     """ Spawn an error dialog with the given title and text. """
     def __init__(self, title, text):
-        gtk.MessageDialog.__init__(self, None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, text)
+        Gtk.MessageDialog.__init__(self, None, Gtk.DIALOG_DESTROY_WITH_PARENT, Gtk.MESSAGE_ERROR, Gtk.BUTTONS_OK, text)
         self.set_title(title)
 
     def spawn(self):

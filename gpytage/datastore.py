@@ -21,8 +21,9 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import pygtk; pygtk.require("2.0")
-import gtk
+import gi
+gi.require_version("Gtk", "3.0") # make sure we have the right version
+from gi.repository import Gtk
 
 import os
 
@@ -34,7 +35,7 @@ from .config import config_files, get_config_path
 F_NAME = 0
 F_REF = 1
 
-folderModel = gtk.TreeStore(
+folderModel = Gtk.TreeStore(
                             str,        # 0 entry name
                             object,     # 1 entry reference
 )                                       # Folders
@@ -101,14 +102,14 @@ def initTreeModel():
             row = [folder, folder]
             parentIter = folderModel.append(None, row)
             path = folderModel.get_path(parentIter)
-            treeRowRef = gtk.TreeRowReference(folderModel, path)
-            folder.treeRowRef = treeRowRef 
+            treeRowRef = Gtk.TreeRowReference(folderModel, path)
+            folder.treeRowRef = treeRowRef
             children = folder.getPackages()
             for child in children: #Add children files to treeview
                 row = [child, child]
                 childIter = folderModel.append(parentIter, row)
                 path = folderModel.get_path(childIter)
-                treeRowRef = gtk.TreeRowReference(folderModel, path)
+                treeRowRef = Gtk.TreeRowReference(folderModel, path)
                 child.treeRowRef = treeRowRef
         else: # Folders have folder children (an unknown amount unfortunately) (Recursive)
             #Add the parent folder to the treeview
@@ -116,7 +117,7 @@ def initTreeModel():
             if folder.parentState == False: #Top level
                 parentIter = folderModel.append(None, row)
                 path = folderModel.get_path(parentIter)
-                treeRowRef = gtk.TreeRowReference(folderModel, path)
+                treeRowRef = Gtk.TreeRowReference(folderModel, path)
                 folder.treeRowRef = treeRowRef # We will need this later to pack the children
                                                  # in the treeview
             else: #child folder
@@ -126,21 +127,21 @@ def initTreeModel():
                 grandIter = folderModel.get_iter(path)
                 parentIter = folderModel.append(grandIter, row)
                 path = folderModel.get_path(parentIter)
-                treeRowRef = gtk.TreeRowReference(folderModel, path)
+                treeRowRef = Gtk.TreeRowReference(folderModel, path)
                 folder.treeRowRef = treeRowRef
 
             for subfile in folder.getPackages():
                 row = [subfile, subfile]
                 FileIter = folderModel.append(parentIter, row)
                 path = folderModel.get_path(FileIter)
-                treeRowRef = gtk.TreeRowReference(folderModel, path)
+                treeRowRef = Gtk.TreeRowReference(folderModel, path)
                 subfile.treeRowRef = treeRowRef
     # Top Level Files only
     for pfile in TLFiles:
         row = [pfile, pfile]
         parentIter = folderModel.append(None, row)
         path = folderModel.get_path(parentIter)
-        treeRowRef = gtk.TreeRowReference(folderModel, path)
+        treeRowRef = Gtk.TreeRowReference(folderModel, path)
         pfile.treeRowRef = treeRowRef
 
 def __clearData():

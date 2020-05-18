@@ -21,15 +21,16 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import pygtk; pygtk.require("2.0")
-import gtk
+import gi
+gi.require_version("Gtk", "3.0") # make sure we have the right version
+from gi.repository import Gtk
 
 from .helper import getMultiSelection, getCurrentFile
 from .PackageFileObj import L_NAME, L_FLAGS, L_REF
 
 class clipboard():
     def __init__(self):
-        self.clipboard = gtk.Clipboard() 
+        self.clipboard = Gtk.Clipboard()
 
     def copyToClipboard(self, rightview):
         """ Copies selected rows into the clipboard """

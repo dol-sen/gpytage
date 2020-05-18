@@ -21,8 +21,11 @@
 #    59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             #
 ############################################################################
 
-import pygtk; pygtk.require("2.0")
-import gtk
+import gi
+gi.require_version("Gtk", "3.0") # make sure we have the right version
+gi.require_version('GdkPixbuf', '2.0')
+from gi.repository import GdkPixbuf
+from gi.repository import Gtk
 
 from gpytage.leftpanel import expandRows, collapseRows
 from gpytage.leftpanel import scroll as lScroll
@@ -64,14 +67,14 @@ class gpytagemain:
         self.window = window
 
         try: #load icons as pixbufs and set as default icon
-            self.i16 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-16x16.png")
-            self.i24 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-24x24.png")
-            self.i32 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-32x32.png")
-            self.i48 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-48x48.png")
-            self.i64 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-64x64.png")
-            self.i128 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-128x128.png")
-            gtk.window_set_default_icon_list(self.i16, self.i24, self.i32, self.i48, self.i64, self.i128)
             print(" gpytagemain: PIXMAPS =", PIXMAPS)
+            self.i16 = GdkPixbuf.Pixbuf.new_from_file(PIXMAPS + "gpytage-16x16.png")
+            self.i24 = GdkPixbuf.Pixbuf.new_from_file(PIXMAPS + "gpytage-24x24.png")
+            self.i32 = GdkPixbuf.Pixbuf.new_from_file(PIXMAPS + "gpytage-32x32.png")
+            self.i48 = GdkPixbuf.Pixbuf.new_from_file(PIXMAPS + "gpytage-48x48.png")
+            self.i64 = GdkPixbuf.Pixbuf.new_from_file(PIXMAPS + "gpytage-64x64.png")
+            self.i128 = GdkPixbuf.Pixbuf.new_from_file(PIXMAPS + "gpytage-128x128.png")
+            Gtk.window_set_default_icon_list(self.i16, self.i24, self.i32, self.i48, self.i64, self.i128)
         except:
             print("GPytage could not find its icons!")
 
@@ -83,9 +86,9 @@ class gpytagemain:
         initData()
         initTreeModel()
 
-        self.uimanager = gtk.UIManager()
+        self.uimanager = Gtk.UIManager()
         self.accelgroup = self.uimanager.get_accel_group()
-        self.actiongroup = gtk.ActionGroup('GPytage')
+        self.actiongroup = Gtk.ActionGroup('GPytage')
         self.ui = '''
         <ui>
             <menubar name="MenuBar">
@@ -129,28 +132,28 @@ class gpytagemain:
         #This controls the MenuBar and the ToolBar
         self.actiongroup.add_actions([
             ('File', None, '_File'),
-            ('New', gtk.STOCK_NEW, '_New File', '<Control>n', 'New file', newFile),
-            ('Save', gtk.STOCK_SAVE, '_Save', '<Control>s', 'Save changes',
+            ('New', Gtk.STOCK_NEW, '_New File', '<Control>n', 'New file', newFile),
+            ('Save', Gtk.STOCK_SAVE, '_Save', '<Control>s', 'Save changes',
                 saveModifiedFile),
-            ('Save All', gtk.STOCK_SAVE_AS, 'Save _All', None, 'Save all changes', saveModifiedFiles),
-            ('Revert', gtk.STOCK_REVERT_TO_SAVED, '_Revert', None, 'Revert changes', revertSelected),
-            ('Revert All', gtk.STOCK_REVERT_TO_SAVED, 'Re_vert All', None, 'Revert all changes', revertAllModified),
-            ('Quit', gtk.STOCK_QUIT, '_Quit', None, 'Quit GPytage', self.destroy),
-            
+            ('Save All', Gtk.STOCK_SAVE_AS, 'Save _All', None, 'Save all changes', saveModifiedFiles),
+            ('Revert', Gtk.STOCK_REVERT_TO_SAVED, '_Revert', None, 'Revert changes', revertSelected),
+            ('Revert All', Gtk.STOCK_REVERT_TO_SAVED, 'Re_vert All', None, 'Revert all changes', revertAllModified),
+            ('Quit', Gtk.STOCK_QUIT, '_Quit', None, 'Quit GPytage', self.destroy),
+
             ('Edit', None, '_Edit'),
-            ('Add Package', gtk.STOCK_ADD, '_Add Package', '<Control>e', 'Add a package', insertRow),
-            ('Remove Package', gtk.STOCK_REMOVE, '_Remove Package', '<Control>d', "Remove a package", deleteRow),
-            ('Delete File/Folder', gtk.STOCK_DELETE, '_Delete File/Folder', None, 'Delete currently selected file or folder', deleteFile),
-            ('Rename', gtk.STOCK_SAVE_AS, '_Rename', None, 'Rename file', renameFile),
-            ('Comment', gtk.STOCK_INDENT, '_Comment', None, "Comment a package", commentRow),
-            ('Uncomment', gtk.STOCK_UNINDENT, '_Uncomment', None, "Uncomment a package", uncommentRow),
-            ('Toggle Comment', gtk.STOCK_CONVERT, '_Toggle Comment', '<Control><Shift>c', "Toggle comment packages", toggleComment),
+            ('Add Package', Gtk.STOCK_ADD, '_Add Package', '<Control>e', 'Add a package', insertRow),
+            ('Remove Package', Gtk.STOCK_REMOVE, '_Remove Package', '<Control>d', "Remove a package", deleteRow),
+            ('Delete File/Folder', Gtk.STOCK_DELETE, '_Delete File/Folder', None, 'Delete currently selected file or folder', deleteFile),
+            ('Rename', Gtk.STOCK_SAVE_AS, '_Rename', None, 'Rename file', renameFile),
+            ('Comment', Gtk.STOCK_INDENT, '_Comment', None, "Comment a package", commentRow),
+            ('Uncomment', Gtk.STOCK_UNINDENT, '_Uncomment', None, "Uncomment a package", uncommentRow),
+            ('Toggle Comment', Gtk.STOCK_CONVERT, '_Toggle Comment', '<Control><Shift>c', "Toggle comment packages", toggleComment),
 
             ('View', None, '_View'),
             ('Expand All', None, '_Expand All', '<Control>slash', 'Expand Rows', expandRows),
-            ('Collapse All', None, '_Collapse All', '<Control>backslash', 'Collapse Rows', collapseRows), 
+            ('Collapse All', None, '_Collapse All', '<Control>backslash', 'Collapse Rows', collapseRows),
             ('Help',None,'_Help'),
-            ('About', gtk.STOCK_ABOUT, '_About', None, 'About GPytage', self.about)
+            ('About', Gtk.STOCK_ABOUT, '_About', None, 'About GPytage', self.about)
         ])
 
         #Add the UI XML
@@ -160,7 +163,7 @@ class gpytagemain:
         #Menubar
         self.menubar = self.uimanager.get_widget('/MenuBar')
         self.toolbar = self.uimanager.get_widget('/ToolBar')
-        self.vbox = gtk.VBox() #the master Widget
+        self.vbox = Gtk.VBox() #the master Widget
         self.vbox.pack_start(self.menubar, False)
         self.vbox.pack_start(self.toolbar, False)
 
@@ -169,7 +172,7 @@ class gpytagemain:
         self.window.connect("delete_event", self.delete_event)
 
         #Show Widgets
-        self.pane = gtk.HPaned()
+        self.pane = Gtk.HPaned()
         self.pane.pack1(lScroll, True, True)
         self.pane.pack2(rScroll, True, True)
         self.pane.set_position(200)
@@ -185,11 +188,11 @@ class gpytagemain:
         if state is True: #There are edited files
             status, uD = unsavedDialog()
             if status == -8:   #YES
-                gtk.main_quit()
+                Gtk.main_quit()
             else:              #NO and other unhandled signals
                 uD.hide()
         else:
-            gtk.main_quit()
+            Gtk.main_quit()
 
     def delete_event(self, widget, event, data=None):
         self.destroy(widget)
@@ -197,10 +200,10 @@ class gpytagemain:
 
     #Menu Functions
     def about(self, *args):
-        aboutw = gtk.AboutDialog()
+        aboutw = Gtk.AboutDialog()
         aboutw.set_name('GPytage')
         aboutw.set_copyright('Copyright 2008-2009, GPL2')
-        aboutw.set_authors(["Kenneth 'ken69267' Prugh", 
+        aboutw.set_authors(["Kenneth 'ken69267' Prugh",
             "\nWith patches contributed by Brian Dolbec <dol-sen>\nand Josh 'nightmorph' Saddler. \n" +
             "\nWith special thanks to the Gentoo \ndevelopers and community. \n\n" +
             "Licensed under the GPL-2"]) #Fix wording? :)
@@ -222,4 +225,4 @@ class gpytagemain:
         pass
 
     def main(self):
-        gtk.main()
+        Gtk.main()
