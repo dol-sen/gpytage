@@ -24,10 +24,10 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 
-from helper import getMultiSelection, getCurrentFile
-from PackageFileObj import L_NAME, L_FLAGS, L_REF
-from fileOperations import fileEdited
-from window import clipboard
+from .helper import getMultiSelection, getCurrentFile
+from .PackageFileObj import L_NAME, L_FLAGS, L_REF
+from .fileOperations import fileEdited
+from .window import clipboard
 from sys import stderr
 
 rightview = gtk.TreeView()
@@ -44,8 +44,8 @@ def setListModel(ListStore): #we need to switch the model on click
         cFormatter.format()
         del cFormatter
         namecol.queue_resize()
-    except: 
-        print >>stderr, 'RIGHTPANEL: setListModel(); failed'
+    except:
+        print('RIGHTPANEL: setListModel(); failed', file=stderr)
 
 class __splitComments():
     """ Used to properly format long comment strings inside portage config
@@ -198,7 +198,7 @@ def insertRow(arg):
         # Fire off the edited methods
         fileEdited(PackageFile)
         return
-    
+
     lastRowIter = model.get_iter(lastRowSelectedPath)
     # We need to link this new row with its PackageFile Object
     PackageFile = model.get_value(lastRowIter, L_REF)
@@ -218,7 +218,7 @@ def deleteRow(arg):
     for ref in rowReferences:
         iter = model.get_iter(ref.get_path())
         model.remove(iter)
-    # If nothing is deleted we shouldn't show 
+    # If nothing is deleted we shouldn't show
     if len(rowReferences) > 0:
         fileEdited(PackageFile)
 

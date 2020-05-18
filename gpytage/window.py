@@ -28,15 +28,15 @@ window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 window.set_title("GPytage")
 __editedState = False
 
-from clipboard import clipboard
+from .clipboard import clipboard
 clipboard = clipboard()
 
 def setTitleEdited(bool):
     """
     Changes the state of the title. Edited state causes the title to change to *GPytage.
-    
+
     True: Sets as edited
-    
+
     """
     global __editedState
     if bool is True:
@@ -45,7 +45,7 @@ def setTitleEdited(bool):
     else:
         window.set_title("GPytage")
         __editedState = False
-        
+
 def getTitleState():
     """ Returns if the title is in the edited state """
     return __editedState
@@ -55,7 +55,7 @@ def unsavedDialog():
     Spawn Generic Yes/No/Save Dialog when unsaved changes are present.
 
     YES returns -8. NO returns -9. Save returns 1.
-    
+
     """
     uD = gtk.MessageDialog(parent=None, flags=gtk.DIALOG_MODAL, type=gtk.MESSAGE_WARNING, buttons=gtk.BUTTONS_YES_NO, message_format="You have unsaved changes, if you proceed these changes will be lost.\n\n Do you wish to Quit?")
     uD.set_title("You have unsaved changes")

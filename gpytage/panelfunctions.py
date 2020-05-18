@@ -24,17 +24,19 @@
 
 import pygtk; pygtk.require("2.0")
 import gtk
-import datastore
-from datastore import E_NAME, E_DATA, E_EDITABLE, E_PARENT, E_MODIFIED
+
+from . import datastore
+from .datastore import E_NAME, E_DATA, E_EDITABLE, E_PARENT, E_MODIFIED
+from .fileOperations import fileEdited
 
 def get_dragdestdata(treeview, context, x, y, selection, info, etime):
     iter, value = cselected(treeview,x,y)
     model = treeview.get_model()
     if value == True:
         ldata = data
-        print"global data=", data
+        print("global data=", data)
         drop_info = treeview.get_dest_row_at_pos(x,y)
-        print "DROP INFO IS:"; print drop_info
+        print("DROP INFO IS:"); print(drop_info)
         if drop_info:
             path, position = drop_info
             iteri = model.get_iter(path)
@@ -47,16 +49,16 @@ def get_dragdestdata(treeview, context, x, y, selection, info, etime):
                         model.insert_after(iteri, row[:-1]) #0:4])
             else:
                 return
-            
+
         else:
             for row in ldata:
                 model.append(row[:-1]) # 0:4])
-            print 'end of treeview'
+            print('end of treeview')
         #delete dragged rows
         for row in ldata:
-            print row[-1]
+            print(row[-1])
             model.remove(model.get_iter(row[-1].get_path()))
-        from window import title
+        from .window import title
         title("* GPytage")
         fileEdited()
         return
@@ -65,24 +67,24 @@ def get_dragdestdata(treeview, context, x, y, selection, info, etime):
         ldata = data
         parent = model.get_value(iter,E_PARENT).strip('*')
         oldName = model.get_value(iter, E_NAME).strip('*')
-        print "parent = ", parent
+        print("parent = ", parent)
         if model.iter_children(iter):#has children [subfiles]
-            print "has children"
+            print("has children")
         else: #doesn't have children
             newName = "*%s" % oldName
             model.set_value(iter, E_NAME, newName)
             model.set_value(iter, E_MODIFIED, True)
             # append the data
-            print ldata,"DATA TO APPEND"
+            print(ldata,"DATA TO APPEND")
             for row in ldata:
-                print "row=", row
+                print("row=", row)
                 datastore.lists[oldName].append(row[:-1]) #0:4])
             #nuke what we moved
             for row in ldata:
-                from rightpanel import rightview
+                from .rightpanel import rightview
                 rmodel = rightview.get_model()
                 rmodel.remove(rmodel.get_iter(row[-1].get_path()))
-            from leftpanel import leftview
+            from .leftpanel import leftview
             lmodel = leftview.get_model()
             lselection.select_path(lmodel.get_path(lselected[1]))
             fileEdited()
@@ -94,7 +96,7 @@ def drag_begin_signal(treeview, dragcontext, *args):
     global data
     global lselection
     global lselected
-    from leftpanel import leftview
+    from .leftpanel import leftview
     lselection = leftview.get_selection()
     lselected = lselection.get_selected()
     data = [] #master container
@@ -102,7 +104,7 @@ def drag_begin_signal(treeview, dragcontext, *args):
     model = treeview.get_model()
     rows = treeview.get_selection().get_selected_rows()[1]
     for path in rows: #each line is a path to the row
-        print "DRAG_BEGIN_SIGNAL_PATHS:"; print path
+        print("DRAG_BEGIN_SIGNAL_PATHS:"); print(path)
         cdata = [] #current data
         iter = model.get_iter(path)
         cdata.append(model.get_value(iter, E_NAME))
@@ -112,13 +114,13 @@ def drag_begin_signal(treeview, dragcontext, *args):
         cdata.append(model.get_value(iter,E_MODIFIED))
         cdata.append(gtk.TreeRowReference(model, path))
         data.append(cdata)
-    print "MASTER DATA CONTAINER:"
-    print data
+    print("MASTER DATA CONTAINER:")
+    print(data)
 
 def drag_data_delete_signal(*args):
     """ Delete begin signals data """
-    print "drag data delete signal"
-    
+    print("drag data delete signal")
+
 
 def cselected(treeview, x, y):
     """ Return iter:value from current coordinates """
@@ -130,7 +132,7 @@ def cselected(treeview, x, y):
             value = model.get_value(iter,E_EDITABLE)
         except:
             value = False
-        print model.get_value(iter,E_NAME)
+        print(model.get_value(iter,E_NAME))
         return iter,value
     except TypeError:
         model = treeview.get_model()
@@ -154,8 +156,8 @@ def selected(treeview): #helper function
 
 def switchListView(widget, drag_context, x, y, timestamp, *args):
     """ Hilights leftview drop target during drag operation """
-    from leftpanel import leftview
-    import rightpanel
+    from .leftpanel import leftview
+    from . import rightpanel
     model = leftview.get_model()
     path = leftview.get_dest_row_at_pos(x, y)
     leftview.expand_row(path[0], True)

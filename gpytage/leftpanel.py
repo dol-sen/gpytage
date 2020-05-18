@@ -24,9 +24,9 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 
-from datastore import F_NAME, F_REF, folderModel
-from rightpanel import setListModel
-import PackageFileObj, FolderObj
+from .datastore import F_NAME, F_REF, folderModel
+from .rightpanel import setListModel
+from . import PackageFileObj, FolderObj
 
 from gpytage.newFile import newFile
 from gpytage.deleteFile import deleteFile
@@ -60,11 +60,11 @@ scroll.add_with_viewport(leftview)
 def expandRows(*args):
     """ Expand all columns in the left panel """
     leftview.expand_all()
-    
+
 def collapseRows(*args):
     """ Collapse all columns in the left panel """
     leftview.collapse_all()
-    
+
 
 # Allows us to check if the user simply clicked on the same file or on another one
 __lastSelected = None
@@ -73,16 +73,16 @@ def __clicked(treeview, *args):
     """ Handle TreeView clicks """
     global __lastSelected
     model, iter = treeview.get_selection().get_selected()
-    if iter: # None if no row is selected 
+    if iter: # None if no row is selected
         target = model.get_value(iter, F_REF)
         targetName = target.path
-    else: 
+    else:
         targetName = __lastSelected
     # Has the selection changed
     if targetName != __lastSelected:
         print("LEFTPANEL: parent change detected")
         if isinstance(target, PackageFileObj.PackageFileObj): # A file
-            print "attempting to change to:", target.path
+            print("attempting to change to:", target.path)
             setListModel(target.data)
         elif isinstance(target, FolderObj.FolderObj): # A folder
             setListModel(None)

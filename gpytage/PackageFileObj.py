@@ -32,7 +32,7 @@ class PackageFileObj(object):
     """ PackageFile objects represent Files and their contents """
     def __repr__(self):
         return self._name
-    
+
     def __init__(self, name, path, parent): # FilePath, FolderObj
         self._name = name
         self._path = path
@@ -41,7 +41,7 @@ class PackageFileObj(object):
         self._edited = False
         self._treeRowRef = None
         self.initData()
-        
+
     def initData(self):
         """ Read contents of File into ListStore """
         self.data.clear()
@@ -57,7 +57,7 @@ class PackageFileObj(object):
                 c2 = ""
             row = [c1, c2, self]
             self.data.append(row)
-        
+
     @property
     def path(self):
         """ filepath for this PackageFileObj """
@@ -100,14 +100,14 @@ class PackageFileObj(object):
             f = open(filepath, 'r')
             contents = f.readlines()
             f.close()
-        except IOError, e: #needed or everything breaks
+        except IOError as e: #needed or everything breaks
             contents = None
-            print >>stderr, e
-            from errorDialog import errorDialog
+            print(e, file=stderr)
+            from .errorDialog import errorDialog
             d = errorDialog("Error Reading File...", str(e))
             d.spawn()
             return data
-    
+
         for i in contents:
             if i.startswith('#'): #don't split if its a comment
                 new = [i, None]
@@ -122,4 +122,4 @@ class PackageFileObj(object):
                 new = ["", ""]
             data.append(new)
         return data #return the master list of lists
-    
+

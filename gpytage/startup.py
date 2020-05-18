@@ -35,7 +35,7 @@ from gpytage.fileOperations import saveModifiedFile, saveModifiedFiles, revertSe
 from gpytage.newFile import newFile
 from gpytage.deleteFile import deleteFile
 from gpytage.rename import renameFile
-from rightpanel import insertRow, deleteRow, commentRow, uncommentRow, toggleComment
+from .rightpanel import insertRow, deleteRow, commentRow, uncommentRow, toggleComment
 
 #set global defaults
 DATA_PATH = "/usr/share/gpytage/"
@@ -44,10 +44,10 @@ GLADE_PATH = "/usr/share/gpytage/glade/"
 
 def local():
     """ set global defaults for running locally """
-    
+
     global DATA_PATH, PIXMAPS, GLADE_PATH
     DATA_PATH =  os.path.dirname(os.path.abspath(__file__))
-    print DATA_PATH
+    print(DATA_PATH)
     PIXMAPS = os.path.join(DATA_PATH , "pixmaps/")
     GLADE_PATH = os.path.join(DATA_PATH, "glade/")
 
@@ -62,9 +62,8 @@ if "site-packages" not in location:
 class gpytagemain:
     def __init__(self):
         self.window = window
-        
+
         try: #load icons as pixbufs and set as default icon
-            print " gpytagemain: PIXMAPS =", PIXMAPS
             self.i16 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-16x16.png")
             self.i24 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-24x24.png")
             self.i32 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-32x32.png")
@@ -72,14 +71,15 @@ class gpytagemain:
             self.i64 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-64x64.png")
             self.i128 = gtk.gdk.pixbuf_new_from_file(PIXMAPS + "gpytage-128x128.png")
             gtk.window_set_default_icon_list(self.i16, self.i24, self.i32, self.i48, self.i64, self.i128)
+            print(" gpytagemain: PIXMAPS =", PIXMAPS)
         except:
-            print "GPytage could not find its icons!"
-        
+            print("GPytage could not find its icons!")
+
         self.window.set_default_size(800, 500)
-        
+
         self.datastore = folderModel
         self.files = config_files
-        
+
         initData()
         initTreeModel()
 
@@ -163,7 +163,7 @@ class gpytagemain:
         self.vbox = gtk.VBox() #the master Widget
         self.vbox.pack_start(self.menubar, False)
         self.vbox.pack_start(self.toolbar, False)
-        
+
         #allow the program to quit
         self.window.connect("destroy", self.destroy)
         self.window.connect("delete_event", self.delete_event)
@@ -180,8 +180,8 @@ class gpytagemain:
 
     def destroy(self, widget, data=None):
         state = getTitleState()
-        print "STATE IS: "
-        print state
+        print("STATE IS: ")
+        print(state)
         if state is True: #There are edited files
             status, uD = unsavedDialog()
             if status == -8:   #YES
@@ -214,7 +214,7 @@ class gpytagemain:
         try:
             aboutw.set_logo(self.i128)
         except:
-            print "ABOUT(): Logo could not be set"
+            print("ABOUT(): Logo could not be set")
         aboutw.run()
         aboutw.hide()
 

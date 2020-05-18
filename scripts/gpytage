@@ -22,29 +22,27 @@
 #   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.              #
 ############################################################################
 
-import pygtk; pygtk.require("2.0")
-import gtk
 import os.path
 import sys
 from getopt import getopt, GetoptError
 
 def usage():
     tabs = "\t\t"
-    print "Usage: gpytage [OPTION...]\n"
-    print "  -h, --help" + tabs + "Show this help message"
-    print "  -l, --local" + tabs + \
-          "Run a local version (use modules in current directory)"
-    print "  -v, --version" + tabs + "Output version information and exit"
-    print "  -t, --test" + tabs + \
-          "Use the pre-configured test directory instead of '/etc/portage'"
+    print("Usage: gpytage [OPTION...]\n")
+    print("  -h, --help" + tabs + "Show this help message")
+    print("  -l, --local" + tabs + \
+          "Run a local version (use modules in current directory)")
+    print("  -v, --version" + tabs + "Output version information and exit")
+    print("  -t, --test" + tabs + \
+          "Use the pre-configured test directory instead of '/etc/portage'")
 
 
 if __name__ == "__main__":
     try:
         opts, args = getopt(sys.argv[1:], 'lvth', ["local", "version", "test",
                         "help"])
-    except GetoptError, e:
-        print >> sys.stderr, e.msg
+    except GetoptError as e:
+        print(e.msg, file=sys.stderr)
         usage()
         sys.exit(1)
 
@@ -58,43 +56,43 @@ if __name__ == "__main__":
             # running a local version (i.e. not installed in /usr/*)
             import os, os.path
             DATA_PATH =(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-            print "DATA_PATH =", DATA_PATH
+            print("DATA_PATH =", DATA_PATH)
             sys.path.insert(0, DATA_PATH)
-            print sys.path
+            print(sys.path)
             RUN_LOCAL = True
             from gpytage.version import version
             from gpytage.startup import *
             #local()
-            print "GPytage: starting gpytage()"
+            print("GPytage: starting gpytage()")
 
     if not RUN_LOCAL: # then run the installed modules
         try:
             from gpytage.version import version
             from gpytage.startup import *
-            print "GPytage: starting gpytage()"
-        except ImportError, e:
-            print "*** Error loading gpytage modules!\n*** If you are running a", \
+            print("GPytage: starting gpytage()")
+        except ImportError as e:
+            print("*** Error loading gpytage modules!\n*** If you are running a", \
             "local (not installed in python's site-packages) version, please use the '--local'", \
             "or '-l' flag.\n", \
             "*** Otherwise, verify that gpytage was installed correctly and", \
             "that python's path includes the site-packages directory.\n",\
-            "If you have recently updated python, then run 'python-updater'\n"
-            print "Your sys.path: %s\n" % sys.path
-            print "Your sys.version: %s\n" % sys.version
-            print "Original exception was: ImportError: %s\n" % e
+            "If you have recently updated python, then run 'python-updater'\n")
+            print("Your sys.path: %s\n" % sys.path)
+            print("Your sys.version: %s\n" % sys.version)
+            print("Original exception was: ImportError: %s\n" % e)
             sys.exit()
 
     for opt, arg in opts: #broken for now
         if opt in ("-t", "--test"):
             config.set_test_path()
-    
+
     for opt, arg in opts:
         #print "opt, arg ", opt, arg, type(arg)
         if opt in ("-v", "--version"):
             # print version info
-            print "GPytage " + version
+            print("GPytage " + version)
             sys.exit(0)
-            
+
     gpytagemain = gpytagemain()
     gpytagemain.main()
-    
+

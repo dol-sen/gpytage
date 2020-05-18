@@ -27,11 +27,11 @@ import gtk
 from sys import stderr
 from shutil import rmtree
 from os import remove
-from PackageFileObj import PackageFileObj
-from FolderObj import FolderObj
-from datastore import reinitializeDatabase 
-from errorDialog import errorDialog
-from fileOperations import ensureNotModified 
+from .PackageFileObj import PackageFileObj
+from .FolderObj import FolderObj
+from .datastore import reinitializeDatabase
+from .errorDialog import errorDialog
+from .fileOperations import ensureNotModified
 
 msg = "A file cannot be deleted with unsaved changes. Please save your changes."
 
@@ -40,9 +40,9 @@ def deleteFile(*args):
     if ensureNotModified(msg):
 
         # What exactly is currently selected?
-        from leftpanel import leftview
+        from .leftpanel import leftview
         model, iter = leftview.get_selection().get_selected()
-        from datastore import F_REF
+        from .datastore import F_REF
         try:
             object = model.get_value(iter, F_REF)
             if isinstance(object, PackageFileObj): # A file
@@ -61,7 +61,7 @@ def deleteFile(*args):
                         __reselectAfterDelete(file.parent.path)
                 else:
                     dialog.destroy()
-            elif isinstance(object, FolderObj): # A folder 
+            elif isinstance(object, FolderObj): # A folder
                 folder = object
                 dialog = gtk.MessageDialog(None, gtk.DIALOG_MODAL, gtk.MESSAGE_WARNING, gtk.BUTTONS_YES_NO,\
                         "This operation is irreversible, are you sure you want to delete directory " + \
@@ -78,29 +78,29 @@ def deleteFile(*args):
                         __reselectAfterDelete(folder.parent.path)
                 else:
                     dialog.destroy()
-        except TypeError,e:
-            print >>stderr, "deleteFile: ",e
+        except TypeError as e:
+            print("deleteFile: ",e, file=stderr)
 
 
 def __removeFile(path):
     try:
         remove(path)
-    except OSError,e:
-        print >>stderr,e
+    except OSError as e:
+        print(e, file=stderr)
         d = errorDialog("Error Deleting File...", str(e))
         d.spawn()
 
 def __removeDirectory(path):
     try:
         rmtree(path)
-    except OSError, e:
-        print >>stderr, e
+    except OSError as e:
+        print(e, file=stderr)
         d = errorDialog("Error Deleting Directory...", str(e))
         d.spawn()
 
 def __reselectAfterDelete(folderPath):
     """ Reselects the parent folder of the deleted object """
-    from leftpanel import leftview
+    from .leftpanel import leftview
     model = leftview.get_model()
     model.foreach(getMatch, [folderPath, leftview])
 

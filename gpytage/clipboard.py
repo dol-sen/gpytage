@@ -24,8 +24,8 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 
-from helper import getMultiSelection, getCurrentFile
-from PackageFileObj import L_NAME, L_FLAGS, L_REF
+from .helper import getMultiSelection, getCurrentFile
+from .PackageFileObj import L_NAME, L_FLAGS, L_REF
 
 class clipboard():
     def __init__(self):
@@ -51,7 +51,7 @@ class clipboard():
     def cutToClipboard(self, rightview):
         """ Copies selected rows into the clipboard and then deletes them """
         self.copyToClipboard(rightview)
-        from rightpanel import deleteRow
+        from .rightpanel import deleteRow
         deleteRow(rightview)
 
     def pasteClipboard(self, rightview):
@@ -68,7 +68,7 @@ class clipboard():
         try:
             # A row has been selected and we should paste below it
             lastRowSelectedPath = rowReferences[-1].get_path()
-            
+
             lastRowIter = model.get_iter(lastRowSelectedPath)
             # We need to link this new row with its PackageFile Object
             PackageFile = model.get_value(lastRowIter, L_REF)
@@ -88,7 +88,7 @@ class clipboard():
                 newRow = model.append([row[0], row[1], PackageFile])
 
             # Fire off the edited methods
-            from fileOperations import fileEdited
+            from .fileOperations import fileEdited
             fileEdited(PackageFile)
 
     def __formatPaste(self, text):

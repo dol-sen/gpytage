@@ -33,12 +33,12 @@ test_path = '/etc/testportage/'
 try: # >=portage 2.1 modules
     import portage
     import portage.const
-except ImportError, e:
-    print >>stderr, "Portage Import Error: ", e
+except ImportError as e:
+    print("Portage Import Error: ", e, file=stderr)
     exit('Could not find portage module.\n'
          'Are you sure this is a Gentoo system?')
 
-print >>stderr, ("Config: portage version = " + portage.VERSION)
+print(("Config: portage version = " + portage.VERSION), file=stderr)
 
 config_path = "/" + portage.const.USER_CONFIG_PATH + "/"
 PORTDIR=portage.config(clone=portage.settings).environ()['PORTDIR']
@@ -49,7 +49,7 @@ del portage
 def set_test_path():
     global config_path, test_path
     config_path = test_path
-    print "CONFIG: new config_path = " + config_path
+    print("CONFIG: new config_path = " + config_path)
 
 def get_config_path():
     return config_path

@@ -26,9 +26,9 @@ import gtk
 
 import os
 
-import FolderObj, PackageFileObj
+from . import FolderObj, PackageFileObj
 
-from config import config_files, get_config_path
+from .config import config_files, get_config_path
 
 # declare some constants for clarity of code
 F_NAME = 0
@@ -81,7 +81,7 @@ def initData():
                 fileobj = PackageFileObj.PackageFileObj(pfile, rootDir + "/" + pfile, parent)
                 parent.addPackage(fileobj)
                 #TLFiles.append(fileobj)
-            
+
 def __getParent(tlname, type):
     """ Finds the associated parent named tlname from the specified list type """
     if type == "folder":
@@ -92,7 +92,7 @@ def __getParent(tlname, type):
         for f in TLFolders:
             if str(f) == tlname:
                 return f
-        
+
 def initTreeModel():
     """ Populate the TreeModel with data """
     for folder in TLFolders: #Contains *all* folders
@@ -128,7 +128,7 @@ def initTreeModel():
                 path = folderModel.get_path(parentIter)
                 treeRowRef = gtk.TreeRowReference(folderModel, path)
                 folder.treeRowRef = treeRowRef
-                
+
             for subfile in folder.getPackages():
                 row = [subfile, subfile]
                 FileIter = folderModel.append(parentIter, row)
@@ -142,18 +142,18 @@ def initTreeModel():
         path = folderModel.get_path(parentIter)
         treeRowRef = gtk.TreeRowReference(folderModel, path)
         pfile.treeRowRef = treeRowRef
-        
+
 def __clearData():
     """ Clears the TreeModel and the TLFolder,TLFiles list """
     folderModel.clear()
     del TLFolders[:]
     del TLFiles[:]
-    
+
 def reinitializeDatabase():
     """ Clears the backend and rebuilds the database from disk """
     __clearData()
     initData()
     initTreeModel()
 
-    from rightpanel import setListModel
+    from .rightpanel import setListModel
     setListModel(None)

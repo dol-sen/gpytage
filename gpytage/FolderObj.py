@@ -25,7 +25,7 @@ class FolderObj(object):
     """ FolderObj represent Folders """
     def __repr__(self):
         return self._name
-    
+
     def __init__(self, name, filepath):
         self._name = name
         self._path = filepath
@@ -35,7 +35,7 @@ class FolderObj(object):
         self._parentState = False # Top level default
         self._parentFolder = None # Parent FolderObj
         self._treeRowRef = None
-    
+
     @property
     def path(self):
         """ The ondisk path representation for the Folder """
@@ -48,23 +48,23 @@ class FolderObj(object):
     def getPackages(self):
         """ Return list of children PackageFileObj's """
         return self._packageFileChildren
-        
+
     def removePackage(self, Package):
         """ Removes the specified PackageFile """
         self._packageFileChildren.remove(Package)
-        
+
     def addFolder(self, folder):
         """ Add child FolderObj """
         self._folderChildren.append(folder)
-        
+
     def getFolders(self):
         """ Return list of children FolderObj's """
         return self._folderChildren
-    
+
     def removeFolder(self, folder):
         """ Remove child FolderObj """
         self._folderChildren.remove(folder)
-        
+
     @property
     def childState(self):
         """ True if folder has children """
@@ -73,7 +73,7 @@ class FolderObj(object):
     @childState.setter
     def childState(self, boolean):
         self._childState = boolean
-        
+
     @property
     def parentState(self):
         """ True if folder has a parent """
@@ -82,7 +82,7 @@ class FolderObj(object):
     @parentState.setter
     def parentState(self, boolean):
         self._parentState = boolean
-        
+
     @property
     def parent(self):
         """ Parent folder """
@@ -94,10 +94,10 @@ class FolderObj(object):
 
     @property
     def treeRowRef(self):
-        """ gtk.TreeRowReference pointing to this Folder """
+        """ Gtk.TreeRowReference pointing to this Folder """
         return self._treeRowRef
 
     @treeRowRef.setter
     def treeRowRef(self, value):
         self._treeRowRef = value
-        
+

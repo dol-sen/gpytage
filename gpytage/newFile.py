@@ -24,13 +24,13 @@
 import pygtk; pygtk.require("2.0")
 import gtk
 
-from config import get_config_path
-from datastore import reinitializeDatabase 
-from PackageFileObj import PackageFileObj
-from FolderObj import FolderObj
+from .config import get_config_path
+from .datastore import reinitializeDatabase
+from .PackageFileObj import PackageFileObj
+from .FolderObj import FolderObj
 from sys import stderr
-from errorDialog import errorDialog
-from fileOperations import ensureNotModified 
+from .errorDialog import errorDialog
+from .fileOperations import ensureNotModified
 
 msg = "A new file cannot be created with unsaved changes. Please save your changes."
 
@@ -44,14 +44,14 @@ def newFile(*args):
             __reselectAfterNew(nFile)
 
 def __saveToDisk(nFile):
-    print "Saving new file: " + nFile
+    print("Saving new file: " + nFile)
     try:
         f=open(nFile, 'w')
         f.write("# " + nFile + "\n")
         f.write("# Created by GPytage\n")
         f.close
-    except IOError, e:
-        print >>stderr, e
+    except IOError as e:
+        print(e, file=stderr)
         d = errorDialog("Error Creating File...", str(e))
         d.spawn()
 
@@ -65,27 +65,27 @@ def __getNewFileChoice():
     dialog.add_filter(filter)
     # Does the user have a folder selected that we should instead load on
     # newFile?
-    from leftpanel import leftview
+    from .leftpanel import leftview
     model, iter = leftview.get_selection().get_selected()
-    from datastore import F_REF
+    from .datastore import F_REF
     try:
         object = model.get_value(iter, F_REF)
         if isinstance(object, PackageFileObj): # A file
             folder = object.parent
-        elif isinstance(object, FolderObj): # A folder 
+        elif isinstance(object, FolderObj): # A folder
             folder = object
         if folder == None:
             folderPath = get_config_path()
         else:
             folderPath = folder.path # Get the path to the folder object
-    except TypeError,e:
-        print >>stderr, "__getNewFileChoice:",e
+    except TypeError as e:
+        print("__getNewFileChoice:",e, file=stderr)
         #Nothing selected, select default
         folderPath = get_config_path()
 
     dialog.set_current_folder(folderPath)
     ## end logic
-    
+
     dialog.set_do_overwrite_confirmation(True)
 
     response = dialog.run()
@@ -97,7 +97,7 @@ def __getNewFileChoice():
 
 def __reselectAfterNew(filePath):
     """ Reselects the parent folder of the deleted object """
-    from leftpanel import leftview
+    from .leftpanel import leftview
     model = leftview.get_model()
     model.foreach(getMatch, [filePath, leftview])
 
