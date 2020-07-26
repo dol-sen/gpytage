@@ -100,7 +100,7 @@ def __fileSaved(file):
     lpath = file.treeRowRef.get_path()
     lmodel = file.treeRowRef.get_model()
     # mark as unedited
-    lmodel[lpath][L_NAME] = file
+    lmodel[lpath][L_NAME] = str(file)
     # remove from the modifiedFiles
     __removeModifiedFile(file)
     # Reflect in title
@@ -141,7 +141,7 @@ def ensureNotModified(msg):
     nothing is modified. If false a dialog is presented to the user """
     if hasModified():
         #inform user to save
-        d = errorDialog("Unsaved Files Found...", msg) 
+        d = errorDialog("Unsaved Files Found...", msg)
         d.spawn()
         return False
     else:
