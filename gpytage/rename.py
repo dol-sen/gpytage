@@ -60,14 +60,22 @@ def renameFile(*args):
 def __createRenameDialog(object, type, setFolder):
     """ Spawms the Rename Dialog where a user can choose what the file should
     be renamed to """
-    fc = Gtk.FileChooserDialog("Rename file...", None,
-            Gtk.FILE_CHOOSER_ACTION_SAVE, (Gtk.STOCK_CANCEL,
-                Gtk.RESPONSE_CANCEL, Gtk.STOCK_OK, Gtk.RESPONSE_ACCEPT))
+    fc = Gtk.FileChooserDialog(
+        "Rename file...",
+        None,
+        action=Gtk.FileChooserAction.SAVE,
+        buttons=(
+            Gtk.STOCK_CANCEL,
+            Gtk.ResponseType.CANCEL,
+            Gtk.STOCK_OK,
+            Gtk.ResponseType.ACCEPT
+        )
+    )
     fc.set_do_overwrite_confirmation(True)
     fc.set_filename(object.path) #Set the fc to the object to be renamed
     fc.set_extra_widget(Gtk.Label("Renaming " + object.path))
     response = fc.run()
-    if response == Gtk.RESPONSE_ACCEPT:
+    if response == Gtk.ResponseType.ACCEPT:
         if fc.get_filename() != None:
             __writeRenamedFile(object.path, fc.get_filename())
             reinitializeDatabase()
