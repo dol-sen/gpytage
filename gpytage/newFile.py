@@ -57,9 +57,16 @@ def __saveToDisk(nFile):
         d.spawn()
 
 def __getNewFileChoice():
-    dialog = Gtk.FileChooserDialog("New file...", None,
-            Gtk.FILE_CHOOSER_ACTION_SAVE, (Gtk.STOCK_CANCEL,
-                Gtk.RESPONSE_CANCEL, Gtk.STOCK_OPEN, Gtk.RESPONSE_OK))
+    dialog = Gtk.FileChooserDialog(
+        title="New file...",
+        action=Gtk.FileChooserAction.SAVE,
+        buttons=(
+            Gtk.STOCK_CANCEL,
+            Gtk.ResponseType.CANCEL,
+            Gtk.STOCK_SAVE,
+            Gtk.ResponseType.OK
+        )
+    )
     filter = Gtk.FileFilter()
     filter.set_name("All files")
     filter.add_pattern("*")
@@ -91,7 +98,7 @@ def __getNewFileChoice():
 
     response = dialog.run()
     name = None
-    if response == Gtk.RESPONSE_OK:
+    if response == Gtk.ResponseType.OK:
         name = dialog.get_filename()
     dialog.destroy()
     return name
