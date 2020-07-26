@@ -28,8 +28,15 @@ from gi.repository import Gtk
 class errorDialog(Gtk.MessageDialog):
     """ Spawn an error dialog with the given title and text. """
     def __init__(self, title, text):
-        Gtk.MessageDialog.__init__(self, None, Gtk.DIALOG_DESTROY_WITH_PARENT, Gtk.MESSAGE_ERROR, Gtk.BUTTONS_OK, text)
+        Gtk.MessageDialog.__init__(
+            self,
+            message_type=Gtk.MessageType.ERROR,
+            buttons=Gtk.ButtonsType.OK,
+            text=text,
+        )
+        self.set_transient_for(self)
         self.set_title(title)
+        self.set_destroy_with_parent(True)
 
     def spawn(self):
         self.run()
