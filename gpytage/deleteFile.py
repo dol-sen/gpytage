@@ -48,12 +48,16 @@ def deleteFile(*args):
             object = model.get_value(iter, F_REF)
             if isinstance(object, PackageFileObj): # A file
                 file = object
-                dialog = Gtk.MessageDialog(None, Gtk.DIALOG_MODAL, Gtk.MESSAGE_WARNING, Gtk.BUTTONS_YES_NO,\
-                        "This operation is irreversible, are you sure you want to delete " + str(file) + "?")
-                dialog.set_default_response(Gtk.RESPONSE_NO)
+                dialog = Gtk.MessageDialog(
+                    None,
+                    message_type=Gtk.MessageType.WARNING,
+                    buttons=Gtk.ButtonsType.YES_NO,
+                    text="This operation is irreversible, are you sure you want to delete " + str(file) + "?"
+                )
+                dialog.set_default_response(Gtk.ResponseType.NO)
                 dialog.set_title("File removal...")
                 response = dialog.run()
-                if response == Gtk.RESPONSE_YES:
+                if response == Gtk.ResponseType.YES:
                     print("Test delete file: " + file.path)
                     __removeFile(file.path)
                     dialog.destroy()
@@ -64,13 +68,17 @@ def deleteFile(*args):
                     dialog.destroy()
             elif isinstance(object, FolderObj): # A folder
                 folder = object
-                dialog = Gtk.MessageDialog(None, Gtk.DIALOG_MODAL, Gtk.MESSAGE_WARNING, Gtk.BUTTONS_YES_NO,\
-                        "This operation is irreversible, are you sure you want to delete directory " + \
-                                str(folder) + " and its contents?")
-                dialog.set_default_response(Gtk.RESPONSE_NO)
+                dialog = Gtk.MessageDialog(
+                    None,
+                    message_type=Gtk.MessageType.WARNING,
+                    buttons=Gtk.ButtonsType.YES_NO,
+                    text="This operation is irreversible, are you sure you want to delete directory " + \
+                                str(folder) + " and its contents?"
+                )
+                dialog.set_default_response(Gtk.ResponseType.NO)
                 dialog.set_title("Directory removal...")
                 response = dialog.run()
-                if response == Gtk.RESPONSE_YES:
+                if response == Gtk.ResponseType.YES:
                     print("Test delete dir: " + folder.path)
                     __removeDirectory(folder.path)
                     dialog.destroy()
