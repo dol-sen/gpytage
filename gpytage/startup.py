@@ -164,19 +164,19 @@ class gpytagemain:
         self.menubar = self.uimanager.get_widget('/MenuBar')
         self.toolbar = self.uimanager.get_widget('/ToolBar')
         self.vbox = Gtk.VBox() #the master Widget
-        self.vbox.pack_start(self.menubar, False)
-        self.vbox.pack_start(self.toolbar, False)
+        self.vbox.pack_start(self.menubar, False, False, 0)
+        self.vbox.pack_start(self.toolbar, False, False, 0)
 
         #allow the program to quit
         self.window.connect("destroy", self.destroy)
         self.window.connect("delete_event", self.delete_event)
 
         #Show Widgets
-        self.pane = Gtk.HPaned()
+        self.pane = Gtk.Paned(orientation=Gtk.Orientation.HORIZONTAL)
         self.pane.pack1(lScroll, True, True)
         self.pane.pack2(rScroll, True, True)
         self.pane.set_position(200)
-        self.vbox.pack_start(self.pane)
+        self.vbox.pack_start(self.pane, True, True, 0)
         self.window.add_accel_group(self.accelgroup)
         self.window.add(self.vbox)
         self.window.show_all()
