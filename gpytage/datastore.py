@@ -99,21 +99,21 @@ def initTreeModel():
     for folder in TLFolders: #Contains *all* folders
         # Handle Top level Folders with no folder children first
         if (folder.childState == False and folder.parentState == False):
-            row = [folder, folder]
+            row = [str(folder), folder]
             parentIter = folderModel.append(None, row)
             path = folderModel.get_path(parentIter)
             treeRowRef = Gtk.TreeRowReference(folderModel, path)
             folder.treeRowRef = treeRowRef
             children = folder.getPackages()
             for child in children: #Add children files to treeview
-                row = [child, child]
+                row = [str(child), child]
                 childIter = folderModel.append(parentIter, row)
                 path = folderModel.get_path(childIter)
                 treeRowRef = Gtk.TreeRowReference(folderModel, path)
                 child.treeRowRef = treeRowRef
         else: # Folders have folder children (an unknown amount unfortunately) (Recursive)
             #Add the parent folder to the treeview
-            row = [folder, folder]
+            row = [str(folder), folder]
             if folder.parentState == False: #Top level
                 parentIter = folderModel.append(None, row)
                 path = folderModel.get_path(parentIter)
@@ -131,14 +131,14 @@ def initTreeModel():
                 folder.treeRowRef = treeRowRef
 
             for subfile in folder.getPackages():
-                row = [subfile, subfile]
+                row = [str(subfile), subfile]
                 FileIter = folderModel.append(parentIter, row)
                 path = folderModel.get_path(FileIter)
                 treeRowRef = Gtk.TreeRowReference(folderModel, path)
                 subfile.treeRowRef = treeRowRef
     # Top Level Files only
     for pfile in TLFiles:
-        row = [pfile, pfile]
+        row = [str(pfile), pfile]
         parentIter = folderModel.append(None, row)
         path = folderModel.get_path(parentIter)
         treeRowRef = Gtk.TreeRowReference(folderModel, path)
