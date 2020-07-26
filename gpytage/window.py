@@ -61,6 +61,7 @@ def unsavedDialog():
     """
     uD = Gtk.MessageDialog(
         parent=None,
+        flags=Gtk.DialogFlags.MODAL,
         message_type=Gtk.MessageType.WARNING,
         buttons=(Gtk.ButtonsType.YES_NO),
         message_format="You have unsaved changes, if you proceed these changes will be lost.\n\n Do you wish to Quit?"

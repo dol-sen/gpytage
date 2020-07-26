@@ -49,7 +49,7 @@ def deleteFile(*args):
             if isinstance(object, PackageFileObj): # A file
                 file = object
                 dialog = Gtk.MessageDialog(
-                    None,
+                    flags=Gtk.DialogFlags.MODAL,
                     message_type=Gtk.MessageType.WARNING,
                     buttons=Gtk.ButtonsType.YES_NO,
                     text="This operation is irreversible, are you sure you want to delete " + str(file) + "?"
@@ -69,7 +69,7 @@ def deleteFile(*args):
             elif isinstance(object, FolderObj): # A folder
                 folder = object
                 dialog = Gtk.MessageDialog(
-                    None,
+                    flags=Gtk.DialogFlags.MODAL,
                     message_type=Gtk.MessageType.WARNING,
                     buttons=Gtk.ButtonsType.YES_NO,
                     text="This operation is irreversible, are you sure you want to delete directory " + \
